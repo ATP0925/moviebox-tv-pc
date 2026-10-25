@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MovieBoxTV PC — Premium 4K/HD Streaming</title>
+  <meta name="description" content="MovieBoxTV Desktop PC — Stream endless movies, TV series, and anime in Ultra HD 1080p and 4K natively on your Windows PC.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+    <!-- Top Navigation Bar -->
+    <header class="navbar" id="navbar">
+      <div class="nav-left">
+        <div class="brand-logo" id="logo-home">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="logo-title">MOVIEBOX</span>
+            <span class="logo-badge">TV PRO</span>
+          </div>
+        </div>
+
+        <nav class="nav-tabs" id="nav-tabs" aria-label="Main Navigation">
+          <!-- Dynamically populated from /api/tabs -->
+          <button class="nav-tab active" data-tab-id="HOME">
+            <span class="tab-label">Home</span>
+          </button>
+          <button class="nav-tab" data-tab-id="MOVIE">
+            <span class="tab-label">Movies</span>
+          </button>
+          <button class="nav-tab" data-tab-id="TV">
+            <span class="tab-label">TV Series</span>
+          </button>
+          <button class="nav-tab" data-tab-id="ANIMATION">
+            <span class="tab-label">Anime</span>
+          </button>
+          <button class="nav-tab" data-tab-id="KIDS">
+            <span class="tab-label">Kids</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <!-- Search Bar -->
+        <div class="search-box" id="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" placeholder="Search movies, series, anime..." autocomplete="off">
+          <button class="search-clear hidden" id="search-clear" title="Clear search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- VIP Status & Desktop Info -->
+        <div class="user-status-pill" title="Native VIP Engine Activated">
+          <span class="pulse-dot"></span>
+          <span class="status-text">VIP UNLOCKED</span>
+        </div>
+
+        <!-- Fullscreen App Button -->
+        <button class="btn-icon" id="btn-fullscreen-toggle" title="Toggle Fullscreen (F11)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="main-content">
+      <!-- Search View Container (hidden by default) -->
+      <section class="search-results-section hidden" id="search-section">
+        <div class="section-header">
+          <h1 class="section-title" id="search-results-title">Search Results</h1>
+          <span class="results-count" id="search-count">0 titles found</span>
+        </div>
+        <div class="cards-grid" id="search-grid"></div>
+        <div class="empty-state hidden" id="search-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <h3>No titles found</h3>
+          <p>Try searching for a different movie, show name or actor.</p>
+        </div>
+      </section>
+
+      <!-- Feed Container (Billboard + Shelves) -->
+      <div id="feed-container">
+        <!-- Hero Billboard Banner -->
+        <section class="hero-billboard" id="hero-billboard">
+          <div class="billboard-backdrop-container">
+            <div class="billboard-backdrop" id="billboard-backdrop"></div>
+            <div class="billboard-vignette"></div>
+            <div class="billboard-gradient-bottom"></div>
+          </div>
+
+          <div class="billboard-content">
+            <div class="billboard-badges">
+              <span class="badge-tag">TRENDING TODAY</span>
+              <span class="badge-quality">ULTRA HD 1080P</span>
+              <span class="badge-imdb" id="billboard-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span id="billboard-score">8.5</span>
+              </span>
+            </div>
+
+            <h1 class="billboard-title" id="billboard-title">Featured Movie Title</h1>
+            <p class="billboard-meta" id="billboard-meta">2026 • Action, Sci-Fi • 2h 15m</p>
+            <p class="billboard-desc" id="billboard-desc">
+              Loading featured story synopsis and captivating highlights...
+            </p>
+
+            <div class="billboard-actions">
+              <button class="btn btn-primary" id="btn-billboard-play">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Watch Now</span>
+              </button>
+              <button class="btn btn-secondary" id="btn-billboard-details">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>More Info</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Horizontal Shelves / Carousels Container -->
+        <section class="shelves-wrapper" id="shelves-wrapper">
+          <!-- Shelves dynamically injected by app.js -->
+          <div class="shelf-loading" id="shelf-loading">
+            <div class="spinner"></div>
+            <p>Loading curated catalogue...</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Detail Information Modal -->
+    <div class="modal-overlay hidden" id="detail-modal" role="dialog" aria-modal="true">
+      <div class="modal-container">
+        <button class="modal-close-btn" id="btn-modal-close" title="Close (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="modal-backdrop-hero" id="modal-backdrop">
+          <div class="modal-vignette"></div>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-hero-content">
+            <div class="modal-poster-wrap">
+              <img id="modal-poster" src="" alt="Poster" class="modal-poster-img">
+            </div>
+
+            <div class="modal-info-wrap">
+              <div class="modal-badges" id="modal-badges"></div>
+              <h2 class="modal-title" id="modal-title">Movie Title</h2>
+              
+              <div class="modal-meta-row" id="modal-meta">
+                <span id="modal-year">2026</span>
+                <span class="meta-dot">•</span>
+                <span id="modal-duration">120 min</span>
+                <span class="meta-dot">•</span>
+                <span id="modal-genre">Action, Sci-Fi</span>
+              </div>
+
+              <div class="modal-actions-row">
+                <button class="btn btn-primary" id="btn-modal-play">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                  <span id="modal-play-text">Play Movie</span>
+                </button>
+              </div>
+
+              <p class="modal-synopsis" id="modal-synopsis"></p>
+
+              <div class="modal-details-grid">
+                <div class="detail-item">
+                  <span class="detail-label">Country</span>
+                  <span class="detail-value" id="modal-country">United States</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label">IMDb Rating</span>
+                  <span class="detail-value highlight" id="modal-imdb">⭐ 8.2 / 10</span>
+                </div>
+                <div class="detail-item" id="modal-staff-container">
+                  <span class="detail-label">Cast & Creators</span>
+                  <span class="detail-value" id="modal-staff">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TV Seasons & Episodes Section (Shown only for TV Series) -->
+          <div class="seasons-section hidden" id="seasons-section">
+            <div class="seasons-header">
+              <h3 class="section-subtitle">Episodes</h3>
+              <div class="season-selector-tabs" id="season-tabs"></div>
+            </div>
+            <div class="episodes-grid" id="episodes-grid"></div>
+          </div>
+
+          <!-- Recommended Titles Shelf -->
+          <div class="modal-recommendations" id="modal-rec-section">
+            <h3 class="section-subtitle">More Like This</h3>
+            <div class="rec-carousel" id="modal-rec-grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Built-in Cinema Video Player Overlay -->
+    <div class="player-overlay hidden" id="player-overlay">
+      <video id="video-element" class="cinema-video" playsinline preload="auto"></video>
+
+      <!-- Loading Spinner on Video -->
+      <div class="player-loader hidden" id="player-loader">
+        <div class="spinner-large"></div>
+        <p id="player-loading-text">Loading High Definition Stream...</p>
+      </div>
+
+      <!-- Player HUD / Controls Bar -->
+      <div class="player-controls-container" id="player-controls">
+        <!-- Top Player Bar -->
+        <div class="player-top-bar">
+          <button class="btn-player-back" id="btn-player-exit" title="Back to MovieBox (Esc)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Back</span>
+          </button>
+          <div class="player-titles">
+            <h2 class="player-main-title" id="player-title">Movie Title</h2>
+            <span class="player-sub-title" id="player-subtitle">1080p Full HD</span>
+          </div>
+        </div>
+
+        <!-- Center Click to Play / Pause Trigger Area -->
+        <div class="player-center-tap" id="player-tap-area"></div>
+
+        <!-- Bottom Controls Bar -->
+        <div class="player-bottom-bar">
+          <!-- Timeline Scrubber -->
+          <div class="timeline-container" id="timeline-container">
+            <div class="timeline-buffered" id="timeline-buffered"></div>
+            <div class="timeline-progress" id="timeline-progress"></div>
+            <div class="timeline-thumb" id="timeline-thumb"></div>
+            <div class="timeline-tooltip hidden" id="timeline-tooltip">00:00</div>
+          </div>
+
+          <div class="controls-row">
+            <div class="controls-left">
+              <!-- Play / Pause -->
+              <button class="control-btn" id="btn-play-pause" title="Play / Pause (Space)">
+                <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <svg id="icon-pause" class="hidden" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+              </button>
+
+              <!-- Rewind 10s -->
+              <button class="control-btn" id="btn-rewind" title="Rewind 10s (Left Arrow)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/>
+                </svg>
+              </button>
+
+              <!-- Forward 10s -->
+              <button class="control-btn" id="btn-forward" title="Forward 10s (Right Arrow)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 17l5-5-5-5M6 17l5-5-5-5"/>
+                </svg>
+              </button>
+
+              <!-- Volume Control -->
+              <div class="volume-control">
+                <button class="control-btn" id="btn-volume" title="Mute / Unmute (M)">
+                  <svg id="icon-vol-high" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                  </svg>
+                  <svg id="icon-vol-mute" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <line x1="23" y1="9" x2="17" y2="15"></line>
+                    <line x1="17" y1="9" x2="23" y2="15"></line>
+                  </svg>
+                </button>
+                <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.05" value="1">
+              </div>
+
+              <!-- Time Display -->
+              <div class="time-display">
+                <span id="current-time">0:00</span>
+                <span>/</span>
+                <span id="total-duration">0:00</span>
+              </div>
+            </div>
+
+            <div class="controls-right">
+              <!-- Quality Dropdown Selector -->
+              <div class="player-dropdown" id="dropdown-quality-container">
+                <button class="dropdown-trigger-btn" id="btn-quality-select" title="Resolution Quality">
+                  <span id="current-quality-label">1080p</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                <div class="dropdown-menu hidden" id="quality-menu"></div>
+              </div>
+
+              <!-- Subtitles Dropdown Selector -->
+              <div class="player-dropdown" id="dropdown-subtitles-container">
+                <button class="dropdown-trigger-btn" id="btn-subtitles-select" title="Subtitles / Captions">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                    <line x1="6" y1="15" x2="10" y2="15"></line>
+                    <line x1="14" y1="15" x2="18" y2="15"></line>
+                    <line x1="6" y1="11" x2="18" y2="11"></line>
+                  </svg>
+                  <span id="current-subtitle-label">CC</span>
+                </button>
+                <div class="dropdown-menu hidden" id="subtitles-menu"></div>
+              </div>
+
+              <!-- Fullscreen Button -->
+              <button class="control-btn" id="btn-player-fullscreen" title="Fullscreen (F)">
+                <svg id="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                </svg>
+                <svg id="icon-compress" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast-container hidden" id="toast">
+      <span class="toast-icon">ℹ</span>
+      <span class="toast-message" id="toast-text">Notification message</span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

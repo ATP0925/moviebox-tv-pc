@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Large Archives & Binaries
+*.zip
+*.tar.gz
+*.7z
+*.apk
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+
+# Decompiled APK Trees
+decompiled/
+decompiled_interceptor/
+decompiled_manifest/
+decompiled_sign/
+
+# Screenshots & Local Cache
+*.png
+!screenshots/*.png
+.vscode/
+.idea/
