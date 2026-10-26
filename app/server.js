@@ -335,6 +335,90 @@ app.get('/api/subtitle', (req, res) => {
   });
 });
 
+// 9. Video Stream Proxy (Bypasses CDN User-Agent/CORS blocks and supports HTTP 206 Range seeking)
+function proxyVideoStream(targetUrl, req, res, redirectCount = 0) {
+  if (redirectCount > 5) {
+    return res.status(508).send("Too many redirects from CDN");
+  }
+
+  let parsed;
+  try {
+    parsed = new URL(targetUrl);
+  } catch (e) {
+    return res.status(400).send("Invalid stream URL");
+  }
+
+  const forwardHeaders = {
+    'User-Agent': 'okhttp/4.11.0',
+    'Host': parsed.hostname,
+    'Accept': '*/*',
+    'Accept-Encoding': 'identity'
+  };
+
+  if (req.headers.range) {
+    forwardHeaders['Range'] = req.headers.range;
+  }
+
+  const protocol = parsed.protocol === 'http:' ? require('http') : https;
+
+  const cdnReq = protocol.request(targetUrl, {
+    method: req.method === 'HEAD' ? 'HEAD' : 'GET',
+    headers: forwardHeaders,
+    rejectUnauthorized: false
+  }, (cdnRes) => {
+    // Handle HTTP Redirects
+    if (cdnRes.statusCode >= 300 && cdnRes.statusCode < 400 && cdnRes.headers.location) {
+      const nextUrl = new URL(cdnRes.headers.location, targetUrl).toString();
+      return proxyVideoStream(nextUrl, req, res, redirectCount + 1);
+    }
+
+    res.status(cdnRes.statusCode);
+
+    const contentType = cdnRes.headers['content-type'] || 'video/mp4';
+    res.setHeader('Content-Type', contentType);
+
+    if (cdnRes.headers['content-length']) {
+      res.setHeader('Content-Length', cdnRes.headers['content-length']);
+    }
+    if (cdnRes.headers['content-range']) {
+      res.setHeader('Content-Range', cdnRes.headers['content-range']);
+    }
+
+    res.setHeader('Accept-Ranges', cdnRes.headers['accept-ranges'] || 'bytes');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Range');
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Range, Content-Length, Accept-Ranges');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+
+    if (req.method === 'HEAD') {
+      return res.end();
+    }
+
+    cdnRes.pipe(res);
+  });
+
+  cdnReq.on('error', (err) => {
+    console.error("Stream proxy error:", err.message);
+    if (!res.headersSent) {
+      res.status(502).send("Stream proxy failed: " + err.message);
+    }
+  });
+
+  req.on('close', () => {
+    cdnReq.destroy();
+  });
+
+  cdnReq.end();
+}
+
+app.all('/api/stream', (req, res) => {
+  const videoUrl = req.query.url;
+  if (!videoUrl) {
+    return res.status(400).send("Missing 'url' query parameter");
+  }
+  proxyVideoStream(videoUrl, req, res);
+});
+
 // Health check
 app.get('/api/status', (req, res) => {
   res.json({

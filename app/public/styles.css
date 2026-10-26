@@ -585,6 +585,7 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
 /* Carousel Track */
 .shelf-carousel {
   display: flex;
+  align-items: flex-start;
   gap: 20px;
   overflow-x: auto;
   scroll-behavior: smooth;
@@ -595,19 +596,27 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   display: none;
 }
 
-/* Movie Card */
+/* Movie Card — Strictly uniform 180px width */
 .movie-card {
-  flex: 0 0 190px;
+  flex: 0 0 180px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  display: flex;
+  flex-direction: column;
   position: relative;
   cursor: pointer;
   border-radius: 12px;
-  transition: all 0.35s var(--ease-smooth);
+  transition: transform 0.35s var(--ease-smooth);
 }
 
+/* Poster Wrap — Strictly enforced 2:3 vertical aspect ratio (180px x 270px) */
 .card-poster-wrap {
   position: relative;
-  width: 100%;
-  aspect-ratio: 2 / 3;
+  width: 180px;
+  height: 270px;
+  min-height: 270px;
+  max-height: 270px;
   border-radius: 12px;
   overflow: hidden;
   background: var(--bg-card);
@@ -616,10 +625,15 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   transition: all 0.35s var(--ease-smooth);
 }
 
+/* Poster Image — Absolutely fills the 180x270 container with object-fit cover regardless of native resolution */
 .card-poster {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
   transition: transform 0.5s ease;
 }
 
@@ -777,6 +791,20 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 24px;
+}
+
+.cards-grid .movie-card {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cards-grid .card-poster-wrap {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  min-height: 0;
+  max-height: none;
 }
 
 .empty-state {
@@ -1065,9 +1093,24 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
 
 .rec-carousel {
   display: flex;
+  align-items: flex-start;
   gap: 16px;
   overflow-x: auto;
   padding-bottom: 10px;
+}
+
+.rec-carousel .movie-card {
+  flex: 0 0 140px;
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
+}
+
+.rec-carousel .card-poster-wrap {
+  width: 140px;
+  height: 210px;
+  min-height: 210px;
+  max-height: 210px;
 }
 
 /* ==========================================================================

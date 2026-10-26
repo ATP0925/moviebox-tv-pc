@@ -596,16 +596,32 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie") {
   elements.videoElement.load();
 
   try {
-    const playRes = await api.getPlayInfo(subjectId, se, ep);
+    let playRes = await api.getPlayInfo(subjectId, se, ep);
     if (!playRes || playRes.code !== 0 || !playRes.data) {
       throw new Error(playRes?.message || "Stream play info unavailable");
     }
 
-    const data = playRes.data;
+    let data = playRes.data;
     state.currentPlayData = data;
 
     // Pick playable MP4 resource
-    const resources = data.resources || [];
+    let resources = data.resources || [];
+
+    // Fallback: If no resources at se=0/ep=0 (e.g. TV Series opened from banner), check se=1, ep=1
+    if (resources.length === 0 && se === 0) {
+      try {
+        const seriesPlay = await api.getPlayInfo(subjectId, 1, 1);
+        if (seriesPlay && seriesPlay.code === 0 && seriesPlay.data?.resources?.length > 0) {
+          data = seriesPlay.data;
+          resources = data.resources;
+          state.currentPlayData = data;
+          elements.playerSubtitle.textContent = "Season 1 • Episode 1";
+        }
+      } catch (e) {
+        console.warn("Series fallback check:", e.message);
+      }
+    }
+
     if (resources.length === 0 && (!data.streams || data.streams.length === 0)) {
       throw new Error("No playable video sources returned for this title.");
     }
@@ -648,7 +664,10 @@ function setStreamSource(url, resolutionLabel) {
   elements.currentQualityLabel.textContent = resolutionLabel;
 
   const currentTime = elements.videoElement.currentTime || 0;
-  elements.videoElement.src = url;
+  
+  // Route stream through local proxy to bypass CDN anti-bot checks and enable range seeking
+  const proxyUrl = `/api/stream?url=${encodeURIComponent(url)}`;
+  elements.videoElement.src = proxyUrl;
 
   elements.videoElement.onloadedmetadata = () => {
     elements.playerLoader.classList.add('hidden');
@@ -660,7 +679,8 @@ function setStreamSource(url, resolutionLabel) {
     });
   };
 
-  elements.videoElement.onerror = () => {
+  elements.videoElement.onerror = (e) => {
+    console.error("Video element playback error:", e);
     elements.playerLoader.classList.add('hidden');
     showToast("Stream error. Trying alternative quality...", 3000);
   };
