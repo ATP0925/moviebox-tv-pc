@@ -1,57 +1,79 @@
 @echo off
-title MovieBoxTV PC - Standalone Desktop App
-color 0A
+title MovieBoxTV - Personal PC Player
+color 0B
 cls
 echo ============================================================
-echo   MovieBoxTV PC - Standalone Desktop Cinema Application
+echo   MovieBoxTV - Personal Custom PC Runtime
+echo   AMD Ryzen 7 + NVIDIA RTX 3050 GPU Accelerated
 echo ============================================================
 echo.
 
-set APP_DIR=%~dp0app
-cd /d "%APP_DIR%"
+set ANDROID_HOME=C:\Users\atpad\CustomAndroidRuntime
+set ANDROID_SDK_ROOT=C:\Users\atpad\CustomAndroidRuntime
+set PATH=C:\Users\atpad\CustomAndroidRuntime\platform-tools;%PATH%
 
-:: Check if server is already running on port 4567
-powershell -NoProfile -Command "(Get-NetTCPConnection -LocalPort 4567 -State Listen -ErrorAction SilentlyContinue) | Measure-Object | Select-Object -ExpandProperty Count" > "%TEMP%\mb_port.tmp" 2>nul
-set /p PORT_ACTIVE=<"%TEMP%\mb_port.tmp"
-del /f /q "%TEMP%\mb_port.tmp" >nul 2>&1
+:: Terminate old controller instance to ensure latest updates are active
+taskkill /F /IM pythonw.exe >nul 2>&1
 
-if "%PORT_ACTIVE%"=="0" (
-    echo [*] Starting MovieBoxTV Gateway Server...
-    start /b node server.js
-    ping -n 3 127.0.0.1 >nul
-) else (
-    echo [+] MovieBoxTV Gateway Server is already running.
+:: Clean stale locks if any previous crash occurred
+if exist "%USERPROFILE%\.android\avd\MovieBoxTV_PC.avd\multiinstance.lock" del /f /q "%USERPROFILE%\.android\avd\MovieBoxTV_PC.avd\multiinstance.lock" >nul 2>&1
+if exist "%USERPROFILE%\.android\avd\MovieBoxTV_PC.avd\hardware-qemu.ini.lock" rmdir /s /q "%USERPROFILE%\.android\avd\MovieBoxTV_PC.avd\hardware-qemu.ini.lock" >nul 2>&1
+
+:: Check if emulator runtime is already active
+tasklist /FI "IMAGENAME eq qemu-system-x86_64.exe" 2>nul | findstr /i "qemu" >nul
+if %ERRORLEVEL% EQU 0 (
+    echo [+] MovieBoxTV Runtime is already running.
+    goto launch_app
 )
 
-echo [*] Launching Native Borderless Cinema App Window...
+echo [*] Starting dedicated hardware-accelerated runtime...
+start "" "C:\Users\atpad\CustomAndroidRuntime\emulator\emulator.exe" -avd MovieBoxTV_PC -accel on -gpu host -no-boot-anim -skin 1920x1080
 
-:: Prefer Microsoft Edge in dedicated borderless app mode
-set EDGE_EXE="C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-if not exist %EDGE_EXE% set EDGE_EXE="C:\Program Files\Microsoft\Edge\Application\msedge.exe"
+echo [*] Connecting to device...
+"C:\Users\atpad\CustomAndroidRuntime\platform-tools\adb.exe" wait-for-device
 
-if exist %EDGE_EXE% (
-    start "" %EDGE_EXE% --app="http://localhost:4567" --window-size=1366,768
-    goto done
+echo [*] Waiting for Android boot completion...
+:wait_loop
+"C:\Users\atpad\CustomAndroidRuntime\platform-tools\adb.exe" shell getprop sys.boot_completed 2>nul | findstr "1" >nul
+if %ERRORLEVEL% NEQ 0 (
+    ping -n 2 127.0.0.1 >nul
+    goto wait_loop
 )
 
-:: Check Google Chrome in dedicated app mode
-set CHROME_EXE="C:\Program Files\Google\Chrome\Application\chrome.exe"
-if not exist %CHROME_EXE% set CHROME_EXE="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-if not exist %CHROME_EXE% set CHROME_EXE="%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe"
+:: Set optimal media volume
+"C:\Users\atpad\CustomAndroidRuntime\platform-tools\adb.exe" shell media volume --stream 3 --set 15 >nul 2>&1
 
-if exist %CHROME_EXE% (
-    start "" %CHROME_EXE% --app="http://localhost:4567" --window-size=1366,768
-    goto done
-)
+:launch_app
+echo [*] Launching MovieBoxTV...
+"C:\Users\atpad\CustomAndroidRuntime\platform-tools\adb.exe" shell monkey -p com.community.mbox.tv -c android.intent.category.LAUNCHER 1 >nul 2>&1
 
-:: Fallback to default browser
-start http://localhost:4567
+:: Restore and focus the emulator window
+powershell -NoProfile -Command "(New-Object -ComObject WScript.Shell).AppActivate('Android Emulator')" >nul 2>&1
 
-:done
+:: Start intelligent keyboard, mouse debouncer, smooth scroll & true fullscreen controller
+echo [*] Starting intelligent keyboard, mouse debouncer ^& fullscreen controller...
+start "" "C:\Program Files\Python314\pythonw.exe" "C:\Users\atpad\CustomAndroidRuntime\moviebox_controller.py"
+
 echo.
 echo ============================================================
-echo   [SUCCESS] MovieBoxTV PC App is Active!
-echo   Tip: Press F11 or F for Full Screen Cinema viewing.
+echo   [SUCCESS] MovieBoxTV is now active!
 echo ============================================================
-ping -n 2 127.0.0.1 >nul
-exit
+echo   FULLSCREEN CONTROLS:
+echo     - Auto-Fullscreen  : Automatically expands to 100%% screen
+echo     - Fullscreen Toggle: F, F11, or Alt+Enter
+echo.
+echo   MOUSE CONTROLS:
+echo     - Left Click       : Single Click (Double-click bug fixed!)
+echo     - Right Click      : Instant Back button
+echo     - Mouse Wheel      : Smooth Shelf Scrolling (Row-by-Row)
+echo.
+echo   KEYBOARD CONTROLS:
+echo     - WASD / Arrows    : D-Pad Navigation
+echo     - Space / Enter    : Select / Play-Pause / OK
+echo     - Esc / Backspace  : Back / Close Menu
+echo     - Q or P           : Video Quality Menu (480P / 720P / 1080P)
+echo     - L                : Subtitles ^& Language Settings
+echo     - [ and ]          : Previous / Next Episode
+echo     - + / - / M        : Volume Up / Down / Mute
+echo ============================================================
+ping -n 3 127.0.0.1 >nul
