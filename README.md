@@ -31,7 +31,19 @@ A full-fledged, high-performance PC suite for **MovieBoxTV**. Features a hardwar
      - **`Esc` / `Backspace`**: Back / Close overlay.
      - **`+` / `-` / `M`**: Volume Up / Volume Down / Mute.
 
-5. **Reverse Engineered API & Standalone Web Client**
+5. **MovieBox & Gaming Center PC Dashboard (Glassmorphism UI)**
+   - Agency-grade desktop UI running locally on port `8765`, launchable as a standalone native app via Microsoft Edge / Chrome.
+   - Real-time hardware telemetry (AMD Ryzen 7 12-thread status, NVIDIA GeForce RTX 3050 GDDR6 VRAM, DDR5 RAM allocation, ASG render pipelines).
+   - 1-Click Game Launch, Cinema Mode, 1-Click True Fullscreen Toggle, and Low-Latency FPS Booster.
+
+6. **AAA Android Gaming & High-Graphics Optimization**
+   - **Host GPU Direct Pass-Through**: Enforced dedicated NVIDIA GeForce RTX 3050 Laptop GPU (4GB GDDR6) via Windows DirectX preferences and host Vulkan 1.3 passthrough.
+   - **Expanded Hardware Allocation**: 8192 MB (8 GB) dedicated DDR5 RAM, 1024 MB JVM heap, and 6 dedicated CPU cores / 12 threads.
+   - **32 GB Storage Partition**: Massive internal storage for heavy game OBB files and texture packs.
+   - **Zero-Copy Graphics (ASG)**: Address Space Graphics zero-copy ringbuffer for high-FPS, stutter-free rendering.
+   - **ARM64 Translation**: Integrated `libndk_translation` bridge allowing native execution of 64-bit ARM games on x86_64 host.
+
+7. **Reverse Engineered API & Standalone Web Client**
    - Extracted API endpoints and HMAC-SHA256 signature algorithm (`hh.a.c()`) from Android decompilation.
    - Full Node.js + Vanilla JS streaming dashboard with HLS.js video playback in `/app`.
 

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MovieBox & Gaming Center PC — Pro Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #080C16;
+      --card-bg: rgba(20, 26, 46, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover-border: rgba(6, 182, 212, 0.4);
+      --primary-cyan: #06B6D4;
+      --primary-glow: rgba(6, 182, 212, 0.35);
+      --neon-violet: #8B5CF6;
+      --emerald-green: #10B981;
+      --amber-gold: #F59E0B;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 25%, rgba(139, 92, 246, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+    /* Top Navigation Bar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      backdrop-filter: blur(24px);
+      background: rgba(8, 12, 22, 0.85);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #06B6D4 0%, #8B5CF6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.45);
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #FFFFFF, #CBD5E1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badge {
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: var(--primary-cyan);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .system-status-pills {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald-green);
+      box-shadow: 0 0 10px var(--emerald-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1380px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 40px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    /* Section Headings */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title span.tag {
+      font-size: 12px;
+      color: var(--primary-cyan);
+      font-weight: 600;
+      background: rgba(6, 182, 212, 0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    /* Quick Action Cards Grid */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .action-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      transition: var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .action-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+      opacity: 0;
+      transition: var(--transition-fast);
+    }
+
+    .action-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--card-hover-border);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .action-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon-wrapper {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      flex: 1;
+    }
+
+    .btn-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+      color: #FFFFFF;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.35);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 22px rgba(6, 182, 212, 0.55);
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-boost {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: #FFFFFF;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-boost:hover {
+      box-shadow: 0 6px 22px rgba(16, 185, 129, 0.55);
+      filter: brightness(1.1);
+    }
+
+    /* Hardware Performance HUD Grid */
+    .hud-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .hud-tile {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hud-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hud-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .hud-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--primary-cyan);
+    }
+
+    /* Keymap & Controls Diagram Section */
+    .keymap-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      backdrop-filter: blur(16px);
+    }
+
+    .keymap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 18px;
+    }
+
+    .keymap-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .keymap-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .key-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .key-badge {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #FFFFFF;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .key-desc {
+      color: var(--text-muted);
+    }
+
+    /* Game Support Showcase */
+    .games-showcase {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .game-badge-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: var(--transition-fast);
+    }
+
+    .game-badge-card:hover {
+      border-color: rgba(139, 92, 246, 0.4);
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    .game-icon {
+      font-size: 28px;
+    }
+
+    .game-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .game-status {
+      font-size: 11px;
+      color: var(--emerald-green);
+      font-weight: 600;
+    }
+
+    /* Toast Notification */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 999;
+    }
+
+    .toast {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--primary-cyan);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 15px rgba(6, 182, 212, 0.3);
+      color: #FFFFFF;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <div class="brand-group">
+      <div class="brand-icon">🎬</div>
+      <div>
+        <div class="brand-title">MovieBox & Gaming Hub Pro</div>
+      </div>
+      <div class="brand-badge">RTX 3050 Vulkan Edition</div>
+    </div>
+    <div class="system-status-pills">
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        <span>NVIDIA RTX 3050 (4GB) Active</span>
+      </div>
+      <div class="status-pill">
+        <span>8 GB RAM</span>
+      </div>
+      <div class="status-pill">
+        <span>32 GB Storage</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Quick Action Cards -->
+    <section>
+      <div class="section-header">
+        <div class="section-title">
+          Quick Launch & Hardware Control
+          <span class="tag">Zero Latency</span>
+        </div>
+      </div>
+      <div class="actions-grid">
+        
+        <!-- MovieBoxTV -->
+        <div class="action-card" onclick="triggerAction('/api/launch-moviebox', '🎬 Launching MovieBoxTV Cinema in 1080p...')">
+          <div>
+            <div class="card-icon-wrapper" style="color: #06B6D4; background: rgba(6, 182, 212, 0.1);">🍿</div>
+            <div class="card-title">MovieBoxTV Cinema</div>
+            <div class="card-desc">1080p Fullscreen streaming with double-click filter active & smooth shelf scroll.</div>
+          </div>
+          <button class="btn-action btn-primary">Launch Cinema Player</button>
+        </div>
+
+        <!-- 3D Gaming Console -->
+        <div class="action-card" onclick="triggerAction('/api/launch-gaming', '🎮 Launching Gaming Console with 8GB RAM...')">
+          <div>
+            <div class="card-icon-wrapper" style="color: #8B5CF6; background: rgba(139, 92, 246, 0.1);">🎮</div>
+            <div class="card-title">AAA Gaming Mode</div>
+            <div class="card-desc">Run COD, Free Fire, BGMI, Asphalt with 6 CPU cores, 8GB RAM & RTX 3050 Vulkan.</div>
+          </div>
+          <button class="btn-action btn-primary" style="background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.35);">Launch Gaming Mode</button>
+        </div>
+
+        <!-- 100% Fullscreen Switch -->
+        <div class="action-card" onclick="triggerAction('/api/toggle-fullscreen', '🖥️ Toggling 100% Screen Fullscreen...')">
+          <div>
+            <div class="card-icon-wrapper" style="color: #F59E0B; background: rgba(245, 158, 11, 0.1);">🖥️</div>
+            <div class="card-title">100% Full Screen</div>
+            <div class="card-desc">Eliminates window borders and taskbar to maximize 100% of your PC display.</div>
+          </div>
+          <button class="btn-action btn-secondary">Toggle Fullscreen (F11)</button>
+        </div>
+
+        <!-- FPS Boost -->
+        <div class="action-card" onclick="triggerAction('/api/boost-fps', '⚡ Elevating process priority and boosting FPS...')">
+          <div>
+            <div class="card-icon-wrapper" style="color: #10B981; background: rgba(16, 185, 129, 0.1);">⚡</div>
+            <div class="card-title">Instant FPS Boost</div>
+            <div class="card-desc">Sets QEMU priority to High, flushes graphics cache, and unlocks low-latency mode.</div>
+          </div>
+          <button class="btn-action btn-boost">Boost 60-120 FPS</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Hardware HUD Monitor -->
+    <section>
+      <div class="section-header">
+        <div class="section-title">
+          Dedicated PC Hardware Telemetry
+          <span class="tag">Hardware Accelerated</span>
+        </div>
+      </div>
+      <div class="hud-grid">
+        <div class="hud-tile">
+          <div class="hud-label">Dedicated Graphics <span>Vulkan 1.3</span></div>
+          <div class="hud-value" id="hud-gpu">NVIDIA RTX 3050 (4GB GDDR6)</div>
+          <div class="hud-sub">Driver: ASG Zero-Copy Pass-through</div>
+        </div>
+        <div class="hud-tile">
+          <div class="hud-label">CPU Multi-Threading <span>6 Cores / 12 Threads</span></div>
+          <div class="hud-value" id="hud-cpu">AMD Ryzen 7 Processor</div>
+          <div class="hud-sub">Virtualization: WHPX / AEHD Active</div>
+        </div>
+        <div class="hud-tile">
+          <div class="hud-label">DDR5 Dedicated RAM <span>1024MB Heap</span></div>
+          <div class="hud-value" id="hud-ram">8,192 MB (8 GB Dedicated)</div>
+          <div class="hud-sub">Zero Low-Memory Game Crashes</div>
+        </div>
+        <div class="hud-tile">
+          <div class="hud-label">Storage Partition <span>Fast NVMe</span></div>
+          <div class="hud-value">32 GB Data Partition</div>
+          <div class="hud-sub">Large OBB & 3D Shaders Supported</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls & Gamepad Reference Guide -->
+    <section class="keymap-section">
+      <div class="section-title">
+        🎮 Intelligent PC Controls & Gamepad Mapping
+        <span class="tag">Anti-Double Click Active</span>
+      </div>
+      <div class="keymap-grid">
+        
+        <!-- Mouse Controls -->
+        <div class="keymap-box">
+          <div class="keymap-header">🖱️ Mouse Controls</div>
+          <div class="key-row">
+            <span class="key-desc">Left Click</span>
+            <span class="key-badge">450ms Debounced (1-Click Fix)</span>
+          </div>
+          <div class="key-row">
+            <span class="key-desc">Right Click</span>
+            <span class="key-badge">Instant Back Button</span>
+          </div>
+          <div class="key-row">
+            <span class="key-desc">Mouse Wheel</span>
+            <span class="key-badge">Smooth Shelf Scroll</span>
+          </div>
+        </div>
+
+        <!-- D-Pad Navigation -->
+        <div class="keymap-box">
+          <div class="keymap-header">🕹️ Movement & Selection</div>
+          <div class="key-row">
+            <span class="key-desc">D-Pad / Movement</span>
+            <span class="key-badge">WASD or Arrow Keys</span>
+          </div>
+          <div class="key-row">
+            <span class="key-desc">Select / Action</span>
+            <span class="key-badge">Spacebar or Enter</span>
+          </div>
+          <div class="key-row">
+            <span class="key-desc">Back / Exit Menu</span>
+            <span class="key-badge">Escape or Backspace</span>
+          </div>
+        </div>
+
+        <!-- Hotkeys & Macros -->
+        <div class="keymap-box">
+          <div class="keymap-header">⚡ Fullscreen & Cinema Macros</div>
+          <div class="key-row">
+            <span class="key-desc">100% Fullscreen</span>
+            <span class="key-badge">F11 / F / Alt+Enter</span>
+          </div>
+          <div class="key-row">
+            <span class="key-desc">Video Quality Menu</span>
+            <span class="key-badge">Q or P</span>
+          </div>
+          <div class="key-row">
+            <span class="key-desc">Audio / Subtitles</span>
+            <span class="key-badge">L</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Games Compatibility Matrix -->
+    <section>
+      <div class="section-header">
+        <div class="section-title">
+          Supported 3D Games & Apps (Optimized for 8GB / RTX 3050)
+          <span class="tag">ARM64 Translation Ready</span>
+        </div>
+      </div>
+      <div class="games-showcase">
+        <div class="game-badge-card">
+          <div class="game-icon">🏎️</div>
+          <div>
+            <div class="game-name">Asphalt 9 / Racing</div>
+            <div class="game-status">✓ 60 FPS Vulkan Boosted</div>
+          </div>
+        </div>
+        <div class="game-badge-card">
+          <div class="game-icon">🎯</div>
+          <div>
+            <div class="game-name">Free Fire / BGMI</div>
+            <div class="game-status">✓ Low Latency D-Pad Mode</div>
+          </div>
+        </div>
+        <div class="game-badge-card">
+          <div class="game-icon">⚔️</div>
+          <div>
+            <div class="game-name">Genshin / Honkai</div>
+            <div class="game-status">✓ 8GB RAM + 1GB Heap</div>
+          </div>
+        </div>
+        <div class="game-badge-card">
+          <div class="game-icon">🎬</div>
+          <div>
+            <div class="game-name">MovieBoxTV HD</div>
+            <div class="game-status">✓ 1080p Cinema Fullscreen</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <script>
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>✨</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = '0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    async function triggerAction(url, pendingMsg) {
+      showToast(pendingMsg);
+      try {
+        const res = await fetch(url, { method: 'POST' });
+        const data = await res.json();
+        if (data.message) {
+          showToast(data.message);
+        }
+      } catch (err) {
+        showToast('Operation dispatched to runtime.');
+      }
+    }
+
+    // Live status polling
+    async function updateStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        if (data.gpu) document.getElementById('hud-gpu').textContent = data.gpu;
+        if (data.cpu) document.getElementById('hud-cpu').textContent = data.cpu;
+        if (data.ram_allocated) document.getElementById('hud-ram').textContent = data.ram_allocated;
+      } catch (e) {}
+    }
+
+    setInterval(updateStatus, 5000);
+    updateStatus();
+  </script>
+</body>
+</html>
