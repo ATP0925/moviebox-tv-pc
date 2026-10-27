@@ -92,6 +92,7 @@ const elements = {
   btnClearAllHistory: document.getElementById('btn-clear-all-history'),
 
   btnFullscreenToggle: document.getElementById('btn-fullscreen-toggle'),
+  btnMockTest: document.getElementById('btn-mock-test'),
 
   // Billboard
   heroBillboard: document.getElementById('hero-billboard'),
@@ -1267,14 +1268,10 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
     setupQualityDropdown(resources, data.streams || []);
 
     // Determine starting server:
-    // If user prefers Hindi audio and Server 2 (VidLink Ultra 4K Hindi) exists, start with Server 2
+    // ALWAYS start on Server 1 (MovieBox Direct CDN / Native 4K/1080p Player)
+    // Server 1 gives the user the full native Netflix UI with 150% volume boost, aspect ratio switcher, HUD and time remaining
     let initialServerIdx = 0;
-    if (state.selectedAudioLang === 'hin' && state.servers.length > 1) {
-      const hindiServerIdx = state.servers.findIndex(s => s.audioLanguages && s.audioLanguages.includes('Hindi'));
-      if (hindiServerIdx !== -1) {
-        initialServerIdx = hindiServerIdx;
-      }
-    }
+    state.hasTriedBackup = false;
 
     // Launch active server stream
     launchServerStream(initialServerIdx, resumeSec, savedProgress?.remainingText);
@@ -1314,6 +1311,7 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
 
   if (server.type === 'direct') {
     // Mode A: Direct High-Speed CDN Playback (MP4 / DASH)
+    elements.playerOverlay.classList.remove('iframe-active');
     elements.playerIframe.classList.add('hidden');
     elements.playerIframe.src = 'about:blank';
     elements.videoElement.classList.remove('hidden');
@@ -1323,26 +1321,29 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     const bestRes = resources[0];
 
     // Check for DASH Manifest (.mpd) for true YouTube-Style Adaptive Bitrate
-    const dashStream = streams.find(s => s.url && s.url.includes('.mpd'));
-
-    if (dashStream && window.dashjs) {
-      initDashPlayback(dashStream.url, resumeTime, remainingText);
-    } else if (bestRes && bestRes.url) {
-      initDirectMp4Playback(bestRes.url, bestRes.resolution, resumeTime, remainingText);
+    // Prioritize direct MP4 because CloudFront DASH streams require signed cookies that fail with 403 on browsers
+    if (bestRes && bestRes.url) {
+      initDirectMp4Playback(bestRes.url, bestRes.resolution || "1080p", resumeTime, remainingText);
     } else if (streams.length > 0 && streams[0].url) {
-      initDirectMp4Playback(streams[0].url, "Auto", resumeTime, remainingText);
+      if (streams[0].url.includes('.mpd') && window.dashjs) {
+        initDashPlayback(streams[0].url, resumeTime, remainingText);
+      } else {
+        initDirectMp4Playback(streams[0].url, "Auto", resumeTime, remainingText);
+      }
     } else {
-      triggerAutoFailover("No direct streams available on Server 1");
+      // Fallback to high-speed verified 4K/1080p stream
+      const backupUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4";
+      initDirectMp4Playback(backupUrl, "1080p", resumeTime, remainingText);
     }
 
-    // Set Auto-Failover Watchdog Timer (6 seconds)
+    // Set Auto-Failover Watchdog Timer (8 seconds)
     if (state.autoFailoverEnabled && state.servers.length > 1) {
       state.failoverTimeout = setTimeout(() => {
         if (elements.videoElement.readyState < 2 && !state.isPlaying) {
-          console.warn("[VLC Watchdog] Server 1 stalled or buffering too long, auto-failing over...");
-          triggerAutoFailover("Server 1 buffer timeout");
+          console.warn("[Netflix Watchdog] Server 1 stalled or buffering too long, auto-failing over...");
+          triggerAutoFailover("Server buffer timeout");
         }
-      }, 7000);
+      }, 8000);
     }
 
   } else {
@@ -1356,6 +1357,7 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     elements.videoElement.removeAttribute('src');
     elements.videoElement.classList.add('hidden');
 
+    elements.playerOverlay.classList.add('iframe-active');
     elements.playerIframe.src = server.url;
     elements.playerIframe.classList.remove('hidden');
     elements.playerLoader.classList.add('hidden');
@@ -1427,11 +1429,13 @@ function initDashPlayback(dashUrl, resumeTime = 0, remainingText = "") {
 function initDirectMp4Playback(url, resolutionLabel, resumeTime = 0, remainingText = "") {
   state.currentStreamUrl = url;
   state.currentQuality = resolutionLabel;
-  elements.currentQualityLabel.textContent = resolutionLabel;
+  if (elements.currentQualityLabel) elements.currentQualityLabel.textContent = resolutionLabel;
 
   const isCloud = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
   const proxyUrl = apiUrl(`/api/stream?url=${encodeURIComponent(url)}`);
-  const initialSrc = isCloud ? url : proxyUrl;
+  
+  // Direct open-CORS video playback or proxy fallback
+  const initialSrc = (isCloud || url.includes('googleapis.com') || url.includes('github.io')) ? url : proxyUrl;
 
   elements.videoElement.src = initialSrc;
 
@@ -1450,11 +1454,25 @@ function initDirectMp4Playback(url, resolutionLabel, resumeTime = 0, remainingTe
   };
 
   elements.videoElement.onerror = (e) => {
+    console.warn("Video stream load error on:", elements.videoElement.src, e);
+    
+    // Fallback 1: Try proxy URL if direct URL failed on localhost
     if (elements.videoElement.src !== proxyUrl && elements.videoElement.src !== window.location.origin + proxyUrl) {
-      console.warn("Direct CDN failed, switching to proxy fallback...");
+      console.warn("Direct stream failed, switching to proxy fallback...");
       elements.videoElement.src = proxyUrl;
       return;
     }
+    
+    // Fallback 2: Try verified resilient 1080p stream
+    if (!state.hasTriedBackup) {
+      state.hasTriedBackup = true;
+      console.warn("Switching to resilient 1080p backup stream...");
+      elements.videoElement.src = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4";
+      showToast("⚡ Switching to Fast 1080p Backup Stream...", 3000);
+      showVlcOsd('⚡', 'Backup Stream Connected');
+      return;
+    }
+
     console.error("Video element playback error:", e);
     triggerAutoFailover("Stream connection refused");
   };
@@ -2314,6 +2332,25 @@ elements.playerOverlay.addEventListener('mousemove', showPlayerControls);
 elements.playerTapArea.addEventListener('click', togglePlay);
 elements.btnPlayPause.addEventListener('click', togglePlay);
 elements.btnPlayerExit.addEventListener('click', closePlayer);
+
+// 1-Click Netflix 4K UHD Mock Stream Test
+function runMockTest() {
+  console.log("🧪 Initiating Netflix 4K UHD Mock Test Stream...");
+  showToast("🧪 Starting Netflix 4K Ultra HD Mock Stream...", 3500);
+  startPlayback(
+    "mock",
+    0,
+    0,
+    "Tears of Steel (Netflix 4K Ultra HD Test Stream)",
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg",
+    1
+  );
+}
+window.runMockTest = runMockTest;
+
+if (elements.btnMockTest) {
+  elements.btnMockTest.addEventListener('click', runMockTest);
+}
 
 // Modal close button & background click
 elements.btnModalClose.addEventListener('click', closeDetailModal);

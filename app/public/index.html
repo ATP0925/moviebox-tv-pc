@@ -89,6 +89,11 @@
           <span class="status-text">VIP UNLOCKED</span>
         </div>
 
+        <!-- Mock Test Stream Button -->
+        <button class="btn-mock-test" id="btn-mock-test" title="Run Mock Stream Test (4K UHD & Audio Boost Check)">
+          <span>🧪 Mock Test</span>
+        </button>
+
         <!-- Fullscreen App Button -->
         <button class="btn-icon" id="btn-fullscreen-toggle" title="Toggle Fullscreen (F11)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -304,7 +309,7 @@
 
     <!-- Built-in VLC-Style Cinema Video Player Overlay -->
     <div class="player-overlay hidden" id="player-overlay">
-      <video id="video-element" class="cinema-video" playsinline preload="auto" crossorigin="anonymous" referrerpolicy="no-referrer"></video>
+      <video id="video-element" class="cinema-video" playsinline preload="auto"></video>
       <iframe id="player-iframe" class="cinema-iframe hidden" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
 
       <!-- YouTube-Style Left & Right Skip Ripple Feedback -->
@@ -333,31 +338,31 @@
         <span class="yt-badge-msg" id="quality-toast-text">1080p FHD • Seamless Buffer Updated</span>
       </div>
 
-      <!-- Big VLC Center Play/Pause & Action OSD -->
-      <div class="vlc-osd hidden" id="vlc-osd">
-        <span class="vlc-osd-icon" id="vlc-osd-icon">▶</span>
-        <span class="vlc-osd-text" id="vlc-osd-text">PLAY</span>
+      <!-- Netflix-Style Center Play/Pause & Action OSD -->
+      <div class="netflix-osd hidden" id="vlc-osd">
+        <span class="netflix-osd-icon" id="vlc-osd-icon">▶</span>
+        <span class="netflix-osd-text" id="vlc-osd-text">PLAY</span>
       </div>
 
-      <!-- Auto-Failover Notification Banner -->
-      <div class="failover-banner hidden" id="failover-banner">
+      <!-- Auto-Failover Notification Banner (Netflix Glass) -->
+      <div class="failover-banner netflix-failover hidden" id="failover-banner">
         <span class="pulse-icon">⚡</span>
         <span id="failover-text">Auto-Failover: Switching to Server 2...</span>
       </div>
 
-      <!-- Loading Spinner on Video -->
+      <!-- Loading Spinner on Video (Netflix Crimson Glow) -->
       <div class="player-loader hidden" id="player-loader">
-        <div class="spinner-large vlc-spinner"></div>
+        <div class="spinner-large netflix-spinner"></div>
         <p id="player-loading-text">Connecting to High-Speed Stream...</p>
         <span class="loader-server-label" id="loader-server-name">Server 1 (MovieBox CDN)</span>
       </div>
 
-      <!-- VLC Stream Inspector HUD ("Stats for Nerds") -->
-      <div class="vlc-inspector-hud hidden" id="vlc-inspector-hud">
+      <!-- Stream Inspector HUD ("Stats for Nerds" - Netflix Diagnostic Design) -->
+      <div class="vlc-inspector-hud netflix-inspector-hud hidden" id="vlc-inspector-hud">
         <div class="inspector-header">
           <div class="inspector-title-wrap">
-            <span class="vlc-cone-icon">▲</span>
-            <h3>VLC Media Stream Inspector</h3>
+            <span class="netflix-n-badge">N</span>
+            <h3>Stream Inspector & Audio Diagnostics</h3>
           </div>
           <button class="btn-inspector-close" id="btn-inspector-close" title="Close Inspector (I)">✕</button>
         </div>
@@ -397,11 +402,11 @@
         </div>
       </div>
 
-      <!-- Player Controls Bar (VLC Player Style) -->
-      <div class="player-controls-container vlc-controls" id="player-controls">
-        <!-- Top VLC Header Bar -->
-        <div class="player-top-bar vlc-top-bar">
-          <button class="btn-player-back vlc-back" id="btn-player-exit" title="Back to Cinema (Esc)">
+      <!-- Player Controls Bar (Netflix Player Style) -->
+      <div class="player-controls-container netflix-controls" id="player-controls">
+        <!-- Top Netflix Header Bar -->
+        <div class="player-top-bar netflix-top-bar">
+          <button class="btn-player-back netflix-back" id="btn-player-exit" title="Back to Cinema (Esc)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
@@ -409,55 +414,33 @@
             <span>Back</span>
           </button>
           <div class="player-titles">
-            <div class="vlc-header-meta">
-              <span class="vlc-badge"><span class="vlc-cone-mini">▲</span> VLC Stream Engine</span>
+            <div class="netflix-header-meta">
+              <span class="netflix-brand-badge"><span class="brand-n">N</span> ULTRA STREAM</span>
               <span class="server-active-pill" id="active-server-badge">Server 1 (MovieBox CDN)</span>
               <span class="audio-active-pill" id="active-audio-badge">🗣️ Audio: Hindi</span>
             </div>
             <h2 class="player-main-title" id="player-title">Movie Title</h2>
-            <span class="player-sub-title" id="player-subtitle">1080p Full HD</span>
+            <span class="player-sub-title" id="player-subtitle">1080p Ultra HD</span>
           </div>
         </div>
 
         <!-- Center Click to Play / Pause Trigger Area -->
         <div class="player-center-tap" id="player-tap-area"></div>
 
-        <!-- Bottom Controls Bar (VLC Layout) -->
-        <div class="player-bottom-bar vlc-bottom-bar">
-          <!-- VLC High-Precision Orange Scrub Bar -->
-          <div class="timeline-container vlc-timeline" id="timeline-container">
+        <!-- Bottom Controls Bar (Netflix Layout) -->
+        <div class="player-bottom-bar netflix-bottom-bar">
+          <!-- Netflix High-Precision Red Scrub Bar -->
+          <div class="timeline-container netflix-timeline" id="timeline-container">
             <div class="timeline-buffered" id="timeline-buffered"></div>
-            <div class="timeline-progress vlc-progress" id="timeline-progress"></div>
-            <div class="timeline-thumb vlc-thumb" id="timeline-thumb"></div>
+            <div class="timeline-progress netflix-progress" id="timeline-progress"></div>
+            <div class="timeline-thumb netflix-thumb" id="timeline-thumb"></div>
             <div class="timeline-tooltip hidden" id="timeline-tooltip">00:00:00</div>
           </div>
 
-          <div class="controls-row vlc-controls-row">
+          <div class="controls-row netflix-controls-row">
             <div class="controls-left">
-              <!-- Stop Button (Iconic VLC Stop) -->
-              <button class="control-btn vlc-btn" id="btn-stop" title="Stop & Rewind to Start">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="6" y="6" width="12" height="12" rx="1"></rect>
-                </svg>
-              </button>
-
-              <!-- Previous Episode / Item -->
-              <button class="control-btn vlc-btn hidden" id="btn-prev-ep" title="Previous Episode">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="19 20 9 12 19 4 19 20"></polygon>
-                  <line x1="5" y1="4" x2="5" y2="20" stroke="currentColor" stroke-width="2.5"></line>
-                </svg>
-              </button>
-
-              <!-- Rewind 10s -->
-              <button class="control-btn vlc-btn" id="btn-rewind" title="Rewind 10s (Left Arrow)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/>
-                </svg>
-              </button>
-
-              <!-- Play / Pause -->
-              <button class="control-btn vlc-btn vlc-play-btn" id="btn-play-pause" title="Play / Pause (Space)">
+              <!-- Play / Pause (Netflix Icon) -->
+              <button class="control-btn netflix-btn netflix-play-btn" id="btn-play-pause" title="Play / Pause (Space)">
                 <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor">
                   <polygon points="5 3 19 12 5 21 5 3"></polygon>
                 </svg>
@@ -467,24 +450,48 @@
                 </svg>
               </button>
 
-              <!-- Forward 10s -->
-              <button class="control-btn vlc-btn" id="btn-forward" title="Forward 10s (Right Arrow)">
+              <!-- Rewind 10s (Netflix Circular 10s Rewind) -->
+              <button class="control-btn netflix-btn" id="btn-rewind" title="Rewind 10s (Left Arrow)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M13 17l5-5-5-5M6 17l5-5-5-5"/>
+                  <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+                  <text x="12" y="14.5" font-size="6.5" font-weight="bold" fill="currentColor" text-anchor="middle" font-family="sans-serif">10</text>
+                </svg>
+              </button>
+
+              <!-- Forward 10s (Netflix Circular 10s Forward) -->
+              <button class="control-btn netflix-btn" id="btn-forward" title="Forward 10s (Right Arrow)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+                  <text x="12" y="14.5" font-size="6.5" font-weight="bold" fill="currentColor" text-anchor="middle" font-family="sans-serif">10</text>
+                </svg>
+              </button>
+
+              <!-- Stop Button (Feature retained from VLC, styled cleanly) -->
+              <button class="control-btn netflix-btn" id="btn-stop" title="Stop & Rewind to Start">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                </svg>
+              </button>
+
+              <!-- Previous Episode / Item -->
+              <button class="control-btn netflix-btn hidden" id="btn-prev-ep" title="Previous Episode">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                  <line x1="5" y1="4" x2="5" y2="20" stroke="currentColor" stroke-width="2.5"></line>
                 </svg>
               </button>
 
               <!-- Next Episode -->
-              <button class="control-btn vlc-btn hidden" id="btn-next-ep" title="Next Episode">
+              <button class="control-btn netflix-btn hidden" id="btn-next-ep" title="Next Episode">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <polygon points="5 4 15 12 5 20 5 4"></polygon>
                   <line x1="19" y1="4" x2="19" y2="20" stroke="currentColor" stroke-width="2.5"></line>
                 </svg>
               </button>
 
-              <!-- Volume Control with VLC percentage boost -->
-              <div class="volume-control vlc-volume-control">
-                <button class="control-btn vlc-btn" id="btn-volume" title="Mute / Unmute (M)">
+              <!-- Netflix Volume Control with 150% Boost capability -->
+              <div class="volume-control netflix-volume-control">
+                <button class="control-btn netflix-btn" id="btn-volume" title="Mute / Unmute (M)">
                   <svg id="icon-vol-high" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -495,52 +502,54 @@
                     <line x1="17" y1="9" x2="23" y2="15"></line>
                   </svg>
                 </button>
-                <input type="range" class="volume-slider vlc-vol-slider" id="volume-slider" min="0" max="1.5" step="0.05" value="1">
-                <span class="vlc-vol-pct" id="volume-percentage">100%</span>
+                <div class="volume-slider-wrapper">
+                  <input type="range" class="volume-slider netflix-vol-slider" id="volume-slider" min="0" max="1.5" step="0.05" value="1">
+                  <span class="netflix-vol-pct" id="volume-percentage">100%</span>
+                </div>
               </div>
 
               <!-- Time Display with Remaining Countdown -->
-              <div class="time-display vlc-time-display">
+              <div class="time-display netflix-time-display">
                 <span id="current-time">00:00:00</span>
-                <span class="vlc-time-sep">/</span>
+                <span class="netflix-time-sep">/</span>
                 <span id="total-duration">00:00:00</span>
-                <span class="vlc-time-remaining" id="time-remaining">(-00:00:00)</span>
+                <span class="netflix-time-remaining" id="time-remaining">(-00:00:00)</span>
               </div>
             </div>
 
             <div class="controls-right">
               <!-- Audio Language Selector (Hindi / English / Multi like HiStream) -->
               <div class="player-dropdown" id="dropdown-audio-container">
-                <button class="dropdown-trigger-btn vlc-dropdown-btn audio-btn" id="btn-audio-select" title="Audio Language (Hindi / English)">
+                <button class="dropdown-trigger-btn netflix-dropdown-btn audio-btn" id="btn-audio-select" title="Audio Language (Hindi / English)">
                   <span class="btn-icon">🗣️</span>
                   <span id="current-audio-label">Hindi</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
-                <div class="dropdown-menu vlc-menu hidden" id="audio-menu"></div>
+                <div class="dropdown-menu netflix-menu hidden" id="audio-menu"></div>
               </div>
 
               <!-- Server Failover Hub Selector -->
               <div class="player-dropdown" id="dropdown-server-container">
-                <button class="dropdown-trigger-btn vlc-dropdown-btn server-btn" id="btn-server-select" title="Streaming Servers & Failover">
+                <button class="dropdown-trigger-btn netflix-dropdown-btn server-btn" id="btn-server-select" title="Streaming Servers & Failover">
                   <span class="btn-icon">🖥️</span>
                   <span id="current-server-label">Server 1</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
-                <div class="dropdown-menu vlc-menu hidden" id="server-menu"></div>
+                <div class="dropdown-menu netflix-menu hidden" id="server-menu"></div>
               </div>
 
               <!-- Quality Resolution Selector with Real Resolution Verification -->
               <div class="player-dropdown" id="dropdown-quality-container">
-                <button class="dropdown-trigger-btn vlc-dropdown-btn quality-btn" id="btn-quality-select" title="Resolution Quality (4K / 1080p)">
+                <button class="dropdown-trigger-btn netflix-dropdown-btn quality-btn" id="btn-quality-select" title="Resolution Quality (4K / 1080p)">
                   <span id="current-quality-label">1080p FHD</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
-                <div class="dropdown-menu vlc-menu hidden" id="quality-menu"></div>
+                <div class="dropdown-menu netflix-menu hidden" id="quality-menu"></div>
               </div>
 
               <!-- Subtitles Dropdown Selector -->
               <div class="player-dropdown" id="dropdown-subtitles-container">
-                <button class="dropdown-trigger-btn vlc-dropdown-btn" id="btn-subtitles-select" title="Subtitles (CC)">
+                <button class="dropdown-trigger-btn netflix-dropdown-btn" id="btn-subtitles-select" title="Subtitles (CC)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                     <line x1="6" y1="15" x2="10" y2="15"></line>
@@ -549,28 +558,28 @@
                   </svg>
                   <span id="current-subtitle-label">CC</span>
                 </button>
-                <div class="dropdown-menu vlc-menu hidden" id="subtitles-menu"></div>
+                <div class="dropdown-menu netflix-menu hidden" id="subtitles-menu"></div>
               </div>
 
-              <!-- VLC Aspect Ratio Button -->
-              <button class="control-btn vlc-btn" id="btn-aspect-ratio" title="Aspect Ratio (Fit / 16:9 / 4:3 / Cinema)">
+              <!-- Aspect Ratio Button -->
+              <button class="control-btn netflix-btn" id="btn-aspect-ratio" title="Aspect Ratio (Fit / 16:9 / 4:3 / Cinema)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="2" y="5" width="20" height="14" rx="2"></rect>
                   <line x1="2" y1="10" x2="22" y2="10"></line>
                 </svg>
               </button>
 
-              <!-- VLC Stream Inspector HUD Button ("Stats for Nerds") -->
-              <button class="control-btn vlc-btn btn-inspector-toggle" id="btn-inspector-toggle" title="VLC Stream Inspector / Stats for Nerds (I)">
-                <span style="font-weight: 800; font-size: 13px;">STATS</span>
+              <!-- Stream Inspector HUD Button ("Stats for Nerds") -->
+              <button class="control-btn netflix-btn btn-inspector-toggle" id="btn-inspector-toggle" title="Stream Inspector / Audio Stats (I)">
+                <span style="font-weight: 800; font-size: 11.5px; letter-spacing: 0.6px;">STATS</span>
               </button>
 
               <!-- Speed Selector -->
               <div class="player-dropdown" id="dropdown-speed-container">
-                <button class="dropdown-trigger-btn vlc-dropdown-btn" id="btn-speed-select" title="Playback Speed ([ / ])">
+                <button class="dropdown-trigger-btn netflix-dropdown-btn" id="btn-speed-select" title="Playback Speed ([ / ])">
                   <span id="current-speed-label">1.0x</span>
                 </button>
-                <div class="dropdown-menu vlc-menu hidden" id="speed-menu">
+                <div class="dropdown-menu netflix-menu hidden" id="speed-menu">
                   <button class="dropdown-option" data-speed="0.5">0.5x Slower</button>
                   <button class="dropdown-option" data-speed="0.75">0.75x</button>
                   <button class="dropdown-option active" data-speed="1.0">1.0x Normal</button>
@@ -581,7 +590,7 @@
               </div>
 
               <!-- Fullscreen Button -->
-              <button class="control-btn vlc-btn" id="btn-player-fullscreen" title="Fullscreen (F / F11)">
+              <button class="control-btn netflix-btn" id="btn-player-fullscreen" title="Fullscreen (F)">
                 <svg id="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
                 </svg>
