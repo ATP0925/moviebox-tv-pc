@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=MovieBox Cinema
+Comment=Watch 4K & 1080p Movies & TV Series
+Exec=sh -c "google-chrome --app=https://mbox-cinema-9182a.web.app || chromium --app=https://mbox-cinema-9182a.web.app || xdg-open https://mbox-cinema-9182a.web.app"
+Icon=video-display
+Terminal=false
+Categories=AudioVideo;Player;Network;
+StartupWMClass=MovieBox

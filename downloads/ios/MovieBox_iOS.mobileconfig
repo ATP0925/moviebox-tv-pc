@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>FullScreen</key>
+            <true/>
+            <key>Icon</key>
+            <data>
+            </data>
+            <key>IsRemovable</key>
+            <true/>
+            <key>Label</key>
+            <string>MovieBox Cinema</string>
+            <key>PayloadDescription</key>
+            <string>MovieBox Cinema Ultra HD Mobile App for iOS</string>
+            <key>PayloadDisplayName</key>
+            <string>MovieBox WebClip</string>
+            <key>PayloadIdentifier</key>
+            <string>com.moviebox.cinema.webclip</string>
+            <key>PayloadType</key>
+            <string>com.apple.webClip.managed</string>
+            <key>PayloadUUID</key>
+            <string>98D44A63-8FB9-411C-8A20-2E2458428511</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>Precomposed</key>
+            <true/>
+            <key>URL</key>
+            <string>https://mbox-cinema-9182a.web.app</string>
+        </dict>
+    </array>
+    <key>PayloadDisplayName</key>
+    <string>MovieBox Cinema</string>
+    <key>PayloadIdentifier</key>
+    <string>com.moviebox.cinema.profile</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>E7BD4C92-95E0-4D56-9BF6-302390F74128</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>

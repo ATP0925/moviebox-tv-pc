@@ -2,16 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MovieBoxTV PC — Premium 4K/HD Streaming</title>
-  <meta name="description" content="MovieBoxTV Desktop PC — Stream endless movies, TV series, and anime in Ultra HD 1080p and 4K natively on your Windows PC.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>MovieBoxTV Pro — Universal 4K & HD Cinema Streaming App</title>
+  <meta name="description" content="MovieBoxTV Cinema — Stream endless movies, TV series, and anime in Ultra HD 1080p and 4K on Android, PC, Tablets, and TV.">
+  
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <meta name="theme-color" content="#e50914">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MovieBox">
+  <meta name="application-name" content="MovieBox">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Anti-cache meta for instant real-time updates -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.0.0">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=3.1.0">
   <!-- DASH.js for Native Multi-Bitrate 1080p / 4K DASH Streaming -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.7.4/dash.all.min.js"></script>
 </head>
@@ -85,6 +99,16 @@
             <div class="search-history-list" id="search-history-list"></div>
           </div>
         </div>
+
+        <!-- Multi-Platform App Download Button (Android APK, Windows, Mac, iOS, Linux) -->
+        <button class="btn-install-app" id="btn-pwa-install" title="Download MovieBox Native App (Android APK, Windows, iOS, Mac, Linux)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="install-svg">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span class="install-text">Get App</span>
+        </button>
 
         <!-- VIP Status & Desktop Info -->
         <div class="user-status-pill" title="Native VIP Engine Activated">
@@ -421,8 +445,30 @@
           </div>
         </div>
 
-        <!-- Center Click to Play / Pause Trigger Area -->
-        <div class="player-center-tap" id="player-tap-area"></div>
+        <!-- Center Click to Play / Pause Trigger Area with Mobile Controls -->
+        <div class="player-center-tap" id="player-tap-area">
+          <div class="mobile-center-controls" id="mobile-center-controls">
+            <button class="mobile-center-btn" id="btn-mobile-rw10" title="Rewind 10s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+                <text x="12" y="14.5" font-size="6.5" font-weight="bold" fill="currentColor" text-anchor="middle" font-family="sans-serif">10</text>
+              </svg>
+            </button>
+            <button class="mobile-center-btn mobile-center-play" id="btn-mobile-playpause" title="Play/Pause">
+              <svg id="mobile-icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <svg id="mobile-icon-pause" class="hidden" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            </button>
+            <button class="mobile-center-btn" id="btn-mobile-ff10" title="Forward 10s">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+                <text x="12" y="14.5" font-size="6.5" font-weight="bold" fill="currentColor" text-anchor="middle" font-family="sans-serif">10</text>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dim Backdrop for Mobile Bottom Sheets -->
+        <div class="player-sheet-backdrop hidden" id="player-sheet-backdrop"></div>
 
         <!-- Bottom Controls Bar (Netflix Layout) -->
         <div class="player-bottom-bar netflix-bottom-bar">
@@ -601,13 +647,110 @@
       </div>
     </div>
 
+    <!-- Dedicated Multi-Platform Download Modal -->
+    <div class="modal-overlay hidden" id="apps-download-modal" role="dialog" aria-modal="true">
+      <div class="modal-container apps-modal-content">
+        <button class="modal-close-btn" id="btn-close-apps-modal" title="Close">×</button>
+        <div class="apps-modal-header">
+          <div class="apps-modal-badge">OFFICIAL CROSS-PLATFORM BUILDS</div>
+          <h2 class="apps-modal-title">MovieBox Cinema Applications</h2>
+          <p class="apps-modal-subtitle">Dedicated, ultra-optimized native applications for 2021+ Android devices, Windows PC, iOS, Mac, and Linux.</p>
+        </div>
+
+        <div class="apps-grid">
+          <!-- Android APK -->
+          <div class="app-card">
+            <div class="app-card-icon">🤖</div>
+            <div class="app-card-info">
+              <h3>Android Application</h3>
+              <p>Hardware accelerated APK (90/120Hz smooth, no clipping)</p>
+              <div class="app-meta">v2.4.0 • APK • Phones / Tablets / TV</div>
+            </div>
+            <a href="downloads/android/MovieBoxTV.apk" download class="btn-app-download">Download APK</a>
+          </div>
+
+          <!-- Windows PC -->
+          <div class="app-card">
+            <div class="app-card-icon">🪟</div>
+            <div class="app-card-info">
+              <h3>Windows PC</h3>
+              <p>Standalone App Launcher (Ultra HD, 0% CPU overhead)</p>
+              <div class="app-meta">Windows 10 / 11 • Desktop Launcher</div>
+            </div>
+            <a href="downloads/windows/MovieBox_Windows.bat" download class="btn-app-download">Download .BAT</a>
+          </div>
+
+          <!-- iOS (iPhone / iPad) -->
+          <div class="app-card">
+            <div class="app-card-icon">🍏</div>
+            <div class="app-card-info">
+              <h3>iOS (iPhone & iPad)</h3>
+              <p>1-Tap Home Screen WebClip (Fullscreen, No Safari URL bar)</p>
+              <div class="app-meta">iOS 14+ • WebClip Profile</div>
+            </div>
+            <a href="downloads/ios/MovieBox_iOS.mobileconfig" download class="btn-app-download">Install Profile</a>
+          </div>
+
+          <!-- Mac -->
+          <div class="app-card">
+            <div class="app-card-icon">🍎</div>
+            <div class="app-card-info">
+              <h3>macOS App</h3>
+              <p>Retina-optimized standalone window launcher</p>
+              <div class="app-meta">macOS Monterey / Ventura / Sonoma</div>
+            </div>
+            <a href="downloads/mac/MovieBox_Mac.command" download class="btn-app-download">Download .COMMAND</a>
+          </div>
+
+          <!-- Linux -->
+          <div class="app-card">
+            <div class="app-card-icon">🐧</div>
+            <div class="app-card-info">
+              <h3>Linux App</h3>
+              <p>Desktop entry & shell launcher for all distros</p>
+              <div class="app-meta">Ubuntu • Debian • Fedora • Arch</div>
+            </div>
+            <a href="downloads/linux/MovieBox_Linux.sh" download class="btn-app-download">Download .SH</a>
+          </div>
+        </div>
+
+        <div class="apps-modal-footer">
+          <span>🔒 100% Ad-Free • Verified Builds • Auto-Updating Cloud Engine</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Notification Toast -->
     <div class="toast-container hidden" id="toast">
       <span class="toast-icon">ℹ</span>
       <span class="toast-message" id="toast-text">Notification message</span>
     </div>
+
+    <!-- Mobile Bottom Navigation Bar (Phones & Small Tablets < 768px) -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobile Navigation">
+      <button class="mobile-nav-item active" data-tab-id="HOME">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </button>
+      <button class="mobile-nav-item" data-tab-id="MOVIE">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+        <span>Movies</span>
+      </button>
+      <button class="mobile-nav-item" data-tab-id="TV">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
+        <span>Series</span>
+      </button>
+      <button class="mobile-nav-item" id="mobile-nav-search-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span>Search</span>
+      </button>
+      <button class="mobile-nav-item" data-tab-id="HISTORY">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>History</span>
+      </button>
+    </nav>
   </div>
 
-  <script src="app.js?v=3.0.0"></script>
+  <script src="app.js?v=3.1.0"></script>
 </body>
 </html>

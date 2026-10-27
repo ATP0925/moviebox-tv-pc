@@ -1,0 +1,64 @@
+{
+  "name": "MovieBox Pro Cinema",
+  "short_name": "MovieBox",
+  "start_url": "/?pwa=true",
+  "scope": "/",
+  "id": "/?moviebox_app_id=1",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0a0a0c",
+  "theme_color": "#e50914",
+  "description": "Universal 4K & HD Cinema Streaming App for Android, Tablets, PC, and TV. Stream high-speed movies and shows with Hindi multi-audio and zero-lag seeking.",
+  "categories": ["entertainment", "movies", "video"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore Movies",
+      "short_name": "Movies",
+      "description": "Watch trending blockbusters in 4K & 1080p",
+      "url": "/?tab=MOVIE",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "TV Series",
+      "short_name": "Series",
+      "description": "Binge watch top television series",
+      "url": "/?tab=TV",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Search Cinema",
+      "short_name": "Search",
+      "description": "Find movies, anime, and series instantly",
+      "url": "/?action=search",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

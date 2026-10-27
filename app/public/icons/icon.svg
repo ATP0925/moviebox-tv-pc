@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181f" />
+      <stop offset="50%" stop-color="#0e0e12" />
+      <stop offset="100%" stop-color="#050507" />
+    </linearGradient>
+    <linearGradient id="primary-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff334b" />
+      <stop offset="50%" stop-color="#e50914" />
+      <stop offset="100%" stop-color="#99000a" />
+    </linearGradient>
+    <linearGradient id="accent-glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#e50914" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- App Rounded Base -->
+  <rect width="512" height="512" rx="128" fill="url(#bg-grad)" />
+  <rect width="504" height="504" x="4" y="4" rx="124" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" />
+
+  <!-- Outer Film Reel Ring -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="rgba(229,9,20,0.18)" stroke-width="12" />
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#primary-grad)" stroke-width="6" stroke-dasharray="16 12" />
+
+  <!-- Play Badge Circle with Glowing Shadow -->
+  <circle cx="256" cy="256" r="120" fill="url(#primary-grad)" filter="url(#shadow)" />
+  
+  <!-- Subtle Highlight on Badge -->
+  <ellipse cx="256" cy="180" rx="90" ry="40" fill="url(#accent-glow)" />
+
+  <!-- Play Triangle Icon -->
+  <polygon points="220,196 332,256 220,316" fill="#ffffff" />
+
+  <!-- Brand Typography Arc or Badge -->
+  <rect x="180" y="405" width="152" height="28" rx="14" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+  <text x="256" y="424" fill="#ffffff" font-family="'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="14" letter-spacing="3" text-anchor="middle">MOVIEBOX</text>
+</svg>

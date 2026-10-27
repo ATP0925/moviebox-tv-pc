@@ -6,7 +6,14 @@ package-lock.json
 *.zip
 *.tar.gz
 *.7z
-*.apk
+android_build/
+
+# Allow Official Platform Download APKs and PWA Icons
+!downloads/**/*.apk
+!downloads/*.apk
+!app/public/downloads/**/*.apk
+!app/public/downloads/*.apk
+!app/public/icons/*.png
 
 # Python Cache
 __pycache__/
@@ -23,5 +30,6 @@ decompiled_sign/
 # Screenshots & Local Cache
 *.png
 !screenshots/*.png
+!app/public/icons/*.png
 .vscode/
 .idea/

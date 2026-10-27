@@ -1241,33 +1241,12 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* Auto-Failover Notification Banner (Netflix Red Gradient) */
+/* Auto-Failover Notification Banner (Hidden for clean, premium Netflix-like background failover) */
 .failover-banner,
 .netflix-failover {
-  position: absolute;
-  top: 85px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, rgba(229, 9, 20, 0.95), rgba(184, 29, 36, 0.95));
-  backdrop-filter: blur(14px);
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 13.5px;
-  padding: 10px 26px;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 8px 30px rgba(229, 9, 20, 0.5);
-  z-index: 65;
-  animation: slideDown 0.3s var(--ease-smooth);
+  display: none !important;
 }
 
-@keyframes slideDown {
-  from { transform: translate(-50%, -20px); opacity: 0; }
-  to { transform: translate(-50%, 0); opacity: 1; }
-}
 
 /* Netflix Crimson Loading Spinner */
 .player-loader {
@@ -2336,34 +2315,795 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   image-rendering: crisp-edges;
 }
 
-/* Responsive adjustments */
-@media (max-width: 900px) {
-  .navbar {
-    padding: 0 20px;
+/* ==========================================================================
+   UNIVERSAL RESPONSIVE ENGINE & 2021+ HARDWARE OPTIMIZATION
+   Designed for all screens: 320px small phones to 4K Cinema Displays
+   Supports 60Hz/120Hz/144Hz high-refresh mobile panels, notches & foldables
+   ========================================================================== */
+
+/* Hardware & Touch Baseline for Modern (2021+) and Legacy Devices */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button, a, input, select, .movie-card, .dropdown-option, .control-btn {
+  touch-action: manipulation; /* Eliminates 300ms tap delay on Android & iOS */
+}
+
+/* Poster Shimmer & Instant Fade-in Animation */
+.card-poster-wrap {
+  background: linear-gradient(110deg, #15151c 8%, #20202a 18%, #15151c 33%);
+  background-size: 200% 100%;
+  animation: posterShimmer 1.5s linear infinite;
+  contain: layout paint;
+}
+
+@keyframes posterShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.card-poster {
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.4s var(--ease-smooth);
+}
+
+.card-poster.loaded,
+.card-poster:not([src=""]) {
+  opacity: 1;
+}
+
+/* PWA Install App Button (Desktop & Mobile) */
+.btn-install-app {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, rgba(229, 9, 20, 0.25) 0%, rgba(229, 9, 20, 0.1) 100%);
+  border: 1px solid rgba(229, 9, 20, 0.55);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 15px rgba(229, 9, 20, 0.2);
+}
+
+.btn-install-app:hover {
+  background: var(--netflix-red);
+  border-color: var(--netflix-red);
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+}
+
+.install-svg {
+  width: 16px;
+  height: 16px;
+  color: var(--netflix-red);
+  transition: color 0.2s ease;
+}
+
+.btn-install-app:hover .install-svg {
+  color: #fff;
+}
+
+/* Mobile Bottom Navigation Bar (< 768px) */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(62px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(12, 12, 16, 0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 100;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.8);
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 12px;
+  min-width: 60px;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-item svg {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.2s ease;
+}
+
+.mobile-nav-item.active {
+  color: #fff;
+}
+
+.mobile-nav-item.active svg {
+  color: var(--netflix-red);
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(229, 9, 20, 0.6));
+}
+
+.mobile-nav-item:hover {
+  color: #fff;
+}
+
+/* Center Mobile Play/Pause & 10s Skip Overlay */
+.mobile-center-controls {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  pointer-events: auto;
+  z-index: 25;
+}
+
+.mobile-center-btn {
+  background: rgba(14, 14, 18, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-center-btn:not(.mobile-center-play) {
+  width: 48px;
+  height: 48px;
+}
+
+.mobile-center-btn:not(.mobile-center-play) svg {
+  width: 24px;
+  height: 24px;
+}
+
+.mobile-center-play {
+  width: 66px;
+  height: 66px;
+  background: linear-gradient(135deg, #e50914 0%, #b80610 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 30px rgba(229, 9, 20, 0.6);
+}
+
+.mobile-center-play svg {
+  width: 32px;
+  height: 32px;
+  margin-left: 3px;
+}
+
+.mobile-center-btn:active {
+  transform: scale(0.92);
+}
+
+/* Dim Backdrop for Mobile Bottom Sheet Menus */
+.player-sheet-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9990;
+  pointer-events: auto;
+  animation: fadeInBackdrop 0.2s ease;
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
   }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT: MOBILE & TABLETS (max-width: 768px)
+   Eliminates all options cutting off / hiding on Android devices
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Show Mobile Bottom Navigation */
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  /* Add padding to app container so bottom nav doesn't cover content */
+  .main-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Top Navbar on Mobile */
+  .navbar {
+    padding: 0 14px;
+    height: 58px;
+  }
+
   .nav-tabs {
+    display: none; /* Relocated to mobile bottom nav */
+  }
+
+  .logo-title {
+    font-size: 16px;
+  }
+
+  .logo-badge {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+
+  .user-status-pill {
+    display: none; /* Saved for desktop */
+  }
+
+  .btn-install-app {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  .btn-install-app span.install-text {
     display: none;
   }
+
+  #search-box-wrapper {
+    max-width: 170px;
+  }
+
+  #search-input {
+    font-size: 13px;
+    padding-left: 32px;
+  }
+
+  /* Hero Billboard */
   .hero-billboard {
-    padding: 0 20px 60px 20px;
-    min-height: 65vh;
+    min-height: 48dvh;
+    padding: 0 16px 36px 16px;
   }
+
   .billboard-title {
-    font-size: 36px;
+    font-size: 24px;
+    line-height: 1.15;
+    margin-bottom: 6px;
   }
-  .shelf-header, .shelf-carousel {
-    padding-left: 20px;
-    padding-right: 20px;
+
+  .billboard-meta {
+    font-size: 12px;
+    margin-bottom: 8px;
   }
+
+  .billboard-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.4;
+    margin-bottom: 14px;
+  }
+
+  .billboard-actions {
+    gap: 10px;
+  }
+
+  .billboard-actions .btn {
+    padding: 10px 18px;
+    font-size: 13px;
+    min-height: 44px;
+  }
+
+  /* Shelves & Carousels */
+  .shelves-wrapper {
+    padding-top: 10px;
+  }
+
+  .shelf-container {
+    margin-bottom: 24px;
+  }
+
+  .shelf-header {
+    padding: 0 16px;
+    margin-bottom: 10px;
+  }
+
+  .shelf-title {
+    font-size: 17px;
+  }
+
+  .shelf-controls {
+    display: none; /* Native touch momentum scroll on mobile */
+  }
+
+  .shelf-carousel {
+    padding: 6px 16px 12px 16px;
+    gap: 12px;
+  }
+
+  /* Fluid Movie Cards on Mobile */
+  .movie-card {
+    width: 136px;
+    min-width: 136px;
+  }
+
+  .card-poster-wrap {
+    height: 196px;
+    border-radius: 9px;
+  }
+
+  .card-info {
+    padding: 8px 4px 4px 4px;
+  }
+
+  .card-title {
+    font-size: 12.5px;
+  }
+
+  .card-meta {
+    font-size: 10.5px;
+  }
+
+  /* Search & History Grid */
+  .search-results-section,
+  .history-view-section {
+    padding: 72px 14px 40px 14px;
+  }
+
+  .search-grid,
+  .history-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+  }
+
+  /* Detail Modal on Mobile */
+  .modal-container {
+    width: 100%;
+    height: 100%;
+    max-height: 100dvh;
+    border-radius: 0;
+    margin: 0;
+  }
+
   .modal-hero-content {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    padding: 20px 16px;
   }
+
+  .modal-poster-wrap {
+    width: 140px;
+    height: 200px;
+  }
+
+  .modal-title {
+    font-size: 22px;
+  }
+
   .modal-meta-row, .modal-actions-row {
     justify-content: center;
   }
-  .history-view-section {
-    padding: 90px 20px 60px 20px;
+
+  /* ==========================================================================
+     MOBILE VIDEO PLAYER OVERHAUL
+     Fixes options hiding on Android / Mobile screens
+     ========================================================================== */
+  .player-overlay {
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    width: 100dvw;
+  }
+
+  .player-controls-container,
+  .player-controls-container.netflix-controls {
+    padding: max(10px, env(safe-area-inset-top, 10px)) 14px max(14px, env(safe-area-inset-bottom, 14px)) 14px;
+  }
+
+  /* Top Player Bar */
+  .player-top-bar,
+  .player-top-bar.netflix-top-bar {
+    margin: 0;
+    padding: 0 0 12px 0;
+    gap: 12px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+  }
+
+  .btn-player-back,
+  .btn-player-back.netflix-back {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .player-main-title {
+    font-size: 15px;
+    max-width: 52vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .netflix-header-meta,
+  .player-sub-title {
+    display: none; /* Hide subtitle clutter on phone to preserve space */
+  }
+
+  /* Center Controls on Mobile */
+  .mobile-center-controls {
+    display: flex;
+  }
+
+  /* Bottom Controls Bar */
+  .player-bottom-bar,
+  .player-bottom-bar.netflix-bottom-bar {
+    margin: 0;
+    padding: 24px 0 0 0;
+    gap: 8px;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.5) 75%, transparent 100%);
+  }
+
+  /* Timeline Hit Target Enlargement */
+  .timeline-container,
+  .timeline-container.netflix-timeline {
+    height: 6px;
+    margin-bottom: 6px;
+  }
+
+  .timeline-container:hover {
+    height: 6px;
+  }
+
+  .timeline-thumb,
+  .timeline-thumb.netflix-thumb {
+    width: 18px;
+    height: 18px;
+    transform: translate(-50%, -50%) scale(1); /* Always visible on touch */
+  }
+
+  /* Controls Row: Re-architected for Small Screens */
+  .controls-row,
+  .controls-row.netflix-controls-row {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  .controls-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Hide duplicate center play/rewind on bottom row on mobile */
+  .controls-left #btn-play-pause,
+  .controls-left #btn-rewind,
+  .controls-left #btn-forward,
+  .controls-left #btn-stop {
+    display: none;
+  }
+
+  .volume-control-wrap,
+  .volume-control.netflix-volume-control {
+    display: none; /* Mobile volume handled via hardware rocker keys */
+  }
+
+  .time-display,
+  .time-display.netflix-time-display {
+    margin-left: 0;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .netflix-time-remaining {
+    display: none;
+  }
+
+  /* Controls Right: Overflow-proof Row */
+  .controls-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .dropdown-trigger-btn,
+  .dropdown-trigger-btn.netflix-dropdown-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 16px;
+    gap: 4px;
+    min-height: 34px;
+  }
+
+  .dropdown-trigger-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Hide Inspector Stats and Aspect Ratio button on narrow portrait phones to save space */
+  .btn-inspector-toggle,
+  #btn-aspect-ratio {
+    display: none;
+  }
+
+  /* ==========================================================================
+     MOBILE BOTTOM SHEET MENUS: AUDIO, SERVER, QUALITY, SPEED, CC
+     Never overflows or cuts off on ANY mobile device!
+     ========================================================================== */
+  .dropdown-menu,
+  .dropdown-menu.netflix-menu,
+  .dropdown-menu.vlc-menu {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    border-radius: 24px 24px 0 0 !important;
+    padding: 16px 20px calc(24px + env(safe-area-inset-bottom, 16px)) !important;
+    background: rgba(18, 18, 24, 0.98) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-bottom: none !important;
+    box-shadow: 0 -12px 50px rgba(0, 0, 0, 0.95) !important;
+    max-height: 70dvh !important;
+    overflow-y: auto !important;
+    z-index: 9999 !important;
+    animation: slideUpSheet 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  /* Native Mobile Bottom Sheet Handle */
+  .dropdown-menu.netflix-menu::before {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    margin: 0 auto 16px auto;
+  }
+
+  .dropdown-option {
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 14px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+  }
+
+  /* Stream Inspector HUD on Mobile (if opened) */
+  .netflix-inspector-hud,
+  .vlc-inspector-hud {
+    top: 60px;
+    left: 12px;
+    right: 12px;
+    min-width: unset;
+    max-width: unset;
+    padding: 16px;
+    font-size: 11px;
   }
 }
+
+/* Landscape Mobile Tweaks */
+@media (max-width: 900px) and (orientation: landscape) {
+  .hero-billboard {
+    min-height: 80dvh;
+  }
+  .mobile-bottom-nav {
+    display: none; /* Hide bottom nav in landscape so video/cards get 100% height */
+  }
+  .main-content {
+    padding-bottom: 20px !important;
+  }
+  .player-top-bar {
+    padding: 8px 16px;
+  }
+  .mobile-center-controls {
+    gap: 40px;
+  }
+  .player-bottom-bar {
+    padding: 12px 0 0 0;
+  }
+}
+
+/* 4K & Ultra-Wide Monitor Support (> 1920px) */
+@media (min-width: 2160px) {
+  .hero-billboard {
+    min-height: 600px;
+  }
+  .billboard-title {
+    font-size: 64px;
+  }
+  .movie-card {
+    width: 240px;
+  }
+  .card-poster-wrap {
+    height: 360px;
+  }
+  .card-title {
+    font-size: 16px;
+  }
+}
+
+/* ======================== APPS DOWNLOAD MODAL ======================== */
+.apps-modal-content {
+  max-width: 680px;
+  background: linear-gradient(145deg, #181818, #101010);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
+}
+
+.apps-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.apps-modal-badge {
+  display: inline-block;
+  background: rgba(229, 9, 20, 0.2);
+  color: var(--accent-primary);
+  border: 1px solid rgba(229, 9, 20, 0.4);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.apps-modal-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8px 0;
+}
+
+.apps-modal-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 580px) {
+  .apps-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.app-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px 16px;
+  transition: all 0.2s var(--ease-smooth);
+}
+
+.app-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.app-card-icon {
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-card-info h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 3px 0;
+}
+
+.app-card-info p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-meta {
+  font-size: 10px;
+  color: #888;
+}
+
+.btn-app-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-primary);
+  color: #fff;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.btn-app-download:hover {
+  background: #ff1f2d;
+  box-shadow: 0 4px 14px rgba(229, 9, 20, 0.4);
+}
+
+.apps-modal-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #777;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+}
+
