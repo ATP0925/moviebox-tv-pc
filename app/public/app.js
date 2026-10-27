@@ -231,7 +231,7 @@ const API_BASE = (() => {
   const custom = localStorage.getItem('mbox_api_base');
   if (custom) return custom.replace(/\/+$/, '');
   if (window.location.hostname.includes('web.app') || window.location.hostname.includes('firebaseapp.com')) {
-    return 'https://spry-violet-d5xmusy.tmp.now';
+    return 'https://quick-marsh-ytnnquu.tmp.now';
   }
   return '';
 })();
@@ -1473,7 +1473,14 @@ function initDirectMp4Playback(url, resolutionLabel, resumeTime = 0, remainingTe
     }
 
     elements.videoElement.play().catch(e => {
-      console.warn("Autoplay blocked, tap anywhere to play:", e);
+      console.warn("Autoplay with audio blocked by browser policy, starting muted stream:", e);
+      elements.videoElement.muted = true;
+      elements.videoElement.play().then(() => {
+        showToast("🔊 Tap anywhere on screen to unmute", 4000);
+        showVlcOsd('🔇', 'Click to Unmute');
+      }).catch(err => {
+        console.warn("Muted autoplay also prevented:", err);
+      });
     });
   };
 
@@ -1980,8 +1987,17 @@ function updateEpisodeNavButtons(se, ep) {
 }
 
 function togglePlay() {
+  if (elements.videoElement.muted) {
+    elements.videoElement.muted = false;
+    showVlcOsd('🔊', 'UNMUTED');
+    showToast("🔊 Audio Unmuted", 2000);
+    if (elements.videoElement.paused) {
+      elements.videoElement.play().catch(() => {});
+    }
+    return;
+  }
   if (elements.videoElement.paused) {
-    elements.videoElement.play();
+    elements.videoElement.play().catch(() => {});
     showVlcOsd('▶', 'PLAY');
   } else {
     elements.videoElement.pause();
