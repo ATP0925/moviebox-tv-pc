@@ -282,7 +282,7 @@ async function resolveImdbId(title, subjectType = 1) {
   try {
     const cinemetaUrl = `https://v3-cinemeta.strem.io/catalog/${searchType}/top/search=${encodeURIComponent(cleanTitle)}.json`;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 3500);
+    const timer = setTimeout(() => controller.abort(), 1200);
     const resp = await fetch(cinemetaUrl, { signal: controller.signal });
     clearTimeout(timer);
 
@@ -451,12 +451,14 @@ app.get('/api/play/:id', async (req, res) => {
       return res.json(getMockPlayData(titleHint || "Tears of Steel (Netflix 4K Ultra HD Test Stream)"));
     }
 
-    let playData = null;
-    try {
-      playData = await callApi("GET", "/wefeed-tv-bff/subject/play-info/v2", { subjectId, se, ep, vipLevel });
-    } catch (apiErr) {
-      console.warn("API play-info call failed, fallback to mock data:", apiErr.message);
-    }
+    // Parallelize MovieBox play-info API call with IMDb lookup for blazing fast start
+    const playPromise = callApi("GET", "/wefeed-tv-bff/subject/play-info/v2", { subjectId, se, ep, vipLevel }).catch(apiErr => {
+      console.warn("API play-info call failed:", apiErr.message);
+      return null;
+    });
+    const imdbPromise = titleHint ? resolveImdbId(titleHint, subjectType) : Promise.resolve(null);
+
+    const [playData, initialImdbId] = await Promise.all([playPromise, imdbPromise]);
     
     // Also fetch captions if available
     let captions = [];
@@ -477,7 +479,7 @@ app.get('/api/play/:id', async (req, res) => {
 
     // Resolve Movie/Series Title
     const title = playData?.data?.title || titleHint;
-    const imdbId = await resolveImdbId(title, subjectType);
+    const imdbId = initialImdbId || (title && title !== titleHint ? await resolveImdbId(title, subjectType) : null);
 
     const isSeries = subjectType === 2 || se > 0;
     const seasonNum = se || 1;

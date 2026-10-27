@@ -92,7 +92,6 @@ const elements = {
   btnClearAllHistory: document.getElementById('btn-clear-all-history'),
 
   btnFullscreenToggle: document.getElementById('btn-fullscreen-toggle'),
-  btnMockTest: document.getElementById('btn-mock-test'),
 
   // Billboard
   heroBillboard: document.getElementById('hero-billboard'),
@@ -258,8 +257,8 @@ const api = {
     const res = await fetch(apiUrl(`/api/season/${id}`));
     return res.json();
   },
-  async getPlayInfo(id, se = 0, ep = 0) {
-    const res = await fetch(apiUrl(`/api/play/${id}?se=${se}&ep=${ep}`));
+  async getPlayInfo(id, se = 0, ep = 0, title = '', type = 1) {
+    const res = await fetch(apiUrl(`/api/play/${id}?se=${se}&ep=${ep}&title=${encodeURIComponent(title || '')}&type=${type}`));
     return res.json();
   },
   async search(keyword, page = 1) {
@@ -704,7 +703,11 @@ function setupBillboard(subject) {
   elements.billboardDesc.textContent = subject.description || "Stream this blockbuster title with crystal clear 1080p audio and video streaming on MovieBoxTV.";
 
   elements.btnBillboardPlay.onclick = () => {
-    openDetailModal(subject.subjectId, true);
+    if (subject.subjectType === 2) {
+      openDetailModal(subject.subjectId, true);
+    } else {
+      startPlayback(subject.subjectId, 0, 0, subject.title, coverUrl, subject.subjectType || 1);
+    }
   };
   elements.btnBillboardDetails.onclick = () => {
     openDetailModal(subject.subjectId, false);
@@ -937,6 +940,18 @@ function createMovieCard(subject) {
     </div>
   `;
 
+  const quickPlayBtn = card.querySelector('.card-quick-play');
+  if (quickPlayBtn) {
+    quickPlayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isSeries) {
+        openDetailModal(subject.subjectId, true);
+      } else {
+        startPlayback(subject.subjectId, 0, 0, subject.title, posterUrl, 1);
+      }
+    });
+  }
+
   card.addEventListener('click', () => {
     openDetailModal(subject.subjectId);
   });
@@ -1078,6 +1093,15 @@ function renderEpisodes(season) {
       btn.classList.add('active');
       state.selectedEpisode = i;
       elements.modalPlayText.textContent = `Play S${season.se}:E${i}`;
+      // Direct instant streaming for impatient users
+      startPlayback(
+        state.activeSubject.subjectId,
+        season.se,
+        i,
+        state.activeSubject.title,
+        state.activeSubject.cover?.url || '',
+        state.activeSubject.subjectType || 2
+      );
     });
     elements.episodesGrid.appendChild(btn);
   }
@@ -1239,7 +1263,7 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
   cleanupActivePlayer();
 
   try {
-    const playRes = await api.getPlayInfo(subjectId, se, ep);
+    const playRes = await api.getPlayInfo(subjectId, se, ep, title, subjectType);
     if (!playRes || playRes.code !== 0 || !playRes.data) {
       throw new Error(playRes?.message || "Stream play info unavailable");
     }
@@ -2333,24 +2357,6 @@ elements.playerTapArea.addEventListener('click', togglePlay);
 elements.btnPlayPause.addEventListener('click', togglePlay);
 elements.btnPlayerExit.addEventListener('click', closePlayer);
 
-// 1-Click Netflix 4K UHD Mock Stream Test
-function runMockTest() {
-  console.log("🧪 Initiating Netflix 4K UHD Mock Test Stream...");
-  showToast("🧪 Starting Netflix 4K Ultra HD Mock Stream...", 3500);
-  startPlayback(
-    "mock",
-    0,
-    0,
-    "Tears of Steel (Netflix 4K Ultra HD Test Stream)",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg",
-    1
-  );
-}
-window.runMockTest = runMockTest;
-
-if (elements.btnMockTest) {
-  elements.btnMockTest.addEventListener('click', runMockTest);
-}
 
 // Modal close button & background click
 elements.btnModalClose.addEventListener('click', closeDetailModal);

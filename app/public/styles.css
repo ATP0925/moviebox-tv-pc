@@ -311,28 +311,6 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   color: var(--accent-cyan);
 }
 
-.btn-mock-test {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(229, 9, 20, 0.15);
-  border: 1px solid rgba(229, 9, 20, 0.4);
-  color: #fff;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.btn-mock-test:hover {
-  background: var(--netflix-red);
-  border-color: var(--netflix-red);
-  transform: translateY(-1px);
-  box-shadow: 0 0 14px rgba(229, 9, 20, 0.55);
-}
-
 .btn-icon {
   width: 38px;
   height: 38px;
