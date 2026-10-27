@@ -1,16 +1,20 @@
 {
-  "name": "app",
+  "name": "moviebox-cinema-web",
   "version": "1.0.0",
-  "description": "",
+  "description": "MovieBoxTV PC — Modern Cinema Desktop & Web Streaming Platform",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": [
+    "moviebox",
+    "cinema",
+    "streaming",
+    "video-player"
+  ],
+  "author": "Community OpenSource",
+  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.3.0"

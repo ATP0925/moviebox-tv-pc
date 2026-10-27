@@ -1468,6 +1468,379 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   to { transform: translateY(0); opacity: 1; }
 }
 
+/* ==========================================================================
+   Watch History & Continue Watching & Search History Features
+   ========================================================================== */
+
+/* Nav Tab History */
+.nav-tab-history {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tab-icon {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Search Box Wrapper & History Dropdown */
+.search-box-wrapper {
+  position: relative;
+}
+
+.search-history-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 340px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  padding: 12px;
+  z-index: 150;
+  animation: dropdownFade 0.2s var(--ease-smooth);
+}
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.search-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px 10px 6px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.btn-clear-searches {
+  background: transparent;
+  border: none;
+  color: var(--accent-red);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.btn-clear-searches:hover {
+  background: rgba(229, 9, 20, 0.15);
+}
+
+.search-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 6px;
+}
+
+.search-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+.search-history-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.search-history-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.search-history-item-left svg {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.btn-remove-search {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+.btn-remove-search:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+.btn-remove-search svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Search Chips in Results Section */
+.search-chips-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0 20px 0;
+  flex-wrap: wrap;
+}
+.chips-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.chips-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.search-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--border-subtle);
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.search-chip:hover {
+  background: rgba(229, 9, 20, 0.15);
+  border-color: rgba(229, 9, 20, 0.4);
+  color: #fff;
+}
+.chip-del {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.6;
+  margin-left: 2px;
+}
+.chip-del:hover {
+  opacity: 1;
+  color: var(--accent-red);
+}
+
+/* Continue Watching Shelf */
+.continue-watching-section {
+  margin-top: 10px;
+}
+.pulse-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  box-shadow: 0 0 10px var(--accent-red);
+  animation: pulseGlow 1.8s infinite;
+  margin-right: 4px;
+}
+.continue-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 12px;
+}
+
+/* Progress Bar on Cards */
+.card-progress-bar-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+  overflow: hidden;
+}
+.card-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ff2a38 0%, #e50914 70%, #ff7b00 100%);
+  box-shadow: 0 0 8px rgba(229, 9, 20, 0.9);
+  transition: width 0.3s ease;
+}
+
+.card-remaining-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(7, 9, 14, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 4px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.card-remaining-badge svg {
+  width: 11px;
+  height: 11px;
+  color: var(--accent-gold);
+}
+
+.card-remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+.movie-card:hover .card-remove-btn {
+  opacity: 1;
+}
+.card-remove-btn:hover {
+  background: var(--accent-red);
+  transform: scale(1.1);
+}
+.card-remove-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.card-resume-overlay-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-red);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 15px var(--accent-glow);
+  transform: translateY(6px);
+  transition: all 0.2s ease;
+}
+.card-resume-overlay-btn svg {
+  width: 14px;
+  height: 14px;
+}
+.movie-card:hover .card-resume-overlay-btn {
+  transform: translateY(0);
+}
+
+/* History Page View */
+.history-view-section {
+  padding: 100px 60px 80px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 80vh;
+}
+.history-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-subtitle-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.history-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+.history-time-meta {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+.history-remaining-highlight {
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+.btn-sm {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+
+/* Player HD Clarity Booster & Speed Button */
+.btn-clarity-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-clarity-toggle svg {
+  width: 15px;
+  height: 15px;
+}
+.clarity-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+}
+.btn-clarity-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.btn-clarity-toggle.active {
+  background: rgba(229, 9, 20, 0.2);
+  border-color: var(--accent-red);
+  color: #fff;
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+.btn-clarity-toggle.active .clarity-label {
+  color: #ff3848;
+}
+
+/* Hardware Video Filtering when HD Boost is Active */
+.cinema-video.clarity-boosted {
+  filter: contrast(1.08) saturate(1.16) brightness(1.02);
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
 /* Responsive adjustments */
 @media (max-width: 900px) {
   .navbar {
@@ -1494,5 +1867,8 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   }
   .modal-meta-row, .modal-actions-row {
     justify-content: center;
+  }
+  .history-view-section {
+    padding: 90px 20px 60px 20px;
   }
 }

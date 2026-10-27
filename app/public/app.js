@@ -1,6 +1,6 @@
 /**
  * MovieBoxTV PC — Modern Cinema Desktop Application
- * Handles State, API Communication, UI Rendering, and Custom Video Player
+ * Handles State, API Communication, UI Rendering, Watch & Search History, and Custom Video Player
  */
 
 // Application State
@@ -17,22 +17,49 @@ const state = {
   controlsTimeout: null,
   searchDebounce: null,
   isPlaying: false,
+  currentPlaybackSubject: null, // Stores active playback details for history saving
+  lastSaveTimestamp: 0,
 };
 
 // DOM Element References
 const elements = {
   navTabs: document.getElementById('nav-tabs'),
+  tabHistory: document.getElementById('tab-history'),
   navbar: document.getElementById('navbar'),
   logoHome: document.getElementById('logo-home'),
+
+  // Search Bar & Search History
+  searchBoxWrapper: document.getElementById('search-box-wrapper'),
+  searchBox: document.getElementById('search-box'),
   searchInput: document.getElementById('search-input'),
   searchClear: document.getElementById('search-clear'),
+  searchHistoryDropdown: document.getElementById('search-history-dropdown'),
+  searchHistoryList: document.getElementById('search-history-list'),
+  btnClearSearches: document.getElementById('btn-clear-searches'),
+  searchChipsContainer: document.getElementById('search-chips-container'),
+  searchChipsList: document.getElementById('search-chips-list'),
   searchSection: document.getElementById('search-section'),
   searchGrid: document.getElementById('search-grid'),
   searchCount: document.getElementById('search-count'),
   searchEmpty: document.getElementById('search-empty'),
+
+  // Feed & Continue Watching
   feedContainer: document.getElementById('feed-container'),
+  continueWatchingSection: document.getElementById('continue-watching-section'),
+  continueWatchingCarousel: document.getElementById('continue-watching-carousel'),
+  continueCount: document.getElementById('continue-count'),
+  btnCwLeft: document.getElementById('btn-cw-left'),
+  btnCwRight: document.getElementById('btn-cw-right'),
   shelvesWrapper: document.getElementById('shelves-wrapper'),
   shelfLoading: document.getElementById('shelf-loading'),
+
+  // Full History View
+  historySection: document.getElementById('history-section'),
+  historyGrid: document.getElementById('history-grid'),
+  historyCount: document.getElementById('history-count'),
+  historyEmpty: document.getElementById('history-empty'),
+  btnClearAllHistory: document.getElementById('btn-clear-all-history'),
+
   btnFullscreenToggle: document.getElementById('btn-fullscreen-toggle'),
 
   // Billboard
@@ -91,12 +118,25 @@ const elements = {
   volumeSlider: document.getElementById('volume-slider'),
   currentTimeDisplay: document.getElementById('current-time'),
   totalDurationDisplay: document.getElementById('total-duration'),
+
+  // Player Enhancements: Clarity & Speed
+  btnClarityToggle: document.getElementById('btn-clarity-toggle'),
+  clarityLabel: document.getElementById('clarity-label'),
+  dropdownSpeedContainer: document.getElementById('dropdown-speed-container'),
+  btnSpeedSelect: document.getElementById('btn-speed-select'),
+  currentSpeedLabel: document.getElementById('current-speed-label'),
+  speedMenu: document.getElementById('speed-menu'),
+
+  // Quality & Subtitles
+  dropdownQualityContainer: document.getElementById('dropdown-quality-container'),
   btnQualitySelect: document.getElementById('btn-quality-select'),
   currentQualityLabel: document.getElementById('current-quality-label'),
   qualityMenu: document.getElementById('quality-menu'),
+  dropdownSubtitlesContainer: document.getElementById('dropdown-subtitles-container'),
   btnSubtitlesSelect: document.getElementById('btn-subtitles-select'),
   currentSubtitleLabel: document.getElementById('current-subtitle-label'),
   subtitlesMenu: document.getElementById('subtitles-menu'),
+
   btnPlayerFullscreen: document.getElementById('btn-player-fullscreen'),
   iconExpand: document.getElementById('icon-expand'),
   iconCompress: document.getElementById('icon-compress'),
@@ -168,6 +208,255 @@ function formatTime(seconds) {
   return `${m}:${padSecs}`;
 }
 
+function formatRemaining(remainingSecs) {
+  if (!remainingSecs || remainingSecs <= 30) return 'Completed';
+  const m = Math.round(remainingSecs / 60);
+  if (m < 60) return `${m}m left`;
+  const h = Math.floor(m / 60);
+  const remM = m % 60;
+  return remM > 0 ? `${h}h ${remM}m left` : `${h}h left`;
+}
+
+// ======================== WATCH HISTORY MANAGER ========================
+
+const watchHistoryManager = {
+  STORAGE_KEY: 'moviebox_watch_history',
+
+  getHistory() {
+    try {
+      const data = localStorage.getItem(this.STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.warn("Error reading watch history:", e);
+      return [];
+    }
+  },
+
+  getItem(subjectId, se = 0, ep = 0) {
+    const key = `${subjectId}_${se}_${ep}`;
+    const list = this.getHistory();
+    return list.find(item => item.id === key) || null;
+  },
+
+  saveProgress(subject, currentTime, duration, se = 0, ep = 0) {
+    if (!subject || !duration || duration <= 0) return;
+    const curTime = Math.floor(currentTime);
+    const dur = Math.floor(duration);
+    if (dur <= 10) return; // Ignore very short clips
+
+    const key = `${subject.subjectId}_${se}_${ep}`;
+    const percentage = Math.min(100, Math.max(0, Math.round((curTime / dur) * 100)));
+    const remainingSecs = Math.max(0, dur - curTime);
+    const remainingText = formatRemaining(remainingSecs);
+
+    const historyItem = {
+      id: key,
+      subjectId: subject.subjectId,
+      title: subject.title || 'MovieBox Stream',
+      cover: subject.cover || (subject.cover?.url ? subject.cover.url : ''),
+      season: se || 0,
+      episode: ep || 0,
+      subjectType: subject.subjectType || 1,
+      currentTime: curTime,
+      duration: dur,
+      percentage: percentage,
+      remainingSeconds: remainingSecs,
+      remainingText: remainingText,
+      updatedAt: Date.now()
+    };
+
+    let list = this.getHistory().filter(item => item.id !== key);
+    list.unshift(historyItem);
+
+    // Limit to 50 recent items
+    if (list.length > 50) {
+      list = list.slice(0, 50);
+    }
+
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {
+      console.warn("Error saving watch history:", e);
+    }
+
+    // Refresh Continue Watching Shelf if currently on HOME
+    if (state.currentTab === 'HOME' && elements.historySection.classList.contains('hidden')) {
+      renderContinueWatchingShelf();
+    }
+    // Refresh History Grid if currently on HISTORY
+    if (state.currentTab === 'HISTORY') {
+      renderHistoryView();
+    }
+  },
+
+  removeHistory(id) {
+    let list = this.getHistory().filter(item => item.id !== id);
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {
+      console.warn("Error removing watch history:", e);
+    }
+
+    if (state.currentTab === 'HOME') {
+      renderContinueWatchingShelf();
+    }
+    if (state.currentTab === 'HISTORY') {
+      renderHistoryView();
+    }
+    showToast("Removed from history");
+  },
+
+  clearAllHistory() {
+    try {
+      localStorage.removeItem(this.STORAGE_KEY);
+    } catch (e) {
+      console.warn("Error clearing watch history:", e);
+    }
+
+    renderContinueWatchingShelf();
+    renderHistoryView();
+    showToast("Watch history cleared");
+  }
+};
+
+// ======================== SEARCH HISTORY MANAGER ========================
+
+const searchHistoryManager = {
+  STORAGE_KEY: 'moviebox_search_history',
+
+  getSearches() {
+    try {
+      const data = localStorage.getItem(this.STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.warn("Error reading search history:", e);
+      return [];
+    }
+  },
+
+  addSearch(keyword) {
+    const term = (keyword || '').trim();
+    if (!term || term.length < 2) return;
+
+    let list = this.getSearches().filter(s => s.toLowerCase() !== term.toLowerCase());
+    list.unshift(term);
+    if (list.length > 10) list = list.slice(0, 10);
+
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {
+      console.warn("Error saving search history:", e);
+    }
+
+    this.renderDropdown();
+    this.renderChips();
+  },
+
+  removeSearch(keyword) {
+    let list = this.getSearches().filter(s => s.toLowerCase() !== keyword.toLowerCase());
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {
+      console.warn("Error removing search item:", e);
+    }
+
+    this.renderDropdown();
+    this.renderChips();
+  },
+
+  clearSearches() {
+    try {
+      localStorage.removeItem(this.STORAGE_KEY);
+    } catch (e) {
+      console.warn("Error clearing search history:", e);
+    }
+
+    this.renderDropdown();
+    this.renderChips();
+    elements.searchHistoryDropdown.classList.add('hidden');
+    showToast("Search history cleared");
+  },
+
+  renderDropdown() {
+    const searches = this.getSearches();
+    elements.searchHistoryList.innerHTML = '';
+
+    if (searches.length === 0) {
+      elements.searchHistoryDropdown.classList.add('hidden');
+      return;
+    }
+
+    searches.forEach(term => {
+      const item = document.createElement('div');
+      item.className = 'search-history-item';
+      item.innerHTML = `
+        <div class="search-history-item-left">
+          <svg class="history-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span class="history-item-text">${escapeHtml(term)}</span>
+        </div>
+        <button type="button" class="btn-remove-search" title="Remove from history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      `;
+
+      // Click on text to search
+      item.querySelector('.search-history-item-left').addEventListener('click', () => {
+        elements.searchInput.value = term;
+        elements.searchClear.classList.remove('hidden');
+        elements.searchHistoryDropdown.classList.add('hidden');
+        performSearch(term);
+      });
+
+      // Click on delete icon to remove
+      item.querySelector('.btn-remove-search').addEventListener('click', (e) => {
+        e.stopPropagation();
+        searchHistoryManager.removeSearch(term);
+      });
+
+      elements.searchHistoryList.appendChild(item);
+    });
+  },
+
+  renderChips() {
+    const searches = this.getSearches();
+    elements.searchChipsList.innerHTML = '';
+
+    if (searches.length === 0) {
+      elements.searchChipsContainer.classList.add('hidden');
+      return;
+    }
+
+    elements.searchChipsContainer.classList.remove('hidden');
+    searches.slice(0, 6).forEach(term => {
+      const chip = document.createElement('div');
+      chip.className = 'search-chip';
+      chip.innerHTML = `
+        <span class="chip-text">${escapeHtml(term)}</span>
+        <button type="button" class="chip-del" title="Remove">×</button>
+      `;
+
+      chip.querySelector('.chip-text').addEventListener('click', () => {
+        elements.searchInput.value = term;
+        elements.searchClear.classList.remove('hidden');
+        performSearch(term);
+      });
+
+      chip.querySelector('.chip-del').addEventListener('click', (e) => {
+        e.stopPropagation();
+        searchHistoryManager.removeSearch(term);
+      });
+
+      elements.searchChipsList.appendChild(chip);
+    });
+  }
+};
+
 // ======================== NAVIGATION & TABS ========================
 
 async function initTabs() {
@@ -184,8 +473,9 @@ async function initTabs() {
 
 function renderTabs(tabs) {
   elements.navTabs.innerHTML = '';
+
+  // Render API tabs
   tabs.forEach(tab => {
-    // Only display major tabs in top bar
     if (["HOME", "MOVIE", "TV", "ANIMATION", "KIDS"].includes(tab.tabId)) {
       const btn = document.createElement('button');
       btn.className = `nav-tab ${tab.tabId === state.currentTab ? 'active' : ''}`;
@@ -195,12 +485,25 @@ function renderTabs(tabs) {
       elements.navTabs.appendChild(btn);
     }
   });
+
+  // Always append History Tab with icon
+  const historyBtn = document.createElement('button');
+  historyBtn.className = `nav-tab nav-tab-history ${state.currentTab === 'HISTORY' ? 'active' : ''}`;
+  historyBtn.dataset.tabId = 'HISTORY';
+  historyBtn.id = 'tab-history';
+  historyBtn.innerHTML = `
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polyline points="12 6 12 12 16 14"></polyline>
+    </svg>
+    <span class="tab-label">History</span>
+  `;
+  historyBtn.addEventListener('click', () => switchTab('HISTORY'));
+  elements.navTabs.appendChild(historyBtn);
+  elements.tabHistory = historyBtn;
 }
 
 async function switchTab(tabId) {
-  if (state.currentTab === tabId && elements.searchSection.classList.contains('hidden')) {
-    return;
-  }
   state.currentTab = tabId;
 
   // Update tabs visual state
@@ -212,9 +515,20 @@ async function switchTab(tabId) {
   elements.searchInput.value = '';
   elements.searchClear.classList.add('hidden');
   elements.searchSection.classList.add('hidden');
+  elements.searchHistoryDropdown.classList.add('hidden');
+
+  if (tabId === 'HISTORY') {
+    elements.feedContainer.classList.add('hidden');
+    elements.historySection.classList.remove('hidden');
+    renderHistoryView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  // Regular categories feed
+  elements.historySection.classList.add('hidden');
   elements.feedContainer.classList.remove('hidden');
 
-  // Load feed for tab
   await loadHomeFeed(tabId);
 }
 
@@ -227,6 +541,13 @@ async function loadHomeFeed(tabId) {
       <p>Loading curated catalogue...</p>
     </div>
   `;
+
+  // Render continue watching shelf if on HOME
+  if (tabId === 'HOME') {
+    renderContinueWatchingShelf();
+  } else {
+    elements.continueWatchingSection.classList.add('hidden');
+  }
 
   try {
     const data = await api.getHome(tabId);
@@ -297,6 +618,150 @@ function setupBillboard(subject) {
   };
 }
 
+// ======================== CONTINUE WATCHING SHELF ========================
+
+function renderContinueWatchingShelf() {
+  const history = watchHistoryManager.getHistory();
+  // Filter items in progress (at least 5s watched, not 100% completed)
+  const inProgressItems = history.filter(item => item.currentTime > 5 && item.percentage < 98);
+
+  if (inProgressItems.length === 0) {
+    elements.continueWatchingSection.classList.add('hidden');
+    return;
+  }
+
+  elements.continueWatchingSection.classList.remove('hidden');
+  elements.continueCount.textContent = `${inProgressItems.length} in progress`;
+  elements.continueWatchingCarousel.innerHTML = '';
+
+  inProgressItems.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'movie-card continue-watching-card';
+    card.dataset.id = item.subjectId;
+
+    const isSeries = item.season > 0 || item.subjectType === 2;
+    const seLabel = isSeries ? `S${item.season || 1}:E${item.episode || 1}` : 'Feature Film';
+
+    card.innerHTML = `
+      <div class="card-poster-wrap">
+        <img class="card-poster" src="${item.cover || ''}" alt="${escapeHtml(item.title)}" loading="lazy">
+        <div class="card-remaining-badge">${escapeHtml(item.remainingText)}</div>
+        <button type="button" class="card-remove-btn" title="Remove from list">×</button>
+        <div class="card-overlay">
+          <div class="card-quick-play card-resume-overlay-btn" title="Resume at ${formatTime(item.currentTime)}">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+        </div>
+        <div class="card-progress-bar-wrap">
+          <div class="card-progress-bar" style="width: ${item.percentage}%;"></div>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3 class="card-title" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</h3>
+        <div class="card-meta">
+          <span style="color:var(--accent-primary); font-weight:600;">${seLabel}</span>
+          <span>• ${item.percentage}%</span>
+        </div>
+      </div>
+    `;
+
+    // Remove button handler
+    card.querySelector('.card-remove-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      watchHistoryManager.removeHistory(item.id);
+    });
+
+    // Card click: Resume playback immediately
+    card.addEventListener('click', () => {
+      startPlayback(item.subjectId, item.season, item.episode, item.title, item.cover, item.subjectType);
+    });
+
+    elements.continueWatchingCarousel.appendChild(card);
+  });
+}
+
+// Continue watching carousel scrolling
+if (elements.btnCwLeft && elements.btnCwRight) {
+  elements.btnCwLeft.addEventListener('click', () => {
+    elements.continueWatchingCarousel.scrollBy({ left: -600, behavior: 'smooth' });
+  });
+  elements.btnCwRight.addEventListener('click', () => {
+    elements.continueWatchingCarousel.scrollBy({ left: 600, behavior: 'smooth' });
+  });
+}
+
+// ======================== WATCH HISTORY FULL VIEW ========================
+
+function renderHistoryView() {
+  const history = watchHistoryManager.getHistory();
+  elements.historyGrid.innerHTML = '';
+  elements.historyCount.textContent = `${history.length} titles`;
+
+  if (history.length === 0) {
+    elements.historyEmpty.classList.remove('hidden');
+    return;
+  }
+
+  elements.historyEmpty.classList.add('hidden');
+
+  history.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'movie-card history-card';
+    card.dataset.id = item.subjectId;
+
+    const isSeries = item.season > 0 || item.subjectType === 2;
+    const seLabel = isSeries ? `Season ${item.season || 1} • Episode ${item.episode || 1}` : 'Full Movie';
+    const watchedText = `Watched ${formatTime(item.currentTime)} of ${formatTime(item.duration)}`;
+
+    card.innerHTML = `
+      <div class="card-poster-wrap">
+        <img class="card-poster" src="${item.cover || ''}" alt="${escapeHtml(item.title)}" loading="lazy">
+        <div class="card-remaining-badge">${escapeHtml(item.remainingText)}</div>
+        <button type="button" class="card-remove-btn" title="Remove from history">×</button>
+        <div class="card-overlay">
+          <div class="card-quick-play card-resume-overlay-btn" title="Resume Playback">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+        </div>
+        <div class="card-progress-bar-wrap">
+          <div class="card-progress-bar" style="width: ${item.percentage}%;"></div>
+        </div>
+      </div>
+      <div class="card-info history-card-details">
+        <h3 class="card-title" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</h3>
+        <div class="card-meta">
+          <span style="color:var(--accent-primary); font-weight:600;">${seLabel}</span>
+          <span>• ${item.percentage}%</span>
+        </div>
+        <div class="history-time-meta">${watchedText}</div>
+        <div class="history-remaining-highlight">Baaki: ${escapeHtml(item.remainingText)}</div>
+      </div>
+    `;
+
+    // Remove button handler
+    card.querySelector('.card-remove-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      watchHistoryManager.removeHistory(item.id);
+    });
+
+    // Card click: Resume playback immediately
+    card.addEventListener('click', () => {
+      startPlayback(item.subjectId, item.season, item.episode, item.title, item.cover, item.subjectType);
+    });
+
+    elements.historyGrid.appendChild(card);
+  });
+}
+
+// Clear all history button
+if (elements.btnClearAllHistory) {
+  elements.btnClearAllHistory.addEventListener('click', () => {
+    if (confirm("Are you sure you want to clear your entire watch history?")) {
+      watchHistoryManager.clearAllHistory();
+    }
+  });
+}
+
 // ======================== SHELVES & CAROUSELS ========================
 
 function createShelf(title, subjects) {
@@ -350,10 +815,20 @@ function createMovieCard(subject) {
   const year = subject.releaseDate ? subject.releaseDate.split('-')[0] : '';
   const isSeries = subject.subjectType === 2;
 
+  // Check if there is saved progress for this title
+  const saved = watchHistoryManager.getItem(subject.subjectId, 0, 0);
+  const progressBarHtml = saved && saved.percentage > 0 && saved.percentage < 98 ? `
+    <div class="card-remaining-badge">${escapeHtml(saved.remainingText)}</div>
+    <div class="card-progress-bar-wrap">
+      <div class="card-progress-bar" style="width: ${saved.percentage}%;"></div>
+    </div>
+  ` : '';
+
   card.innerHTML = `
     <div class="card-poster-wrap">
       <img class="card-poster" src="${posterUrl}" alt="${escapeHtml(subject.title)}" loading="lazy">
       ${score ? `<div class="card-corner-badge">★ ${score}</div>` : ''}
+      ${progressBarHtml}
       <div class="card-overlay">
         <div class="card-quick-play" title="Watch Now">
           <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
@@ -426,7 +901,13 @@ async function openDetailModal(subjectId, autoPlay = false) {
       elements.modalPlayText.textContent = "Play S1:E1";
       await loadSeasons(subjectId);
     } else {
-      elements.modalPlayText.textContent = "Play Movie (1080p)";
+      // Check for saved progress to show Resume text
+      const saved = watchHistoryManager.getItem(data.subjectId, 0, 0);
+      if (saved && saved.currentTime > 10 && saved.percentage < 95) {
+        elements.modalPlayText.textContent = `Resume (${saved.remainingText})`;
+      } else {
+        elements.modalPlayText.textContent = "Play Movie (1080p)";
+      }
     }
 
     // Play button handler
@@ -435,7 +916,7 @@ async function openDetailModal(subjectId, autoPlay = false) {
       document.body.style.overflow = '';
       const se = data.subjectType === 2 ? state.selectedSeason : 0;
       const ep = data.subjectType === 2 ? state.selectedEpisode : 0;
-      startPlayback(data.subjectId, se, ep, data.title);
+      startPlayback(data.subjectId, se, ep, data.title, data.cover?.url, data.subjectType);
     };
 
     if (autoPlay) {
@@ -454,45 +935,51 @@ async function openDetailModal(subjectId, autoPlay = false) {
 async function loadSeasons(subjectId) {
   try {
     const res = await api.getSeason(subjectId);
-    if (res && res.code === 0 && res.data && res.data.seasons && res.data.seasons.length > 0) {
-      state.activeSeasonData = res.data;
+    if (!res || res.code !== 0 || !res.data) return;
+
+    state.activeSeasonData = res.data;
+    const seasons = res.data.seasons || [];
+
+    if (seasons.length > 0) {
       elements.seasonsSection.classList.remove('hidden');
-      renderSeasonPills(res.data.seasons);
+      renderSeasonTabs(seasons);
+      renderEpisodes(seasons[0]);
     }
   } catch (err) {
-    console.warn("Could not load seasons:", err);
+    console.warn("Seasons load warning:", err);
   }
 }
 
-function renderSeasonPills(seasons) {
+function renderSeasonTabs(seasons) {
   elements.seasonTabs.innerHTML = '';
-  state.selectedSeason = seasons[0].se;
-
   seasons.forEach((season, idx) => {
-    const pill = document.createElement('button');
-    pill.className = `season-pill ${idx === 0 ? 'active' : ''}`;
-    pill.textContent = `Season ${season.se}`;
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.season-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
+    const btn = document.createElement('button');
+    btn.className = `season-tab-btn ${idx === 0 ? 'active' : ''}`;
+    btn.textContent = `Season ${season.se}`;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.season-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       state.selectedSeason = season.se;
       renderEpisodes(season);
     });
-    elements.seasonTabs.appendChild(pill);
+    elements.seasonTabs.appendChild(btn);
   });
-
-  renderEpisodes(seasons[0]);
 }
 
 function renderEpisodes(season) {
   elements.episodesGrid.innerHTML = '';
-  state.selectedEpisode = 1;
-  const maxEp = season.maxEp || 10;
+  const maxEp = season.maxEp || 12;
 
   for (let i = 1; i <= maxEp; i++) {
     const btn = document.createElement('button');
-    btn.className = `episode-btn ${i === 1 ? 'active' : ''}`;
-    btn.innerHTML = `<span>EPISODE</span><strong>${i}</strong>`;
+    const isSelected = i === state.selectedEpisode && season.se === state.selectedSeason;
+    btn.className = `episode-btn ${isSelected ? 'active' : ''}`;
+
+    // Check if this episode has saved progress
+    const saved = watchHistoryManager.getItem(state.activeSubject?.subjectId, season.se, i);
+    const progressLabel = saved && saved.percentage > 0 ? ` (${saved.percentage}%)` : '';
+
+    btn.textContent = `Ep ${i}${progressLabel}`;
     btn.addEventListener('click', () => {
       document.querySelectorAll('.episode-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -524,16 +1011,19 @@ function closeDetailModal() {
   document.body.style.overflow = '';
 }
 
-// ======================== SEARCH ========================
+// ======================== SEARCH & SEARCH HISTORY ========================
 
+// Search Input Listener with Debounce
 elements.searchInput.addEventListener('input', (e) => {
   const query = e.target.value.trim();
   if (query.length > 0) {
     elements.searchClear.classList.remove('hidden');
+    elements.searchHistoryDropdown.classList.add('hidden');
   } else {
     elements.searchClear.classList.add('hidden');
     elements.searchSection.classList.add('hidden');
     elements.feedContainer.classList.remove('hidden');
+    searchHistoryManager.renderDropdown();
     return;
   }
 
@@ -543,26 +1033,62 @@ elements.searchInput.addEventListener('input', (e) => {
   }, 350);
 });
 
+// Focus & Click on Search Input opens History Dropdown
+elements.searchInput.addEventListener('focus', () => {
+  if (elements.searchInput.value.trim().length === 0) {
+    searchHistoryManager.renderDropdown();
+    const searches = searchHistoryManager.getSearches();
+    if (searches.length > 0) {
+      elements.searchHistoryDropdown.classList.remove('hidden');
+    }
+  }
+});
+
+// Click outside closes search history dropdown
+document.addEventListener('click', (e) => {
+  if (elements.searchBoxWrapper && !elements.searchBoxWrapper.contains(e.target)) {
+    elements.searchHistoryDropdown.classList.add('hidden');
+  }
+});
+
+// Clear Search input button
 elements.searchClear.addEventListener('click', () => {
   elements.searchInput.value = '';
   elements.searchClear.classList.add('hidden');
   elements.searchSection.classList.add('hidden');
+  elements.searchHistoryDropdown.classList.add('hidden');
   elements.feedContainer.classList.remove('hidden');
 });
 
+// Clear all search history button
+if (elements.btnClearSearches) {
+  elements.btnClearSearches.addEventListener('click', (e) => {
+    e.stopPropagation();
+    searchHistoryManager.clearSearches();
+  });
+}
+
 async function performSearch(query) {
+  const trimmed = (query || '').trim();
+  if (!trimmed) return;
+
+  // Add to Search History
+  searchHistoryManager.addSearch(trimmed);
+  elements.searchHistoryDropdown.classList.add('hidden');
+
   elements.feedContainer.classList.add('hidden');
+  elements.historySection.classList.add('hidden');
   elements.searchSection.classList.remove('hidden');
   elements.searchGrid.innerHTML = `
     <div style="grid-column: 1/-1; text-align:center; padding: 60px;">
       <div class="spinner" style="margin: 0 auto 16px auto;"></div>
-      <p style="color:var(--text-secondary)">Searching "${escapeHtml(query)}" across MovieBoxTV...</p>
+      <p style="color:var(--text-secondary)">Searching "${escapeHtml(trimmed)}" across MovieBoxTV...</p>
     </div>
   `;
   elements.searchEmpty.classList.add('hidden');
 
   try {
-    const res = await api.search(query);
+    const res = await api.search(trimmed);
     if (res && res.code === 0 && res.data && res.data.items && res.data.items.length > 0) {
       elements.searchGrid.innerHTML = '';
       elements.searchCount.textContent = `${res.data.items.length} titles found`;
@@ -583,12 +1109,25 @@ async function performSearch(query) {
 
 // ======================== CINEMA VIDEO PLAYER ========================
 
-async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie") {
+async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUrl = "", subjectType = 1) {
   elements.playerOverlay.classList.remove('hidden');
   elements.playerLoader.classList.remove('hidden');
   elements.playerLoadingText.textContent = "Fetching High Definition Streams...";
   elements.playerTitle.textContent = title;
   elements.playerSubtitle.textContent = se > 0 ? `Season ${se} • Episode ${ep}` : "Feature Film";
+
+  // Record active playback details for history saving
+  state.currentPlaybackSubject = {
+    subjectId,
+    title,
+    cover: coverUrl || state.activeSubject?.cover?.url || '',
+    subjectType: subjectType || (se > 0 ? 2 : 1),
+    season: se,
+    episode: ep
+  };
+
+  // Check saved history progress to auto-resume
+  const savedProgress = watchHistoryManager.getItem(subjectId, se, ep);
 
   // Reset video
   elements.videoElement.pause();
@@ -616,6 +1155,8 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie") {
           resources = data.resources;
           state.currentPlayData = data;
           elements.playerSubtitle.textContent = "Season 1 • Episode 1";
+          state.currentPlaybackSubject.season = 1;
+          state.currentPlaybackSubject.episode = 1;
         }
       } catch (e) {
         console.warn("Series fallback check:", e.message);
@@ -642,10 +1183,12 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie") {
 
     // Pick top resolution stream
     const bestStream = resources[0];
+    const resumeSec = (savedProgress && savedProgress.currentTime > 10 && savedProgress.percentage < 95) ? savedProgress.currentTime : 0;
+
     if (bestStream && bestStream.url) {
-      setStreamSource(bestStream.url, bestStream.resolution);
+      setStreamSource(bestStream.url, bestStream.resolution, resumeSec, savedProgress?.remainingText);
     } else if (data.streams && data.streams.length > 0) {
-      setStreamSource(data.streams[0].url, "Auto");
+      setStreamSource(data.streams[0].url, "Auto", resumeSec, savedProgress?.remainingText);
     }
 
   } catch (err) {
@@ -658,28 +1201,39 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie") {
   }
 }
 
-function setStreamSource(url, resolutionLabel) {
+function setStreamSource(url, resolutionLabel, resumeTime = 0, remainingText = "") {
   state.currentStreamUrl = url;
   state.currentQuality = resolutionLabel;
   elements.currentQualityLabel.textContent = resolutionLabel;
 
-  const currentTime = elements.videoElement.currentTime || 0;
-  
-  // Route stream through local proxy to bypass CDN anti-bot checks and enable range seeking
+  // Direct CDN playback with no-referrer for cloud deployments, with proxy fallback
+  const isCloud = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
   const proxyUrl = `/api/stream?url=${encodeURIComponent(url)}`;
-  elements.videoElement.src = proxyUrl;
+  const initialSrc = isCloud ? url : proxyUrl;
+
+  elements.videoElement.src = initialSrc;
 
   elements.videoElement.onloadedmetadata = () => {
     elements.playerLoader.classList.add('hidden');
-    if (currentTime > 0) {
-      elements.videoElement.currentTime = currentTime;
+
+    // Auto-Resume from exact second saved in history
+    if (resumeTime > 0) {
+      elements.videoElement.currentTime = resumeTime;
+      const remInfo = remainingText ? ` (${remainingText})` : '';
+      showToast(`▶ Resumed at ${formatTime(resumeTime)}${remInfo}`, 4000);
     }
+
     elements.videoElement.play().catch(e => {
       console.warn("Autoplay blocked, click to play:", e);
     });
   };
 
   elements.videoElement.onerror = (e) => {
+    if (elements.videoElement.src !== proxyUrl && elements.videoElement.src !== window.location.origin + proxyUrl) {
+      console.warn("Direct CDN playback failed, switching to stream proxy fallback...");
+      elements.videoElement.src = proxyUrl;
+      return;
+    }
     console.error("Video element playback error:", e);
     elements.playerLoader.classList.add('hidden');
     showToast("Stream error. Trying alternative quality...", 3000);
@@ -694,7 +1248,8 @@ function setupQualityDropdown(resources) {
     btn.innerHTML = `<span>${res.resolution.toUpperCase()}</span><span>${res.codec ? res.codec.toUpperCase() : 'HD'}</span>`;
     btn.addEventListener('click', () => {
       elements.qualityMenu.classList.add('hidden');
-      setStreamSource(res.url, res.resolution);
+      const cur = elements.videoElement.currentTime || 0;
+      setStreamSource(res.url, res.resolution, cur);
       showToast(`Resolution switched to ${res.resolution}`);
     });
     elements.qualityMenu.appendChild(btn);
@@ -804,13 +1359,86 @@ function togglePlay() {
 }
 
 function closePlayer() {
+  // Save current progress on exit
+  saveCurrentPlaybackProgress();
+
   elements.videoElement.pause();
   elements.videoElement.removeAttribute('src');
   elements.videoElement.load();
   elements.playerOverlay.classList.add('hidden');
 }
 
-// Player Event Listeners
+function saveCurrentPlaybackProgress() {
+  if (state.currentPlaybackSubject && elements.videoElement.duration > 10) {
+    const cur = elements.videoElement.currentTime || 0;
+    const dur = elements.videoElement.duration || 0;
+    watchHistoryManager.saveProgress(
+      state.currentPlaybackSubject,
+      cur,
+      dur,
+      state.currentPlaybackSubject.season,
+      state.currentPlaybackSubject.episode
+    );
+  }
+}
+
+// ======================== HD CLARITY BOOSTER & PLAYBACK SPEED ========================
+
+// HD Clarity Booster Setup
+function initClarityBooster() {
+  const isEnabled = localStorage.getItem('moviebox_clarity_boost') === 'true';
+  applyClarityBooster(isEnabled, false);
+
+  if (elements.btnClarityToggle) {
+    elements.btnClarityToggle.addEventListener('click', () => {
+      const currentlyActive = elements.videoElement.classList.contains('clarity-boosted');
+      applyClarityBooster(!currentlyActive, true);
+    });
+  }
+}
+
+function applyClarityBooster(enable, showFeedback = true) {
+  if (enable) {
+    elements.videoElement.classList.add('clarity-boosted');
+    elements.btnClarityToggle.classList.add('active');
+    if (elements.clarityLabel) elements.clarityLabel.textContent = "HD BOOST ON";
+    try { localStorage.setItem('moviebox_clarity_boost', 'true'); } catch (e) {}
+    if (showFeedback) showToast("✨ HD Clarity Booster ON (Enhanced Contrast & Saturation)");
+  } else {
+    elements.videoElement.classList.remove('clarity-boosted');
+    elements.btnClarityToggle.classList.remove('active');
+    if (elements.clarityLabel) elements.clarityLabel.textContent = "HD BOOST";
+    try { localStorage.setItem('moviebox_clarity_boost', 'false'); } catch (e) {}
+    if (showFeedback) showToast("HD Clarity Booster OFF");
+  }
+}
+
+// Playback Speed Selector Setup
+function initSpeedSelector() {
+  if (!elements.btnSpeedSelect || !elements.speedMenu) return;
+
+  elements.btnSpeedSelect.addEventListener('click', (e) => {
+    e.stopPropagation();
+    elements.speedMenu.classList.toggle('hidden');
+    elements.qualityMenu.classList.add('hidden');
+    elements.subtitlesMenu.classList.add('hidden');
+  });
+
+  elements.speedMenu.querySelectorAll('.dropdown-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const speed = parseFloat(btn.dataset.speed);
+      elements.videoElement.playbackRate = speed;
+      elements.currentSpeedLabel.textContent = `${speed}x`;
+      elements.speedMenu.querySelectorAll('.dropdown-option').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      elements.speedMenu.classList.add('hidden');
+      showToast(`⚡ Playback Speed: ${speed}x`);
+    });
+  });
+}
+
+// ======================== PLAYER EVENT LISTENERS ========================
+
 elements.videoElement.addEventListener('play', () => {
   state.isPlaying = true;
   elements.iconPlay.classList.add('hidden');
@@ -822,6 +1450,7 @@ elements.videoElement.addEventListener('pause', () => {
   elements.iconPlay.classList.remove('hidden');
   elements.iconPause.classList.add('hidden');
   showPlayerControls();
+  saveCurrentPlaybackProgress();
 });
 
 elements.videoElement.addEventListener('timeupdate', () => {
@@ -842,6 +1471,13 @@ elements.videoElement.addEventListener('timeupdate', () => {
     if (duration > 0) {
       elements.timelineBuffered.style.width = `${(bufferedEnd / duration) * 100}%`;
     }
+  }
+
+  // Throttle saving progress to watch history every 4 seconds
+  const now = Date.now();
+  if (now - state.lastSaveTimestamp > 4000) {
+    state.lastSaveTimestamp = now;
+    saveCurrentPlaybackProgress();
   }
 });
 
@@ -928,6 +1564,7 @@ function showPlayerControls() {
       elements.playerControls.classList.add('idle');
       elements.qualityMenu.classList.add('hidden');
       elements.subtitlesMenu.classList.add('hidden');
+      if (elements.speedMenu) elements.speedMenu.classList.add('hidden');
     }, 3500);
   }
 }
@@ -942,17 +1579,20 @@ elements.btnQualitySelect.addEventListener('click', (e) => {
   e.stopPropagation();
   elements.qualityMenu.classList.toggle('hidden');
   elements.subtitlesMenu.classList.add('hidden');
+  if (elements.speedMenu) elements.speedMenu.classList.add('hidden');
 });
 
 elements.btnSubtitlesSelect.addEventListener('click', (e) => {
   e.stopPropagation();
   elements.subtitlesMenu.classList.toggle('hidden');
   elements.qualityMenu.classList.add('hidden');
+  if (elements.speedMenu) elements.speedMenu.classList.add('hidden');
 });
 
 document.addEventListener('click', () => {
   elements.qualityMenu.classList.add('hidden');
   elements.subtitlesMenu.classList.add('hidden');
+  if (elements.speedMenu) elements.speedMenu.classList.add('hidden');
 });
 
 // Modal close button & background click
@@ -985,6 +1625,8 @@ document.addEventListener('keydown', (e) => {
       closeDetailModal();
     } else if (!elements.searchSection.classList.contains('hidden')) {
       elements.searchClear.click();
+    } else if (elements.searchHistoryDropdown && !elements.searchHistoryDropdown.classList.contains('hidden')) {
+      elements.searchHistoryDropdown.classList.add('hidden');
     }
   }
 
@@ -1045,6 +1687,10 @@ function escapeHtml(str) {
 
 async function bootstrap() {
   console.log("🎬 MovieBoxTV Desktop PC App Initializing...");
+  initClarityBooster();
+  initSpeedSelector();
+  searchHistoryManager.renderChips();
+
   await initTabs();
   await loadHomeFeed('HOME');
 

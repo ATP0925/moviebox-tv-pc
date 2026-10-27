@@ -44,23 +44,41 @@
           <button class="nav-tab" data-tab-id="KIDS">
             <span class="tab-label">Kids</span>
           </button>
+          <button class="nav-tab nav-tab-history" data-tab-id="HISTORY" id="tab-history">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span class="tab-label">History</span>
+          </button>
         </nav>
       </div>
 
       <div class="nav-right">
-        <!-- Search Bar -->
-        <div class="search-box" id="search-box">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="search-input" placeholder="Search movies, series, anime..." autocomplete="off">
-          <button class="search-clear hidden" id="search-clear" title="Clear search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
+        <!-- Search Bar with Search History Popover -->
+        <div class="search-box-wrapper" id="search-box-wrapper">
+          <div class="search-box" id="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-          </button>
+            <input type="text" id="search-input" placeholder="Search movies, series, anime..." autocomplete="off">
+            <button class="search-clear hidden" id="search-clear" title="Clear search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Interactive Search History Dropdown -->
+          <div class="search-history-dropdown hidden" id="search-history-dropdown">
+            <div class="search-history-header">
+              <span>Recent Searches</span>
+              <button type="button" class="btn-clear-searches" id="btn-clear-searches">Clear All</button>
+            </div>
+            <div class="search-history-list" id="search-history-list"></div>
+          </div>
         </div>
 
         <!-- VIP Status & Desktop Info -->
@@ -82,6 +100,12 @@
     <main class="main-content" id="main-content">
       <!-- Search View Container (hidden by default) -->
       <section class="search-results-section hidden" id="search-section">
+        <!-- Search History Quick Chips -->
+        <div class="search-chips-container hidden" id="search-chips-container">
+          <span class="chips-label">Recent Searches:</span>
+          <div class="chips-list" id="search-chips-list"></div>
+        </div>
+
         <div class="section-header">
           <h1 class="section-title" id="search-results-title">Search Results</h1>
           <span class="results-count" id="search-count">0 titles found</span>
@@ -97,7 +121,30 @@
         </div>
       </section>
 
-      <!-- Feed Container (Billboard + Shelves) -->
+      <!-- Watch History View (when History tab is clicked) -->
+      <section class="history-view-section hidden" id="history-section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">Your Watch History</h1>
+            <p class="section-subtitle-text" id="history-subtitle">Track your watched titles, exact time remaining, and resume seamlessly.</p>
+          </div>
+          <div class="history-header-actions">
+            <span class="results-count" id="history-count">0 titles</span>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-all-history">Clear History</button>
+          </div>
+        </div>
+        <div class="cards-grid" id="history-grid"></div>
+        <div class="empty-state hidden" id="history-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <h3>No watch history yet</h3>
+          <p>Titles you stream will automatically appear here with progress bars and remaining time.</p>
+        </div>
+      </section>
+
+      <!-- Feed Container (Billboard + Continue Watching + Shelves) -->
       <div id="feed-container">
         <!-- Hero Billboard Banner -->
         <section class="hero-billboard" id="hero-billboard">
@@ -142,6 +189,26 @@
               </button>
             </div>
           </div>
+        </section>
+
+        <!-- Continue Watching Shelf (Visible when there is watch progress) -->
+        <section class="shelf-container continue-watching-section hidden" id="continue-watching-section">
+          <div class="shelf-header">
+            <h2 class="shelf-title">
+              <span class="pulse-indicator"></span>
+              Continue Watching
+            </h2>
+            <div class="shelf-controls">
+              <span class="continue-badge" id="continue-count">0 in progress</span>
+              <button class="btn-scroll btn-scroll-left" id="btn-cw-left" title="Scroll Left">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button class="btn-scroll btn-scroll-right" id="btn-cw-right" title="Scroll Right">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+          </div>
+          <div class="shelf-carousel" id="continue-watching-carousel"></div>
         </section>
 
         <!-- Horizontal Shelves / Carousels Container -->
@@ -235,7 +302,7 @@
 
     <!-- Built-in Cinema Video Player Overlay -->
     <div class="player-overlay hidden" id="player-overlay">
-      <video id="video-element" class="cinema-video" playsinline preload="auto"></video>
+      <video id="video-element" class="cinema-video" playsinline preload="auto" crossorigin="anonymous" referrerpolicy="no-referrer"></video>
 
       <!-- Loading Spinner on Video -->
       <div class="player-loader hidden" id="player-loader">
@@ -325,6 +392,28 @@
             </div>
 
             <div class="controls-right">
+              <!-- HD Clarity Booster Toggle -->
+              <button class="control-btn btn-clarity-toggle" id="btn-clarity-toggle" title="HD Clarity Booster (Enhances Sharpness, Contrast & Deep Blacks)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
+                </svg>
+                <span class="clarity-label" id="clarity-label">HD BOOST</span>
+              </button>
+
+              <!-- Speed Selector -->
+              <div class="player-dropdown" id="dropdown-speed-container">
+                <button class="dropdown-trigger-btn" id="btn-speed-select" title="Playback Speed">
+                  <span id="current-speed-label">1.0x</span>
+                </button>
+                <div class="dropdown-menu hidden" id="speed-menu">
+                  <button class="dropdown-option" data-speed="0.75">0.75x</button>
+                  <button class="dropdown-option active" data-speed="1.0">1.0x Normal</button>
+                  <button class="dropdown-option" data-speed="1.25">1.25x</button>
+                  <button class="dropdown-option" data-speed="1.5">1.5x</button>
+                  <button class="dropdown-option" data-speed="2.0">2.0x</button>
+                </div>
+              </div>
+
               <!-- Quality Dropdown Selector -->
               <div class="player-dropdown" id="dropdown-quality-container">
                 <button class="dropdown-trigger-btn" id="btn-quality-select" title="Resolution Quality">

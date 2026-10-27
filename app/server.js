@@ -7,6 +7,17 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 4567;
 
+// Security & Privacy Hardening
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -419,26 +430,31 @@ app.all('/api/stream', (req, res) => {
   proxyVideoStream(videoUrl, req, res);
 });
 
-// Health check
+// Anonymous Health check
 app.get('/api/status', (req, res) => {
   res.json({
     status: "ok",
-    app: "MovieBoxTV PC Desktop App",
+    service: "MovieBoxTV Cinema Engine",
     authenticated: Boolean(cachedToken),
-    uid: cachedUid
+    version: "1.0.0"
   });
 });
 
-// Start server
-app.listen(PORT, async () => {
-  console.log(`\n======================================================`);
-  console.log(`🎬 MovieBoxTV Desktop PC Server is running!`);
-  console.log(`📡 URL: http://localhost:${PORT}`);
-  console.log(`======================================================\n`);
-  try {
-    await getAuthToken();
-    console.log("Ready for streaming! Open http://localhost:" + PORT + " in your browser or desktop app.\n");
-  } catch (e) {
-    console.error("Initial auth failed:", e.message);
-  }
-});
+// Export app for serverless platforms (Vercel / Firebase Cloud Functions)
+module.exports = app;
+
+// Start standalone server when executed directly
+if (require.main === module || !process.env.VERCEL) {
+  app.listen(PORT, async () => {
+    console.log(`\n======================================================`);
+    console.log(`🎬 MovieBoxTV Cinema Engine is running!`);
+    console.log(`📡 URL: http://localhost:${PORT}`);
+    console.log(`======================================================\n`);
+    try {
+      await getAuthToken();
+      console.log("Ready for streaming! Open http://localhost:" + PORT + " in your browser.\n");
+    } catch (e) {
+      console.error("Initial auth failed:", e.message);
+    }
+  });
+}
