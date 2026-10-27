@@ -148,33 +148,46 @@ const elements = {
 
 // ======================== API CLIENT ========================
 
+const API_BASE = (() => {
+  const custom = localStorage.getItem('mbox_api_base');
+  if (custom) return custom.replace(/\/+$/, '');
+  if (window.location.hostname.includes('web.app') || window.location.hostname.includes('firebaseapp.com')) {
+    return 'https://spry-violet-d5xmusy.tmp.now';
+  }
+  return '';
+})();
+
+function apiUrl(path) {
+  return `${API_BASE}${path}`;
+}
+
 const api = {
   async getTabs() {
-    const res = await fetch('/api/tabs');
+    const res = await fetch(apiUrl('/api/tabs'));
     return res.json();
   },
   async getHome(tabId, page = 1) {
-    const res = await fetch(`/api/home?tabId=${encodeURIComponent(tabId)}&page=${page}`);
+    const res = await fetch(apiUrl(`/api/home?tabId=${encodeURIComponent(tabId)}&page=${page}`));
     return res.json();
   },
   async getSubject(id) {
-    const res = await fetch(`/api/subject/${id}`);
+    const res = await fetch(apiUrl(`/api/subject/${id}`));
     return res.json();
   },
   async getSeason(id) {
-    const res = await fetch(`/api/season/${id}`);
+    const res = await fetch(apiUrl(`/api/season/${id}`));
     return res.json();
   },
   async getPlayInfo(id, se = 0, ep = 0) {
-    const res = await fetch(`/api/play/${id}?se=${se}&ep=${ep}`);
+    const res = await fetch(apiUrl(`/api/play/${id}?se=${se}&ep=${ep}`));
     return res.json();
   },
   async search(keyword, page = 1) {
-    const res = await fetch(`/api/search?q=${encodeURIComponent(keyword)}&page=${page}`);
+    const res = await fetch(apiUrl(`/api/search?q=${encodeURIComponent(keyword)}&page=${page}`));
     return res.json();
   },
   async getRecommendations(id) {
-    const res = await fetch(`/api/recommend/${id}`);
+    const res = await fetch(apiUrl(`/api/recommend/${id}`));
     return res.json();
   }
 };
@@ -1208,7 +1221,7 @@ function setStreamSource(url, resolutionLabel, resumeTime = 0, remainingText = "
 
   // Direct CDN playback with no-referrer for cloud deployments, with proxy fallback
   const isCloud = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-  const proxyUrl = `/api/stream?url=${encodeURIComponent(url)}`;
+  const proxyUrl = apiUrl(`/api/stream?url=${encodeURIComponent(url)}`);
   const initialSrc = isCloud ? url : proxyUrl;
 
   elements.videoElement.src = initialSrc;
@@ -1286,7 +1299,7 @@ function setupSubtitlesDropdown(captions) {
   captions.forEach(cap => {
     const langCode = cap.languageCode || 'en';
     const langName = getLanguageName(langCode);
-    const proxyUrl = `/api/subtitle?url=${encodeURIComponent(cap.url)}`;
+    const proxyUrl = apiUrl(`/api/subtitle?url=${encodeURIComponent(cap.url)}`);
 
     // Add HTML5 Track
     const track = document.createElement('track');
