@@ -269,12 +269,47 @@ app.get('/api/season/:id', async (req, res) => {
   }
 });
 
-// 6. Get Play Info (Streaming URLs + Subtitles)
+// IMDb Cache to avoid duplicate network lookups
+const imdbCache = new Map();
+
+async function resolveImdbId(title, subjectType = 1) {
+  if (!title) return null;
+  const cleanTitle = title.replace(/\([^)]*\)/g, '').replace(/[^\w\s:-]/g, '').trim();
+  const searchType = (subjectType === 2 || subjectType === '2' || subjectType === 'series' || subjectType === 'tv') ? 'series' : 'movie';
+  const cacheKey = `${cleanTitle}_${searchType}`;
+  if (imdbCache.has(cacheKey)) return imdbCache.get(cacheKey);
+
+  try {
+    const cinemetaUrl = `https://v3-cinemeta.strem.io/catalog/${searchType}/top/search=${encodeURIComponent(cleanTitle)}.json`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3500);
+    const resp = await fetch(cinemetaUrl, { signal: controller.signal });
+    clearTimeout(timer);
+
+    if (resp.ok) {
+      const json = await resp.json();
+      if (json && json.metas && json.metas.length > 0) {
+        const imdbId = json.metas[0].imdb_id;
+        if (imdbId) {
+          imdbCache.set(cacheKey, imdbId);
+          return imdbId;
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("[IMDb Resolver] Lookup failed for", title, err.message);
+  }
+  return null;
+}
+
+// 6. Get Play Info (Streaming URLs + Subtitles + Multi-Server Auto-Failover + Hindi Audio)
 app.get('/api/play/:id', async (req, res) => {
   try {
     const subjectId = req.params.id;
-    const se = req.query.se || 0;
-    const ep = req.query.ep || 0;
+    const se = parseInt(req.query.se, 10) || 0;
+    const ep = parseInt(req.query.ep, 10) || 0;
+    const titleHint = req.query.title || "";
+    const subjectType = parseInt(req.query.type, 10) || (se > 0 ? 2 : 1);
     const vipLevel = "0";
 
     const playData = await callApi("GET", "/wefeed-tv-bff/subject/play-info/v2", { subjectId, se, ep, vipLevel });
@@ -294,6 +329,94 @@ app.get('/api/play/:id', async (req, res) => {
 
     if (playData && playData.data) {
       playData.data.captions = captions;
+    }
+
+    // Resolve Movie/Series Title
+    const title = playData?.data?.title || titleHint;
+    const imdbId = await resolveImdbId(title, subjectType);
+
+    const isSeries = subjectType === 2 || se > 0;
+    const seasonNum = se || 1;
+    const episodeNum = ep || 1;
+
+    // Build HiStream-Style Multi-Server Cluster for Auto-Failover
+    const servers = [];
+
+    // Server 1: MovieBox Direct CDN (Primary Ultra-Fast Direct MP4 / DASH)
+    servers.push({
+      id: "server-moviebox",
+      name: "Server 1: MovieBox Direct CDN",
+      tag: "Official Ultra-Fast CDN",
+      quality: "1080p / 720p / 480p",
+      type: "direct",
+      audioLanguages: ["Original Audio", "English"],
+      isDefault: true,
+      resources: playData?.data?.resources || [],
+      streams: playData?.data?.streams || []
+    });
+
+    if (imdbId) {
+      // Server 2: VidLink Ultra 4K (Hindi Dubbed + Multi-Audio)
+      servers.push({
+        id: "server-vidlink",
+        name: "Server 2: VidLink Ultra 4K (Hindi / Multi-Audio)",
+        tag: "4K UHD • Hindi Dubbed / Multi-Lang",
+        quality: "4K UHD / 1080p",
+        type: "embed",
+        audioLanguages: ["Hindi", "English", "Multi-Audio"],
+        url: isSeries
+          ? `https://vidlink.pro/tv/${imdbId}/${seasonNum}/${episodeNum}?primaryColor=ff8800&autoplay=false`
+          : `https://vidlink.pro/movie/${imdbId}?primaryColor=ff8800&autoplay=false`
+      });
+
+      // Server 3: VidSrc Multi-Mirror Pro (1080p Auto-Buffering)
+      servers.push({
+        id: "server-vidsrc",
+        name: "Server 3: VidSrc Multi-Mirror Pro",
+        tag: "1080p Full HD • Auto-Buffering",
+        quality: "1080p",
+        type: "embed",
+        audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries
+          ? `https://vidsrc.cc/v2/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`
+          : `https://vidsrc.cc/v2/embed/movie/${imdbId}`
+      });
+
+      // Server 4: AutoEmbed VIP (Hindi Dubbed & Regional)
+      servers.push({
+        id: "server-autoembed",
+        name: "Server 4: AutoEmbed VIP (Hindi Audio)",
+        tag: "1080p HD • Hindi Dubbed",
+        quality: "1080p",
+        type: "embed",
+        audioLanguages: ["Hindi", "English", "Multi-Audio"],
+        url: isSeries
+          ? `https://player.autoembed.cc/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`
+          : `https://player.autoembed.cc/embed/movie/${imdbId}`
+      });
+
+      // Server 5: SuperEmbed Cloud Mirror
+      servers.push({
+        id: "server-superembed",
+        name: "Server 5: SuperEmbed Cloud Mirror",
+        tag: "Fast Global Mirror",
+        quality: "1080p",
+        type: "embed",
+        audioLanguages: ["Multi-Audio", "English"],
+        url: isSeries
+          ? `https://multiembed.mov/?video_id=${imdbId}&tmdb=1&s=${seasonNum}&e=${episodeNum}`
+          : `https://multiembed.mov/?video_id=${imdbId}&tmdb=1`
+      });
+    }
+
+    if (playData && playData.data) {
+      playData.data.imdbId = imdbId;
+      playData.data.servers = servers;
+      playData.data.audioLanguages = [
+        { code: "hin", name: "Hindi (हिंदी)", icon: "🇮🇳" },
+        { code: "eng", name: "English (Original)", icon: "🇺🇸" },
+        { code: "multi", name: "Multi-Audio (Auto)", icon: "🌐" }
+      ];
     }
 
     res.json(playData);

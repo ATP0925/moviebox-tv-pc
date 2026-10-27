@@ -7,8 +7,10 @@
   <meta name="description" content="MovieBoxTV Desktop PC — Stream endless movies, TV series, and anime in Ultra HD 1080p and 4K natively on your Windows PC.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <!-- DASH.js for Native Multi-Bitrate 1080p / 4K DASH Streaming -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.7.4/dash.all.min.js"></script>
 </head>
 <body>
   <div id="app" class="app-container">
@@ -300,21 +302,106 @@
       </div>
     </div>
 
-    <!-- Built-in Cinema Video Player Overlay -->
+    <!-- Built-in VLC-Style Cinema Video Player Overlay -->
     <div class="player-overlay hidden" id="player-overlay">
       <video id="video-element" class="cinema-video" playsinline preload="auto" crossorigin="anonymous" referrerpolicy="no-referrer"></video>
+      <iframe id="player-iframe" class="cinema-iframe hidden" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+
+      <!-- YouTube-Style Left & Right Skip Ripple Feedback -->
+      <div class="yt-seek-ripple ripple-left hidden" id="seek-ripple-left">
+        <div class="ripple-circle">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="11 19 2 12 11 5 11 19"></polygon>
+            <polygon points="22 19 13 12 22 5 22 19"></polygon>
+          </svg>
+          <span class="ripple-seconds" id="ripple-left-text">-10s</span>
+        </div>
+      </div>
+      <div class="yt-seek-ripple ripple-right hidden" id="seek-ripple-right">
+        <div class="ripple-circle">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="13 19 22 12 13 5 13 19"></polygon>
+            <polygon points="2 19 11 12 2 5 2 19"></polygon>
+          </svg>
+          <span class="ripple-seconds" id="ripple-right-text">+10s</span>
+        </div>
+      </div>
+
+      <!-- YouTube-Style Seamless Quality Change Badge -->
+      <div class="yt-quality-badge-toast hidden" id="quality-toast">
+        <span class="yt-badge-tag">HD</span>
+        <span class="yt-badge-msg" id="quality-toast-text">1080p FHD • Seamless Buffer Updated</span>
+      </div>
+
+      <!-- Big VLC Center Play/Pause & Action OSD -->
+      <div class="vlc-osd hidden" id="vlc-osd">
+        <span class="vlc-osd-icon" id="vlc-osd-icon">▶</span>
+        <span class="vlc-osd-text" id="vlc-osd-text">PLAY</span>
+      </div>
+
+      <!-- Auto-Failover Notification Banner -->
+      <div class="failover-banner hidden" id="failover-banner">
+        <span class="pulse-icon">⚡</span>
+        <span id="failover-text">Auto-Failover: Switching to Server 2...</span>
+      </div>
 
       <!-- Loading Spinner on Video -->
       <div class="player-loader hidden" id="player-loader">
-        <div class="spinner-large"></div>
-        <p id="player-loading-text">Loading High Definition Stream...</p>
+        <div class="spinner-large vlc-spinner"></div>
+        <p id="player-loading-text">Connecting to High-Speed Stream...</p>
+        <span class="loader-server-label" id="loader-server-name">Server 1 (MovieBox CDN)</span>
       </div>
 
-      <!-- Player HUD / Controls Bar -->
-      <div class="player-controls-container" id="player-controls">
-        <!-- Top Player Bar -->
-        <div class="player-top-bar">
-          <button class="btn-player-back" id="btn-player-exit" title="Back to MovieBox (Esc)">
+      <!-- VLC Stream Inspector HUD ("Stats for Nerds") -->
+      <div class="vlc-inspector-hud hidden" id="vlc-inspector-hud">
+        <div class="inspector-header">
+          <div class="inspector-title-wrap">
+            <span class="vlc-cone-icon">▲</span>
+            <h3>VLC Media Stream Inspector</h3>
+          </div>
+          <button class="btn-inspector-close" id="btn-inspector-close" title="Close Inspector (I)">✕</button>
+        </div>
+        <div class="inspector-grid">
+          <div class="inspector-item">
+            <span class="item-label">Decoded Resolution</span>
+            <span class="item-value highlight" id="stat-resolution">Detecting...</span>
+          </div>
+          <div class="inspector-item">
+            <span class="item-label">Display Viewport</span>
+            <span class="item-value" id="stat-viewport">1920 × 1080</span>
+          </div>
+          <div class="inspector-item">
+            <span class="item-label">Active Server</span>
+            <span class="item-value" id="stat-server">Server 1: MovieBox Direct CDN</span>
+          </div>
+          <div class="inspector-item">
+            <span class="item-label">Audio Language</span>
+            <span class="item-value highlight-cyan" id="stat-audio">Hindi / Multi-Audio</span>
+          </div>
+          <div class="inspector-item">
+            <span class="item-label">Stream Format / Engine</span>
+            <span class="item-value" id="stat-format">Direct MP4 / DASH</span>
+          </div>
+          <div class="inspector-item">
+            <span class="item-label">Buffer Health</span>
+            <span class="item-value" id="stat-buffer">0.0s</span>
+          </div>
+          <div class="inspector-item">
+            <span class="item-label">Aspect Ratio Mode</span>
+            <span class="item-value" id="stat-aspect">16:9 Widescreen</span>
+          </div>
+          <div class="inspector-item">
+            <span class="item-label">Auto-Failover Engine</span>
+            <span class="item-value highlight-green" id="stat-failover">Active (Multi-Server Protected)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Player Controls Bar (VLC Player Style) -->
+      <div class="player-controls-container vlc-controls" id="player-controls">
+        <!-- Top VLC Header Bar -->
+        <div class="player-top-bar vlc-top-bar">
+          <button class="btn-player-back vlc-back" id="btn-player-exit" title="Back to Cinema (Esc)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
@@ -322,6 +409,11 @@
             <span>Back</span>
           </button>
           <div class="player-titles">
+            <div class="vlc-header-meta">
+              <span class="vlc-badge"><span class="vlc-cone-mini">▲</span> VLC Stream Engine</span>
+              <span class="server-active-pill" id="active-server-badge">Server 1 (MovieBox CDN)</span>
+              <span class="audio-active-pill" id="active-audio-badge">🗣️ Audio: Hindi</span>
+            </div>
             <h2 class="player-main-title" id="player-title">Movie Title</h2>
             <span class="player-sub-title" id="player-subtitle">1080p Full HD</span>
           </div>
@@ -330,20 +422,42 @@
         <!-- Center Click to Play / Pause Trigger Area -->
         <div class="player-center-tap" id="player-tap-area"></div>
 
-        <!-- Bottom Controls Bar -->
-        <div class="player-bottom-bar">
-          <!-- Timeline Scrubber -->
-          <div class="timeline-container" id="timeline-container">
+        <!-- Bottom Controls Bar (VLC Layout) -->
+        <div class="player-bottom-bar vlc-bottom-bar">
+          <!-- VLC High-Precision Orange Scrub Bar -->
+          <div class="timeline-container vlc-timeline" id="timeline-container">
             <div class="timeline-buffered" id="timeline-buffered"></div>
-            <div class="timeline-progress" id="timeline-progress"></div>
-            <div class="timeline-thumb" id="timeline-thumb"></div>
-            <div class="timeline-tooltip hidden" id="timeline-tooltip">00:00</div>
+            <div class="timeline-progress vlc-progress" id="timeline-progress"></div>
+            <div class="timeline-thumb vlc-thumb" id="timeline-thumb"></div>
+            <div class="timeline-tooltip hidden" id="timeline-tooltip">00:00:00</div>
           </div>
 
-          <div class="controls-row">
+          <div class="controls-row vlc-controls-row">
             <div class="controls-left">
+              <!-- Stop Button (Iconic VLC Stop) -->
+              <button class="control-btn vlc-btn" id="btn-stop" title="Stop & Rewind to Start">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="6" width="12" height="12" rx="1"></rect>
+                </svg>
+              </button>
+
+              <!-- Previous Episode / Item -->
+              <button class="control-btn vlc-btn hidden" id="btn-prev-ep" title="Previous Episode">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                  <line x1="5" y1="4" x2="5" y2="20" stroke="currentColor" stroke-width="2.5"></line>
+                </svg>
+              </button>
+
+              <!-- Rewind 10s -->
+              <button class="control-btn vlc-btn" id="btn-rewind" title="Rewind 10s (Left Arrow)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/>
+                </svg>
+              </button>
+
               <!-- Play / Pause -->
-              <button class="control-btn" id="btn-play-pause" title="Play / Pause (Space)">
+              <button class="control-btn vlc-btn vlc-play-btn" id="btn-play-pause" title="Play / Pause (Space)">
                 <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor">
                   <polygon points="5 3 19 12 5 21 5 3"></polygon>
                 </svg>
@@ -353,23 +467,24 @@
                 </svg>
               </button>
 
-              <!-- Rewind 10s -->
-              <button class="control-btn" id="btn-rewind" title="Rewind 10s (Left Arrow)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/>
-                </svg>
-              </button>
-
               <!-- Forward 10s -->
-              <button class="control-btn" id="btn-forward" title="Forward 10s (Right Arrow)">
+              <button class="control-btn vlc-btn" id="btn-forward" title="Forward 10s (Right Arrow)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M13 17l5-5-5-5M6 17l5-5-5-5"/>
                 </svg>
               </button>
 
-              <!-- Volume Control -->
-              <div class="volume-control">
-                <button class="control-btn" id="btn-volume" title="Mute / Unmute (M)">
+              <!-- Next Episode -->
+              <button class="control-btn vlc-btn hidden" id="btn-next-ep" title="Next Episode">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                  <line x1="19" y1="4" x2="19" y2="20" stroke="currentColor" stroke-width="2.5"></line>
+                </svg>
+              </button>
+
+              <!-- Volume Control with VLC percentage boost -->
+              <div class="volume-control vlc-volume-control">
+                <button class="control-btn vlc-btn" id="btn-volume" title="Mute / Unmute (M)">
                   <svg id="icon-vol-high" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -380,54 +495,52 @@
                     <line x1="17" y1="9" x2="23" y2="15"></line>
                   </svg>
                 </button>
-                <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.05" value="1">
+                <input type="range" class="volume-slider vlc-vol-slider" id="volume-slider" min="0" max="1.5" step="0.05" value="1">
+                <span class="vlc-vol-pct" id="volume-percentage">100%</span>
               </div>
 
-              <!-- Time Display -->
-              <div class="time-display">
-                <span id="current-time">0:00</span>
-                <span>/</span>
-                <span id="total-duration">0:00</span>
+              <!-- Time Display with Remaining Countdown -->
+              <div class="time-display vlc-time-display">
+                <span id="current-time">00:00:00</span>
+                <span class="vlc-time-sep">/</span>
+                <span id="total-duration">00:00:00</span>
+                <span class="vlc-time-remaining" id="time-remaining">(-00:00:00)</span>
               </div>
             </div>
 
             <div class="controls-right">
-              <!-- HD Clarity Booster Toggle -->
-              <button class="control-btn btn-clarity-toggle" id="btn-clarity-toggle" title="HD Clarity Booster (Enhances Sharpness, Contrast & Deep Blacks)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
-                </svg>
-                <span class="clarity-label" id="clarity-label">HD BOOST</span>
-              </button>
-
-              <!-- Speed Selector -->
-              <div class="player-dropdown" id="dropdown-speed-container">
-                <button class="dropdown-trigger-btn" id="btn-speed-select" title="Playback Speed">
-                  <span id="current-speed-label">1.0x</span>
+              <!-- Audio Language Selector (Hindi / English / Multi like HiStream) -->
+              <div class="player-dropdown" id="dropdown-audio-container">
+                <button class="dropdown-trigger-btn vlc-dropdown-btn audio-btn" id="btn-audio-select" title="Audio Language (Hindi / English)">
+                  <span class="btn-icon">🗣️</span>
+                  <span id="current-audio-label">Hindi</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
-                <div class="dropdown-menu hidden" id="speed-menu">
-                  <button class="dropdown-option" data-speed="0.75">0.75x</button>
-                  <button class="dropdown-option active" data-speed="1.0">1.0x Normal</button>
-                  <button class="dropdown-option" data-speed="1.25">1.25x</button>
-                  <button class="dropdown-option" data-speed="1.5">1.5x</button>
-                  <button class="dropdown-option" data-speed="2.0">2.0x</button>
-                </div>
+                <div class="dropdown-menu vlc-menu hidden" id="audio-menu"></div>
               </div>
 
-              <!-- Quality Dropdown Selector -->
-              <div class="player-dropdown" id="dropdown-quality-container">
-                <button class="dropdown-trigger-btn" id="btn-quality-select" title="Resolution Quality">
-                  <span id="current-quality-label">1080p</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
+              <!-- Server Failover Hub Selector -->
+              <div class="player-dropdown" id="dropdown-server-container">
+                <button class="dropdown-trigger-btn vlc-dropdown-btn server-btn" id="btn-server-select" title="Streaming Servers & Failover">
+                  <span class="btn-icon">🖥️</span>
+                  <span id="current-server-label">Server 1</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
-                <div class="dropdown-menu hidden" id="quality-menu"></div>
+                <div class="dropdown-menu vlc-menu hidden" id="server-menu"></div>
+              </div>
+
+              <!-- Quality Resolution Selector with Real Resolution Verification -->
+              <div class="player-dropdown" id="dropdown-quality-container">
+                <button class="dropdown-trigger-btn vlc-dropdown-btn quality-btn" id="btn-quality-select" title="Resolution Quality (4K / 1080p)">
+                  <span id="current-quality-label">1080p FHD</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="dropdown-menu vlc-menu hidden" id="quality-menu"></div>
               </div>
 
               <!-- Subtitles Dropdown Selector -->
               <div class="player-dropdown" id="dropdown-subtitles-container">
-                <button class="dropdown-trigger-btn" id="btn-subtitles-select" title="Subtitles / Captions">
+                <button class="dropdown-trigger-btn vlc-dropdown-btn" id="btn-subtitles-select" title="Subtitles (CC)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                     <line x1="6" y1="15" x2="10" y2="15"></line>
@@ -436,11 +549,39 @@
                   </svg>
                   <span id="current-subtitle-label">CC</span>
                 </button>
-                <div class="dropdown-menu hidden" id="subtitles-menu"></div>
+                <div class="dropdown-menu vlc-menu hidden" id="subtitles-menu"></div>
+              </div>
+
+              <!-- VLC Aspect Ratio Button -->
+              <button class="control-btn vlc-btn" id="btn-aspect-ratio" title="Aspect Ratio (Fit / 16:9 / 4:3 / Cinema)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                  <line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+              </button>
+
+              <!-- VLC Stream Inspector HUD Button ("Stats for Nerds") -->
+              <button class="control-btn vlc-btn btn-inspector-toggle" id="btn-inspector-toggle" title="VLC Stream Inspector / Stats for Nerds (I)">
+                <span style="font-weight: 800; font-size: 13px;">STATS</span>
+              </button>
+
+              <!-- Speed Selector -->
+              <div class="player-dropdown" id="dropdown-speed-container">
+                <button class="dropdown-trigger-btn vlc-dropdown-btn" id="btn-speed-select" title="Playback Speed ([ / ])">
+                  <span id="current-speed-label">1.0x</span>
+                </button>
+                <div class="dropdown-menu vlc-menu hidden" id="speed-menu">
+                  <button class="dropdown-option" data-speed="0.5">0.5x Slower</button>
+                  <button class="dropdown-option" data-speed="0.75">0.75x</button>
+                  <button class="dropdown-option active" data-speed="1.0">1.0x Normal</button>
+                  <button class="dropdown-option" data-speed="1.25">1.25x</button>
+                  <button class="dropdown-option" data-speed="1.5">1.5x</button>
+                  <button class="dropdown-option" data-speed="2.0">2.0x Double</button>
+                </div>
               </div>
 
               <!-- Fullscreen Button -->
-              <button class="control-btn" id="btn-player-fullscreen" title="Fullscreen (F)">
+              <button class="control-btn vlc-btn" id="btn-player-fullscreen" title="Fullscreen (F / F11)">
                 <svg id="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
                 </svg>
