@@ -331,7 +331,9 @@
     <!-- Built-in VLC-Style Cinema Video Player Overlay -->
     <div class="player-overlay hidden" id="player-overlay">
       <video id="video-element" class="cinema-video" playsinline preload="auto"></video>
+      <video id="video-standby" class="cinema-video hidden" playsinline muted preload="auto"></video>
       <iframe id="player-iframe" class="cinema-iframe hidden" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+      <iframe id="player-iframe-standby" class="cinema-iframe hidden" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>
 
       <!-- YouTube-Style Left & Right Skip Ripple Feedback -->
       <div class="yt-seek-ripple ripple-left hidden" id="seek-ripple-left">
@@ -367,7 +369,7 @@
 
       <!-- Auto-Failover Notification Banner (Netflix Glass) -->
       <div class="failover-banner netflix-failover hidden" id="failover-banner">
-        <span class="pulse-icon">⚡</span>
+        <span class="pulse-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
         <span id="failover-text">Auto-Failover: Switching to Server 2...</span>
       </div>
 
@@ -385,7 +387,7 @@
             <span class="netflix-n-badge">N</span>
             <h3>Stream Inspector & Audio Diagnostics</h3>
           </div>
-          <button class="btn-inspector-close" id="btn-inspector-close" title="Close Inspector (I)">✕</button>
+          <button class="btn-inspector-close" id="btn-inspector-close" title="Close Inspector (I)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         </div>
         <div class="inspector-grid">
           <div class="inspector-item">
@@ -427,21 +429,56 @@
       <div class="player-controls-container netflix-controls" id="player-controls">
         <!-- Top Netflix Header Bar -->
         <div class="player-top-bar netflix-top-bar">
-          <button class="btn-player-back netflix-back" id="btn-player-exit" title="Back to Cinema (Esc)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span>Back</span>
-          </button>
-          <div class="player-titles">
-            <div class="netflix-header-meta">
-              <span class="netflix-brand-badge"><span class="brand-n">N</span> ULTRA STREAM</span>
-              <span class="server-active-pill" id="active-server-badge">Server 1 (MovieBox CDN)</span>
-              <span class="audio-active-pill" id="active-audio-badge">🗣️ Audio: Hindi</span>
+          <div class="player-top-left">
+            <button class="btn-player-back netflix-back" id="btn-player-exit" title="Back to Cinema (Esc)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span>Back</span>
+            </button>
+            <div class="player-titles">
+              <div class="netflix-header-meta">
+                <span class="netflix-brand-badge"><span class="brand-n">N</span> ULTRA STREAM</span>
+                <span class="server-active-pill" id="active-server-badge">Server 1 (Direct CDN)</span>
+                <span class="server-standby-pill" id="standby-server-badge" title="Hot Standby Server ready for 0ms Instant Failover">
+                  <span class="standby-dot"></span>
+                  <span id="standby-server-text">Hot Standby: Server 2</span>
+                </span>
+                <span class="audio-active-pill" id="active-audio-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align: -1px; margin-right: 4px;">
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                  </svg>
+                  <span id="active-audio-text">Audio: Hindi</span>
+                </span>
+              </div>
+              <h2 class="player-main-title" id="player-title">Movie Title</h2>
+              <span class="player-sub-title" id="player-subtitle">1080p Ultra HD</span>
             </div>
-            <h2 class="player-main-title" id="player-title">Movie Title</h2>
-            <span class="player-sub-title" id="player-subtitle">1080p Ultra HD</span>
+          </div>
+
+          <!-- Top Quick Actions (Always accessible in Direct and Cloud Embed modes) -->
+          <div class="player-top-actions">
+            <div class="player-dropdown" id="dropdown-server-top-container">
+              <button class="dropdown-trigger-btn netflix-dropdown-btn server-btn-top" id="btn-server-select-top" title="Switch Video Server (Dual Stream Protected)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                  <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                  <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                  <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                  <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                </svg>
+                <span id="current-server-top-label">Switch Server</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+              <div class="dropdown-menu netflix-menu hidden" id="server-menu-top"></div>
+            </div>
+
+            <button class="control-btn netflix-btn btn-top-fullscreen" id="btn-top-fullscreen" title="Toggle Fullscreen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -564,7 +601,10 @@
               <!-- Audio Language Selector (Hindi / English / Multi like HiStream) -->
               <div class="player-dropdown" id="dropdown-audio-container">
                 <button class="dropdown-trigger-btn netflix-dropdown-btn audio-btn" id="btn-audio-select" title="Audio Language (Hindi / English)">
-                  <span class="btn-icon">🗣️</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15" class="pro-control-icon">
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                  </svg>
                   <span id="current-audio-label">Hindi</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
@@ -574,7 +614,12 @@
               <!-- Server Failover Hub Selector -->
               <div class="player-dropdown" id="dropdown-server-container">
                 <button class="dropdown-trigger-btn netflix-dropdown-btn server-btn" id="btn-server-select" title="Streaming Servers & Failover">
-                  <span class="btn-icon">🖥️</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15" class="pro-control-icon">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                  </svg>
                   <span id="current-server-label">Server 1</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
@@ -658,9 +703,13 @@
         </div>
 
         <div class="apps-grid">
-          <!-- Android APK -->
+          <!-- Android APK (Official Android Robot SVG) -->
           <div class="app-card">
-            <div class="app-card-icon">🤖</div>
+            <div class="app-card-icon android-icon-wrap" title="Android OS">
+              <svg viewBox="0 0 24 24" fill="#3DDC84" width="28" height="28" class="platform-svg">
+                <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.997-3.4587a.416.416 0 00-.1523-.5676.416.416 0 00-.568.1524l-2.0224 3.5028c-1.4646-.6682-3.0886-1.037-4.8358-1.037-1.747 0-3.3712.3688-4.8358 1.037L5.4372 5.4475a.416.416 0 00-.568-.1524.416.416 0 00-.1523.5676l1.997 3.4587C2.9602 11.4588.4 15.545.4 20.3h23.2c0-4.755-2.5602-8.8412-6.7185-10.9786"/>
+              </svg>
+            </div>
             <div class="app-card-info">
               <h3>Android Application</h3>
               <p>Hardware accelerated APK (90/120Hz smooth, no clipping)</p>
@@ -669,9 +718,13 @@
             <a href="downloads/android/MovieBoxTV.apk" download class="btn-app-download">Download APK</a>
           </div>
 
-          <!-- Windows PC -->
+          <!-- Windows PC (Microsoft Windows 11 Fluent 4-Squares SVG) -->
           <div class="app-card">
-            <div class="app-card-icon">🪟</div>
+            <div class="app-card-icon windows-icon-wrap" title="Microsoft Windows 10 / 11">
+              <svg viewBox="0 0 24 24" fill="#00A4EF" width="28" height="28" class="platform-svg">
+                <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.551H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.849"/>
+              </svg>
+            </div>
             <div class="app-card-info">
               <h3>Windows PC</h3>
               <p>Standalone App Launcher (Ultra HD, 0% CPU overhead)</p>
@@ -680,9 +733,13 @@
             <a href="downloads/windows/MovieBox_Windows.bat" download class="btn-app-download">Download .BAT</a>
           </div>
 
-          <!-- iOS (iPhone / iPad) -->
+          <!-- iOS (iPhone / iPad - Official Apple Logo SVG) -->
           <div class="app-card">
-            <div class="app-card-icon">🍏</div>
+            <div class="app-card-icon apple-icon-wrap" title="Apple iOS">
+              <svg viewBox="0 0 24 24" fill="#FFFFFF" width="28" height="28" class="platform-svg">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.38c.62-.75 1.04-1.8 0.93-2.85-.9.04-1.98.6-2.62 1.35-.57.65-1.06 1.72-.93 2.74 1 .08 2.01-.49 2.62-1.24z"/>
+              </svg>
+            </div>
             <div class="app-card-info">
               <h3>iOS (iPhone & iPad)</h3>
               <p>1-Tap Home Screen WebClip (Fullscreen, No Safari URL bar)</p>
@@ -691,9 +748,15 @@
             <a href="downloads/ios/MovieBox_iOS.mobileconfig" download class="btn-app-download">Install Profile</a>
           </div>
 
-          <!-- Mac -->
+          <!-- macOS App (Apple Mac Retina Monitor SVG) -->
           <div class="app-card">
-            <div class="app-card-icon">🍎</div>
+            <div class="app-card-icon mac-icon-wrap" title="Apple macOS">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#A2AAAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" class="platform-svg">
+                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
             <div class="app-card-info">
               <h3>macOS App</h3>
               <p>Retina-optimized standalone window launcher</p>
@@ -702,9 +765,14 @@
             <a href="downloads/mac/MovieBox_Mac.command" download class="btn-app-download">Download .COMMAND</a>
           </div>
 
-          <!-- Linux -->
-          <div class="app-card">
-            <div class="app-card-icon">🐧</div>
+          <!-- Linux App (Linux Terminal / Tux SVG - spans full width) -->
+          <div class="app-card card-linux">
+            <div class="app-card-icon linux-icon-wrap" title="Linux Distributions">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FCC624" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" class="platform-svg">
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+            </div>
             <div class="app-card-info">
               <h3>Linux App</h3>
               <p>Desktop entry & shell launcher for all distros</p>
@@ -715,7 +783,13 @@
         </div>
 
         <div class="apps-modal-footer">
-          <span>🔒 100% Ad-Free • Verified Builds • Auto-Updating Cloud Engine</span>
+          <div class="apps-verified-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.2" width="16" height="16">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+            <span>100% Ad-Free • Verified Builds • Auto-Updating Cloud Engine</span>
+          </div>
         </div>
       </div>
     </div>

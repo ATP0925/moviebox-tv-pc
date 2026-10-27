@@ -184,6 +184,86 @@ runTest("PWA & Offline: manifest.webmanifest and sw.js exist and are valid", () 
   assert(manifest.icons.length >= 2, "Must provide icons");
 });
 
+// ----------------------------------------------------
+// TEST 9: Netflix Ultra-Low Latency Dual-Channel Hot Standby
+// ----------------------------------------------------
+runTest("Ultra-Low Latency Switching: Dual video/iframe pipelines and DNS preconnect engine", () => {
+  const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+
+  // Verify dual pipelines in HTML
+  assert(indexHtml.includes('id="video-element"'), "Must have primary video element");
+  assert(indexHtml.includes('id="video-standby"'), "Must have standby video element for parallel preloading");
+  assert(indexHtml.includes('id="player-iframe"'), "Must have primary iframe element");
+  assert(indexHtml.includes('id="player-iframe-standby"'), "Must have standby iframe element");
+
+  // Verify switching functions in JS
+  assert(appJs.includes("function armHotStandbyServer()"), "Must define armHotStandbyServer");
+  assert(appJs.includes("function executeZeroLatencySwitch("), "Must define executeZeroLatencySwitch");
+  assert(appJs.includes("function preconnectAllServers("), "Must define preconnectAllServers");
+  assert(appJs.includes("preconnect"), "Must inject preconnect link headers");
+  assert(appJs.includes("dns-prefetch"), "Must inject dns-prefetch link headers");
+  assert(appJs.includes("bindVideoPlaybackEvents("), "Must bind events to both video elements for double buffering");
+});
+
+// ----------------------------------------------------
+// TEST 10: Quarantine & Self-Healing Background Rotation
+// ----------------------------------------------------
+runTest("Self-Healing Rotation: Quarantined servers probed in background and rotated to backup slot", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+
+  // Verify quarantine state
+  assert(appJs.includes("quarantineServers: {}"), "Must track quarantined servers in state");
+  assert(appJs.includes("function verifyServerRecovery("), "Must implement background health probe");
+  assert(appJs.includes("state.backupServerIndex = failedIndex;"), "Must rotate recovered server back into backup standby slot");
+  assert(appJs.includes("STANDBY"), "Must display STANDBY tag in server selector");
+  assert(appJs.includes("HEALING"), "Must display HEALING tag during recovery");
+});
+
+// ----------------------------------------------------
+// TEST 11: Zero Cartoon Emojis Guarantee across Codebase
+// ----------------------------------------------------
+runTest("Zero Emojis: 100% Professional Vector SVGs and Typography in HTML & JS", () => {
+  const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+
+  const emojiRegex = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
+  const hasEmojiInHtml = emojiRegex.test(indexHtml);
+  const hasEmojiInJs = emojiRegex.test(appJs);
+
+  assert(!hasEmojiInHtml, "index.html must not contain cartoon emojis");
+  assert(!hasEmojiInJs, "app.js must not contain cartoon emojis");
+});
+
+// ----------------------------------------------------
+// TEST 12: Download Modal Wide Responsive Grid (No Clipping)
+// ----------------------------------------------------
+runTest("Download Modal: Max-width 860px and responsive layout for all 5 platforms", () => {
+  const stylesCss = fs.readFileSync(path.join(__dirname, 'public', 'styles.css'), 'utf8');
+
+  assert(stylesCss.includes("max-width: 860px;"), "Download modal must have max-width 860px for full card visibility");
+  assert(stylesCss.includes(".apps-grid"), "Must define .apps-grid");
+  assert(stylesCss.includes(".card-linux"), "Must style .card-linux span");
+});
+
+// ----------------------------------------------------
+// TEST 13: Iframe Controls Overlay Suppression & Top Controls
+// ----------------------------------------------------
+runTest("Iframe Interactive Isolation: HTML5 bottom controls suppressed, floating top bar enabled", () => {
+  const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(__dirname, 'public', 'styles.css'), 'utf8');
+
+  // HTML Top floating buttons
+  assert(indexHtml.includes('id="btn-server-select-top"'), "Must include top floating server button");
+  assert(indexHtml.includes('id="btn-top-fullscreen"'), "Must include top floating fullscreen button");
+
+  // CSS pointer isolation
+  assert(stylesCss.includes(".player-overlay.iframe-active .player-bottom-bar,"), "Must suppress bottom bar when iframe is active");
+  assert(stylesCss.includes("display: none !important;"), "Must hide overlapping controls with !important");
+  assert(stylesCss.includes(".player-overlay.iframe-active .cinema-iframe"), "Must style active cinema-iframe");
+});
+
 console.log("\n=================================================");
 console.log(`🎯 RESULTS: ${passedCount} / ${totalCount} TESTS PASSED (100%)`);
 console.log("=================================================");
+

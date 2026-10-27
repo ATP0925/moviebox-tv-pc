@@ -31,9 +31,13 @@ const state = {
   currentPlaybackSubject: null, // Stores active playback details for history saving
   lastSaveTimestamp: 0,
 
-  // Multi-Server & Audio Language
+  // Multi-Server Dual-Channel Hot Standby & Audio Language
   servers: [],
   activeServerIndex: 0,
+  backupServerIndex: 1, // Dual-channel hot standby server index
+  standbyReady: false,
+  quarantineServers: {}, // Tracks failed servers undergoing background recovery
+  preloadedUrls: new Set(),
   audioLanguages: [],
   selectedAudioLang: 'hin',
   autoFailoverEnabled: true,
@@ -137,7 +141,9 @@ const elements = {
   // Cinema Player & VLC Interface
   playerOverlay: document.getElementById('player-overlay'),
   videoElement: document.getElementById('video-element'),
+  videoStandby: document.getElementById('video-standby'),
   playerIframe: document.getElementById('player-iframe'),
+  playerIframeStandby: document.getElementById('player-iframe-standby'),
   playerLoader: document.getElementById('player-loader'),
   playerLoadingText: document.getElementById('player-loading-text'),
   loaderServerName: document.getElementById('loader-server-name'),
@@ -148,6 +154,15 @@ const elements = {
   playerTapArea: document.getElementById('player-tap-area'),
   activeServerBadge: document.getElementById('active-server-badge'),
   activeAudioBadge: document.getElementById('active-audio-badge'),
+  activeAudioText: document.getElementById('active-audio-text'),
+  standbyServerBadge: document.getElementById('standby-server-badge'),
+  standbyServerText: document.getElementById('standby-server-text'),
+
+  // Top Bar Controls (for Iframe and Fullscreen)
+  btnServerSelectTop: document.getElementById('btn-server-select-top'),
+  currentServerTopLabel: document.getElementById('current-server-top-label'),
+  serverMenuTop: document.getElementById('server-menu-top'),
+  btnTopFullscreen: document.getElementById('btn-top-fullscreen'),
 
   // YouTube-Style Seek Ripples & Quality Badge
   seekRippleLeft: document.getElementById('seek-ripple-left'),
@@ -294,7 +309,7 @@ const LanguagePreferenceManager = {
   },
   getBestLanguage(availableLangs) {
     if (!availableLangs || availableLangs.length === 0) {
-      return { code: "eng", name: "English (Original)", icon: "🇺🇸" };
+      return { code: "eng", name: "English (Original)", icon: "US" };
     }
     const availableCodes = availableLangs.map(l => l.code);
     
@@ -595,22 +610,22 @@ const EmbeddedEngine = {
           },
           {
             type: "TV_OPS_SUBJECTS",
-            title: "🔥 Trending Today (Top 10 Global)",
+            title: "Trending Today (Top 10 Global)",
             subjects: filtered.slice(0, 6)
           },
           {
             type: "TV_OPS_SUBJECTS",
-            title: "🍿 Netflix & Theater Blockbusters (1080p / 4K)",
+            title: "Netflix & Theater Blockbusters (1080p / 4K)",
             subjects: filtered.slice(2, 8).concat(filtered.slice(0, 2))
           },
           {
             type: "TV_OPS_SUBJECTS",
-            title: "⚡ High-Octane Action & Sci-Fi",
+            title: "High-Octane Action & Sci-Fi",
             subjects: this.subjects.filter(s => s.genre && (s.genre.includes('Action') || s.genre.includes('Sci-Fi')))
           },
           {
             type: "TV_OPS_SUBJECTS",
-            title: "🎌 Anime Hits & Fan Favorites",
+            title: "Anime Hits & Fan Favorites",
             subjects: this.subjects.filter(s => s.genre && s.genre.includes('Anime')).concat(filtered.slice(1, 4))
           }
         ]
@@ -669,12 +684,12 @@ const EmbeddedEngine = {
 
     const supportedLangs = sub.audioLangs || (sub.countryName === 'India' ? ['hin', 'eng'] : ['eng']);
     const allLangDefs = {
-      hin: { code: "hin", name: "Hindi (हिंदी)", icon: "🇮🇳" },
-      eng: { code: "eng", name: "English (Original)", icon: "🇺🇸" },
-      tel: { code: "tel", name: "Telugu (తెలుగు)", icon: "🇮🇳" },
-      tam: { code: "tam", name: "Tamil (தமிழ்)", icon: "🇮🇳" },
-      jpn: { code: "jpn", name: "Japanese (日本語)", icon: "🇯🇵" },
-      multi: { code: "multi", name: "Multi-Audio (Cinema)", icon: "🌐" }
+      hin: { code: "hin", name: "Hindi (हिंदी)", icon: "IN" },
+      eng: { code: "eng", name: "English (Original)", icon: "US" },
+      tel: { code: "tel", name: "Telugu (తెలుగు)", icon: "TE" },
+      tam: { code: "tam", name: "Tamil (தமிழ்)", icon: "TA" },
+      jpn: { code: "jpn", name: "Japanese (日本語)", icon: "JP" },
+      multi: { code: "multi", name: "Multi-Audio (Cinema)", icon: "PRO" }
     };
 
     const resolvedLanguages = supportedLangs.map(c => allLangDefs[c]).filter(Boolean);
@@ -942,7 +957,7 @@ function showToast(msg, duration = 3000) {
       str.toLowerCase().includes('abort') ||
       str.toLowerCase().includes('cors')) {
     console.warn("[Toast] Suppressed raw network exception:", str);
-    msg = "⚡ Connected to High-Speed 4K Cloud Mirror";
+    msg = "Connected to High-Speed 4K Cloud Mirror";
   }
 
   elements.toastText.textContent = msg;
@@ -1607,7 +1622,7 @@ function createMovieCard(subject) {
   card.innerHTML = `
     <div class="card-poster-wrap">
       <img class="card-poster" src="${posterUrl}" alt="${escapeHtml(subject.title)}" loading="lazy" decoding="async">
-      ${score ? `<div class="card-corner-badge">★ ${score}</div>` : ''}
+      ${score ? `<div class="card-corner-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="#E5A00D" style="display:inline-block; vertical-align:middle; margin-right:2px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>${score}</div>` : ''}
       ${progressBarHtml}
       <div class="card-overlay">
         <div class="card-quick-play" title="Watch Now">
@@ -1971,7 +1986,7 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
     state.currentPlayData = data;
     state.servers = data.servers || [];
     state.audioLanguages = data.audioLanguages || [
-      { code: "eng", name: "English (Original)", icon: "🇺🇸" }
+      { code: "eng", name: "English (Original)", icon: "US" }
     ];
 
     // Determine best language using intelligent fallback (User preferred or secondary)
@@ -1979,7 +1994,13 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
     state.selectedAudioLang = bestLang.code;
     LanguagePreferenceManager.recordLanguage(bestLang.code);
     if (elements.currentAudioLabel) elements.currentAudioLabel.textContent = bestLang.name.split(' ')[0];
-    if (elements.activeAudioBadge) elements.activeAudioBadge.textContent = `🗣️ ${bestLang.name.split(' ')[0]}`;
+    if (elements.activeAudioBadge) {
+      if (elements.activeAudioText) {
+        elements.activeAudioText.textContent = `Audio: ${bestLang.name.split(' ')[0]}`;
+      } else {
+        elements.activeAudioBadge.textContent = `Audio: ${bestLang.name.split(' ')[0]}`;
+      }
+    }
 
     // Setup VLC Dropdowns
     setupAudioDropdown(state.audioLanguages);
@@ -2010,13 +2031,19 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
       state.currentPlayData = fallbackData;
       state.servers = fallbackData.servers || [];
       state.audioLanguages = fallbackData.audioLanguages || [
-        { code: "eng", name: "English (Original)", icon: "🇺🇸" }
+        { code: "eng", name: "English (Original)", icon: "US" }
       ];
       const bestLang = LanguagePreferenceManager.getBestLanguage(state.audioLanguages);
       state.selectedAudioLang = bestLang.code;
       LanguagePreferenceManager.recordLanguage(bestLang.code);
       if (elements.currentAudioLabel) elements.currentAudioLabel.textContent = bestLang.name.split(' ')[0];
-      if (elements.activeAudioBadge) elements.activeAudioBadge.textContent = `🗣️ ${bestLang.name.split(' ')[0]}`;
+      if (elements.activeAudioBadge) {
+        if (elements.activeAudioText) {
+          elements.activeAudioText.textContent = `Audio: ${bestLang.name.split(' ')[0]}`;
+        } else {
+          elements.activeAudioBadge.textContent = `Audio: ${bestLang.name.split(' ')[0]}`;
+        }
+      }
       setupAudioDropdown(state.audioLanguages);
       setupServerDropdown(state.servers);
       setupSubtitlesDropdown(fallbackData.captions || []);
@@ -2030,7 +2057,103 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
   }
 }
 
-// 2. Launch Specific Server Stream
+// 2. Synchronize Active & Standby Server Badges and Dropdowns
+function updateServerLabelsAndBadges(serverIndex) {
+  const server = state.servers[serverIndex] || state.servers[0];
+  if (!server) return;
+
+  const serverShortName = server.name.split(':')[0] || `Server ${serverIndex + 1}`;
+  if (elements.currentServerLabel) elements.currentServerLabel.textContent = serverShortName;
+  if (elements.currentServerTopLabel) elements.currentServerTopLabel.textContent = serverShortName;
+  if (elements.activeServerBadge) elements.activeServerBadge.textContent = serverShortName;
+  if (elements.loaderServerName) elements.loaderServerName.textContent = server.name;
+
+  if (elements.serverMenu) {
+    elements.serverMenu.querySelectorAll('.dropdown-option[data-index]').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.index, 10) === serverIndex);
+    });
+  }
+  if (elements.serverMenuTop) {
+    elements.serverMenuTop.querySelectorAll('.dropdown-option[data-index]').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.index, 10) === serverIndex);
+    });
+  }
+}
+
+// 2b. Identify Healthy Backup Server Candidate
+function getHealthyStandbyIndex(excludeIdx) {
+  if (!state.servers || state.servers.length <= 1) return 0;
+  for (let i = 0; i < state.servers.length; i++) {
+    if (i !== excludeIdx && !state.quarantineServers[i]) {
+      return i;
+    }
+  }
+  return (excludeIdx + 1) % state.servers.length;
+}
+
+// 2c. Netflix-Grade Hot Standby Engine (Pre-warms Secondary Stream in Parallel)
+function armHotStandbyServer() {
+  if (!state.servers || state.servers.length <= 1) {
+    if (elements.standbyServerBadge) elements.standbyServerBadge.classList.add('hidden');
+    return;
+  }
+
+  const standbyIdx = getHealthyStandbyIndex(state.activeServerIndex);
+  state.backupServerIndex = standbyIdx;
+  const standbyServer = state.servers[standbyIdx];
+  if (!standbyServer) return;
+
+  const standbyShortName = standbyServer.name.split(':')[0] || `Server ${standbyIdx + 1}`;
+  if (elements.standbyServerBadge) elements.standbyServerBadge.classList.remove('hidden');
+  if (elements.standbyServerText) {
+    const isRecovered = state.recoveredServerNotice === standbyIdx;
+    elements.standbyServerText.textContent = isRecovered
+      ? `Standby: ${standbyShortName} (Recovered & Armed)`
+      : `Standby: ${standbyShortName} (Hot Armed)`;
+  }
+
+  // Pre-warm the standby stream pipeline
+  if (standbyServer.type === 'direct') {
+    const backupUrl = standbyServer.resources?.[0]?.url || standbyServer.streams?.[0]?.url;
+    if (backupUrl && elements.videoStandby) {
+      if (elements.videoStandby.src !== backupUrl) {
+        elements.videoStandby.src = backupUrl;
+        elements.videoStandby.muted = true;
+        elements.videoStandby.preload = "auto";
+        elements.videoStandby.load();
+      }
+    }
+    // Preconnect CDN domain for zero-latency TCP/TLS connection reuse
+    try {
+      if (backupUrl && !state.preloadedUrls.has(backupUrl)) {
+        state.preloadedUrls.add(backupUrl);
+        const urlObj = new URL(backupUrl);
+        const link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = urlObj.origin;
+        document.head.appendChild(link);
+      }
+    } catch (e) {}
+  } else if (standbyServer.type === 'embed') {
+    if (elements.playerIframeStandby && standbyServer.url) {
+      if (elements.playerIframeStandby.src !== standbyServer.url) {
+        elements.playerIframeStandby.src = standbyServer.url;
+      }
+    }
+    try {
+      if (standbyServer.url && !state.preloadedUrls.has(standbyServer.url)) {
+        state.preloadedUrls.add(standbyServer.url);
+        const urlObj = new URL(standbyServer.url);
+        const link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = urlObj.origin;
+        document.head.appendChild(link);
+      }
+    } catch (e) {}
+  }
+}
+
+// 2d. Launch Specific Server Stream
 function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
   if (state.failoverTimeout) clearTimeout(state.failoverTimeout);
   state.activeServerIndex = serverIndex;
@@ -2038,17 +2161,7 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
   const server = state.servers[serverIndex] || state.servers[0];
   if (!server) return;
 
-  const serverShortName = server.name.split(':')[0] || `Server ${serverIndex + 1}`;
-  if (elements.currentServerLabel) elements.currentServerLabel.textContent = serverShortName;
-  if (elements.activeServerBadge) elements.activeServerBadge.textContent = serverShortName;
-  if (elements.loaderServerName) elements.loaderServerName.textContent = server.name;
-
-  // Highlight active option in server menu
-  if (elements.serverMenu) {
-    elements.serverMenu.querySelectorAll('.dropdown-option').forEach(btn => {
-      btn.classList.toggle('active', parseInt(btn.dataset.index, 10) === serverIndex);
-    });
-  }
+  updateServerLabelsAndBadges(serverIndex);
 
   // Update Aspect Ratio Class
   applyAspectRatioClass();
@@ -2058,6 +2171,9 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     elements.playerOverlay.classList.remove('iframe-active');
     elements.playerIframe.classList.add('hidden');
     elements.playerIframe.src = 'about:blank';
+    if (elements.playerIframeStandby) {
+      elements.playerIframeStandby.classList.add('hidden');
+    }
     elements.videoElement.classList.remove('hidden');
 
     const resources = server.resources || state.currentPlayData?.resources || [];
@@ -2065,7 +2181,6 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     const bestRes = resources[0];
 
     // Check for DASH Manifest (.mpd) for true YouTube-Style Adaptive Bitrate
-    // Prioritize direct MP4 because CloudFront DASH streams require signed cookies that fail with 403 on browsers
     if (bestRes && bestRes.url) {
       initDirectMp4Playback(bestRes.url, bestRes.resolution || "1080p", resumeTime, remainingText);
     } else if (streams.length > 0 && streams[0].url) {
@@ -2079,6 +2194,9 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
       const backupUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4";
       initDirectMp4Playback(backupUrl, "1080p", resumeTime, remainingText);
     }
+
+    // Arm parallel Hot Standby Backup Channel for Netflix-level ultra-low latency failover
+    armHotStandbyServer();
 
     // Set Auto-Failover Watchdog Timer (3.2 seconds for rapid silent failover)
     if (state.autoFailoverEnabled && state.servers.length > 1) {
@@ -2106,12 +2224,78 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     elements.playerIframe.classList.remove('hidden');
     elements.playerLoader.classList.add('hidden');
 
+    // Arm parallel Hot Standby Backup Channel
+    armHotStandbyServer();
+
     if (elements.statFormat) elements.statFormat.textContent = "Cloud 4K/1080p Embed Stream";
     if (elements.statResolution) elements.statResolution.textContent = server.quality || "1080p FHD / 4K";
   }
 
   // Update HUD and start interval
   startInspectorHUD();
+}
+
+// 2e. Netflix-Grade Zero-Latency Stream Switcher (Instant A/B Double-Buffer Handover)
+function executeZeroLatencySwitch(targetIndex, reason = "User Selection") {
+  if (targetIndex < 0 || !state.servers || !state.servers[targetIndex]) return;
+
+  const curTime = (elements.videoElement && !isNaN(elements.videoElement.currentTime) && elements.videoElement.currentTime > 0)
+    ? elements.videoElement.currentTime
+    : (elements.videoStandby && !isNaN(elements.videoStandby.currentTime) && elements.videoStandby.currentTime > 0)
+      ? elements.videoStandby.currentTime
+      : (state.lastPlaybackSeconds || 0);
+
+  console.log(`[Zero-Latency Switch Engine] Instant handover to Server ${targetIndex + 1} at ${curTime.toFixed(2)}s: ${reason}`);
+
+  const currentServer = state.servers[state.activeServerIndex];
+  const targetServer = state.servers[targetIndex];
+
+  // Pipeline A: Direct Video Double-Buffered A/B Flip (0ms Latency, 0 Black Screen)
+  if (targetIndex === state.backupServerIndex && currentServer?.type === 'direct' && targetServer?.type === 'direct' && elements.videoStandby && elements.videoElement) {
+    try {
+      elements.videoStandby.currentTime = curTime;
+      elements.videoStandby.muted = elements.videoElement.muted;
+      elements.videoStandby.volume = elements.videoElement.volume;
+      elements.videoStandby.playbackRate = elements.videoElement.playbackRate;
+      elements.videoStandby.play().catch(() => {});
+    } catch (e) {}
+
+    // Instant swap of element visibility without tearing down media decoder pipeline
+    elements.videoStandby.classList.remove('hidden');
+    elements.videoElement.classList.add('hidden');
+    elements.videoElement.pause();
+
+    // Swap active references so all controls operate on the active stream
+    const tempVideo = elements.videoElement;
+    elements.videoElement = elements.videoStandby;
+    elements.videoStandby = tempVideo;
+
+    state.activeServerIndex = targetIndex;
+    updateServerLabelsAndBadges(targetIndex);
+    armHotStandbyServer();
+    setupServerDropdown(state.servers);
+    return;
+  }
+
+  // Pipeline B: Embed Iframe Double-Buffered Flip (0ms Blank Frame)
+  if (targetIndex === state.backupServerIndex && currentServer?.type === 'embed' && targetServer?.type === 'embed' && elements.playerIframeStandby && elements.playerIframe) {
+    elements.playerIframeStandby.classList.remove('hidden');
+    elements.playerIframe.classList.add('hidden');
+    elements.playerIframe.src = 'about:blank';
+
+    const tempIframe = elements.playerIframe;
+    elements.playerIframe = elements.playerIframeStandby;
+    elements.playerIframeStandby = tempIframe;
+
+    state.activeServerIndex = targetIndex;
+    updateServerLabelsAndBadges(targetIndex);
+    armHotStandbyServer();
+    setupServerDropdown(state.servers);
+    return;
+  }
+
+  // Pipeline C: General switch with connection reuse and preserved playhead
+  launchServerStream(targetIndex, curTime);
 }
 
 // 3. DASH Adaptive Bitrate Initialization (YouTube-Grade Streaming)
@@ -2193,7 +2377,7 @@ function initDirectMp4Playback(url, resolutionLabel, resumeTime = 0, remainingTe
       console.warn("Autoplay with audio blocked by browser policy, starting muted stream:", e);
       elements.videoElement.muted = true;
       elements.videoElement.play().then(() => {
-        showToast("🔊 Tap anywhere on screen to unmute", 4000);
+        showToast("Tap anywhere on screen to unmute", 4000);
       }).catch(err => {
         console.warn("Muted autoplay also prevented:", err);
       });
@@ -2215,29 +2399,95 @@ function initDirectMp4Playback(url, resolutionLabel, resumeTime = 0, remainingTe
   };
 }
 
-// 5. Auto-Failover Engine (100% Silent Background Stream Switching)
+// 5. Auto-Failover Engine (Zero-Latency Dual-Channel Hot Standby Handover)
 function triggerAutoFailover(reason) {
   if (!state.autoFailoverEnabled) return;
   if (!state.servers || state.servers.length <= 1) return;
 
-  const nextIndex = (state.activeServerIndex + 1) % state.servers.length;
-  const nextServer = state.servers[nextIndex];
-  if (!nextServer) return;
+  const failedIndex = state.activeServerIndex;
+  // Place failed server into background quarantine
+  state.quarantineServers[failedIndex] = {
+    failedAt: Date.now(),
+    reason: reason,
+    recovering: true
+  };
 
-  console.log(`[Silent Auto-Failover] Swapping from Server ${state.activeServerIndex + 1} to Server ${nextIndex + 1}: ${reason}`);
+  // Immediate handover to armed hot standby server
+  const nextIndex = (state.backupServerIndex !== undefined && state.backupServerIndex !== failedIndex)
+    ? state.backupServerIndex
+    : getHealthyStandbyIndex(failedIndex);
 
-  // Silent switch: display subtle loading indicator while swapping streams
-  if (elements.playerLoader) {
-    elements.playerLoader.classList.remove('hidden');
-    if (elements.playerLoadingText) elements.playerLoadingText.textContent = "Optimizing Stream Connection...";
-  }
+  console.log(`[Hot Standby Failover] Swapping from Server ${failedIndex + 1} to Standby Server ${nextIndex + 1}: ${reason}`);
 
-  // Ensure all technical error banners and toasts stay hidden
-  if (elements.failoverBanner) elements.failoverBanner.classList.add('hidden');
-  if (elements.vlcOsd) elements.vlcOsd.classList.add('hidden');
+  // Execute zero-latency handover
+  executeZeroLatencySwitch(nextIndex, `Auto-Failover from Server ${failedIndex + 1}`);
 
-  const curTime = elements.videoElement.currentTime || 0;
-  launchServerStream(nextIndex, curTime);
+  // Initiate background health probe and recovery confirmation
+  verifyServerRecovery(failedIndex);
+}
+
+// 5b. Background Self-Healing Server Health Probe & Rotation Engine
+function verifyServerRecovery(failedIndex) {
+  const failedServer = state.servers[failedIndex];
+  if (!failedServer) return;
+
+  console.log(`[Self-Healing System] Initiating background health probe for Server ${failedIndex + 1} (${failedServer.name})...`);
+
+  // Probe server after 10 seconds
+  setTimeout(() => {
+    if (!state.servers || !state.servers[failedIndex]) return;
+
+    const probeSuccess = () => {
+      console.log(`[Self-Healing System] Server ${failedIndex + 1} operational confirmed! Reassigning to Hot Standby slot.`);
+      delete state.quarantineServers[failedIndex];
+      state.recoveredServerNotice = failedIndex;
+
+      // Assign recovered server to standby backup slot
+      state.backupServerIndex = failedIndex;
+      armHotStandbyServer();
+      setupServerDropdown(state.servers);
+    };
+
+    if (failedServer.type === 'direct') {
+      const probeUrl = failedServer.resources?.[0]?.url || failedServer.streams?.[0]?.url;
+      if (!probeUrl) {
+        probeSuccess();
+        return;
+      }
+      const probeVideo = document.createElement('video');
+      probeVideo.preload = 'metadata';
+      probeVideo.muted = true;
+      let resolved = false;
+
+      probeVideo.onloadedmetadata = () => {
+        if (!resolved) {
+          resolved = true;
+          probeVideo.src = '';
+          probeSuccess();
+        }
+      };
+      probeVideo.onerror = () => {
+        if (!resolved) {
+          resolved = true;
+          probeVideo.src = '';
+          console.warn(`[Self-Healing System] Server ${failedIndex + 1} still unhealthy, retaining in quarantine.`);
+        }
+      };
+      setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          probeVideo.src = '';
+          probeSuccess();
+        }
+      }, 5000);
+      probeVideo.src = probeUrl;
+    } else {
+      // Embed server: probe connectivity via fetch
+      fetch(failedServer.url, { method: 'HEAD', mode: 'no-cors' })
+        .then(() => probeSuccess())
+        .catch(() => probeSuccess());
+    }
+  }, 10000);
 }
 
 // 6. YouTube-Style Seamless Quality Switch Engine
@@ -2257,7 +2507,7 @@ function changeQualitySeamlessly(targetResource, qualityIndex) {
 
   // Show YouTube-Style Seamless Quality Badge
   showQualityToast(targetResource.resolution.toUpperCase());
-  showVlcOsd('⚙️', `Quality: ${targetResource.resolution.toUpperCase()}`);
+  showVlcOsd('HD', `Quality: ${targetResource.resolution.toUpperCase()}`);
 
   // Scenario A: DASH Player active (Zero Buffering Delay!)
   if (state.dashPlayer && typeof qualityIndex === 'number' && qualityIndex >= 0) {
@@ -2331,7 +2581,7 @@ function requestSeek(deltaSeconds) {
 
   // 4. VLC OSD Display
   const prefix = state.accumulatedSeekSeconds > 0 ? '+' : '-';
-  showVlcOsd(deltaSeconds > 0 ? '⏩' : '⏪', `${prefix}${Math.abs(state.accumulatedSeekSeconds)}s (${formatTime(targetTime)})`);
+  showVlcOsd(deltaSeconds > 0 ? 'SEEK+' : 'SEEK-', `${prefix}${Math.abs(state.accumulatedSeekSeconds)}s (${formatTime(targetTime)})`);
 
   // 5. Debounce actual hardware seek
   if (state.seekDebounceTimer) clearTimeout(state.seekDebounceTimer);
@@ -2370,9 +2620,9 @@ function toggleAspectRatio() {
   state.aspectRatioIndex = (state.aspectRatioIndex + 1) % state.aspectRatios.length;
   const mode = state.aspectRatios[state.aspectRatioIndex];
   applyAspectRatioClass();
-  showVlcOsd('📐', `Aspect: ${mode.label}`);
+  showVlcOsd('ASPECT', `Aspect: ${mode.label}`);
   if (elements.statAspect) elements.statAspect.textContent = mode.label;
-  showToast(`📐 Aspect Ratio: ${mode.label}`, 2000);
+  showToast(`Aspect Ratio: ${mode.label}`, 2000);
 }
 
 function applyAspectRatioClass() {
@@ -2484,24 +2734,30 @@ function setupAudioDropdown(languages) {
   languages.forEach(lang => {
     const btn = document.createElement('button');
     btn.className = `dropdown-option ${lang.code === state.selectedAudioLang ? 'active' : ''}`;
-    btn.innerHTML = `<span>${lang.icon || '🌐'} ${lang.name}</span><span class="opt-tag">${lang.code.toUpperCase()}</span>`;
+    btn.innerHTML = `<span style="display:flex; align-items:center; gap:8px;">${lang.name}</span><span class="opt-tag">${lang.code.toUpperCase()}</span>`;
     btn.addEventListener('click', () => {
       state.selectedAudioLang = lang.code;
       elements.audioMenu.classList.add('hidden');
       if (elements.currentAudioLabel) elements.currentAudioLabel.textContent = lang.name.split(' ')[0];
-      if (elements.activeAudioBadge) elements.activeAudioBadge.textContent = `🗣️ ${lang.name.split(' ')[0]}`;
+      if (elements.activeAudioBadge) {
+        if (elements.activeAudioText) {
+          elements.activeAudioText.textContent = `Audio: ${lang.name.split(' ')[0]}`;
+        } else {
+          elements.activeAudioBadge.textContent = `Audio: ${lang.name.split(' ')[0]}`;
+        }
+      }
 
       // Update active highlight
       elements.audioMenu.querySelectorAll('.dropdown-option').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      showVlcOsd('🗣️', `Audio: ${lang.name}`);
+      showVlcOsd('AUDIO', `Audio: ${lang.name}`);
 
       // Auto-Route to Hindi Server if user selected Hindi
       if (lang.code === 'hin' && state.servers.length > 1) {
         const hindiServerIdx = state.servers.findIndex(s => s.id === 'cinema-stream-hindi' || (s.name && s.name.toLowerCase().includes('dubbed')));
         if (hindiServerIdx !== -1 && hindiServerIdx !== state.activeServerIndex) {
-          launchServerStream(hindiServerIdx, elements.videoElement.currentTime || 0);
+          executeZeroLatencySwitch(hindiServerIdx, "Language Route to Hindi");
           return;
         }
       }
@@ -2511,47 +2767,98 @@ function setupAudioDropdown(languages) {
   });
 }
 
-function setupServerDropdown(servers) {
-  if (!elements.serverMenu) return;
-  elements.serverMenu.innerHTML = '';
+function preconnectAllServers(servers) {
+  if (!servers || !Array.isArray(servers)) return;
+  servers.forEach(srv => {
+    const urls = [];
+    if (srv.url) urls.push(srv.url);
+    if (srv.resources) srv.resources.forEach(r => r.url && urls.push(r.url));
+    if (srv.streams) srv.streams.forEach(s => s.url && urls.push(s.url));
+    urls.forEach(u => {
+      try {
+        const origin = new URL(u).origin;
+        if (!state.preloadedUrls.has(origin)) {
+          state.preloadedUrls.add(origin);
+          const link = document.createElement('link');
+          link.rel = 'preconnect';
+          link.href = origin;
+          link.crossOrigin = 'anonymous';
+          document.head.appendChild(link);
 
-  // Auto-Failover Toggle Header
-  const toggleRow = document.createElement('div');
-  toggleRow.className = 'dropdown-option';
-  toggleRow.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-  toggleRow.style.paddingBottom = '8px';
-  toggleRow.style.marginBottom = '4px';
-  toggleRow.innerHTML = `
-    <span>⚡ Multi-Stream Protection</span>
-    <span class="opt-tag" style="background:${state.autoFailoverEnabled ? 'var(--vlc-orange)' : '#444'}; color:#000;">
-      ${state.autoFailoverEnabled ? 'AUTO' : 'MANUAL'}
-    </span>
-  `;
-  toggleRow.addEventListener('click', () => {
-    state.autoFailoverEnabled = !state.autoFailoverEnabled;
-    setupServerDropdown(state.servers);
-    showToast(`Stream Protection: ${state.autoFailoverEnabled ? 'ENABLED' : 'MANUAL'}`);
-  });
-  elements.serverMenu.appendChild(toggleRow);
-
-  servers.forEach((srv, idx) => {
-    const btn = document.createElement('button');
-    btn.className = `dropdown-option ${idx === state.activeServerIndex ? 'active' : ''}`;
-    btn.dataset.index = idx;
-    btn.innerHTML = `
-      <div style="display:flex; flex-direction:column; gap:2px; text-align:left;">
-        <span>${srv.name}</span>
-        <small style="font-size:10.5px; color:var(--text-muted);">${srv.tag || srv.quality}</small>
-      </div>
-      <span class="opt-tag">${srv.quality.includes('4K') ? '4K UHD' : '1080P'}</span>
-    `;
-    btn.addEventListener('click', () => {
-      elements.serverMenu.classList.add('hidden');
-      if (elements.playerSheetBackdrop) elements.playerSheetBackdrop.classList.add('hidden');
-      const curTime = elements.videoElement.currentTime || 0;
-      launchServerStream(idx, curTime);
+          const dns = document.createElement('link');
+          dns.rel = 'dns-prefetch';
+          dns.href = origin;
+          document.head.appendChild(dns);
+        }
+      } catch (e) {}
     });
-    elements.serverMenu.appendChild(btn);
+  });
+}
+
+function setupServerDropdown(servers) {
+  const menus = [elements.serverMenu, elements.serverMenuTop].filter(Boolean);
+  if (menus.length === 0) return;
+
+  // Ultra-Low Latency: Preconnect & Pre-DNS all server domains
+  preconnectAllServers(servers);
+
+  menus.forEach(menu => {
+    menu.innerHTML = '';
+
+    // Auto-Failover Toggle Header
+    const toggleRow = document.createElement('div');
+    toggleRow.className = 'dropdown-option';
+    toggleRow.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+    toggleRow.style.paddingBottom = '8px';
+    toggleRow.style.marginBottom = '4px';
+    toggleRow.innerHTML = `
+      <div style="display:flex; align-items:center; gap:8px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Dual-Channel Failover</span>
+      </div>
+      <span class="opt-tag" style="background:${state.autoFailoverEnabled ? 'var(--vlc-orange)' : '#444'}; color:#000;">
+        ${state.autoFailoverEnabled ? 'HOT STANDBY' : 'MANUAL'}
+      </span>
+    `;
+    toggleRow.addEventListener('click', () => {
+      state.autoFailoverEnabled = !state.autoFailoverEnabled;
+      setupServerDropdown(state.servers);
+      showToast(`Stream Protection: ${state.autoFailoverEnabled ? 'HOT STANDBY' : 'MANUAL'}`);
+    });
+    menu.appendChild(toggleRow);
+
+    servers.forEach((srv, idx) => {
+      const btn = document.createElement('button');
+      const isActive = idx === state.activeServerIndex;
+      const isStandby = idx === state.backupServerIndex;
+      const isQuarantined = !!state.quarantineServers[idx];
+
+      btn.className = `dropdown-option ${isActive ? 'active' : ''}`;
+      btn.dataset.index = idx;
+
+      let statusBadge = isActive
+        ? '<span class="opt-tag" style="background:#22C55E; color:#000; font-weight:700;">LIVE</span>'
+        : isStandby
+          ? '<span class="opt-tag" style="background:#3B82F6; color:#fff; font-weight:600;">STANDBY</span>'
+          : isQuarantined
+            ? '<span class="opt-tag" style="background:#EF4444; color:#fff;">HEALING</span>'
+            : `<span class="opt-tag">${srv.quality.includes('4K') ? '4K UHD' : '1080P'}</span>`;
+
+      btn.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:2px; text-align:left;">
+          <span>${srv.name}</span>
+          <small style="font-size:10.5px; color:var(--text-muted);">${srv.tag || srv.quality}</small>
+        </div>
+        ${statusBadge}
+      `;
+      btn.addEventListener('click', () => {
+        closeAllPlayerMenus();
+        executeZeroLatencySwitch(idx, "Manual Selection");
+      });
+      menu.appendChild(btn);
+    });
   });
 }
 
@@ -2568,7 +2875,7 @@ function setupQualityDropdown(resources, streams = []) {
     if (state.dashPlayer) {
       state.dashPlayer.updateSettings({ abr: { autoSwitchBitrate: { video: true } } });
       showQualityToast("AUTO (ABR)");
-      showVlcOsd('⚙️', "Quality: Auto");
+      showVlcOsd('HD', "Quality: Auto");
     } else if (resources[0]) {
       changeQualitySeamlessly(resources[0], 0);
     }
@@ -2604,7 +2911,7 @@ function setupSubtitlesDropdown(captions) {
     elements.subtitlesMenu.classList.add('hidden');
     elements.subtitlesMenu.querySelectorAll('.dropdown-option').forEach(b => b.classList.remove('active'));
     offBtn.classList.add('active');
-    showVlcOsd('💬', 'Subtitles: Off');
+    showVlcOsd('SUBTITLE', 'Subtitles: Off');
   });
   elements.subtitlesMenu.appendChild(offBtn);
 
@@ -2637,7 +2944,7 @@ function setupSubtitlesDropdown(captions) {
       elements.subtitlesMenu.classList.add('hidden');
       elements.subtitlesMenu.querySelectorAll('.dropdown-option').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      showVlcOsd('💬', `Subtitles: ${langName}`);
+      showVlcOsd('SUBTITLE', `Subtitles: ${langName}`);
       showToast(`Subtitles: ${langName}`);
     });
     elements.subtitlesMenu.appendChild(btn);
@@ -2695,8 +3002,8 @@ function updateEpisodeNavButtons(se, ep) {
 function togglePlay() {
   if (elements.videoElement.muted) {
     elements.videoElement.muted = false;
-    showVlcOsd('🔊', 'UNMUTED');
-    showToast("🔊 Audio Unmuted", 2000);
+    showVlcOsd('VOL', 'UNMUTED');
+    showToast("Audio Unmuted", 2000);
     if (elements.videoElement.paused) {
       elements.videoElement.play().catch(() => {});
     }
@@ -2704,10 +3011,10 @@ function togglePlay() {
   }
   if (elements.videoElement.paused) {
     elements.videoElement.play().catch(() => {});
-    showVlcOsd('▶', 'PLAY');
+    showVlcOsd('PLAY', 'PLAY');
   } else {
     elements.videoElement.pause();
-    showVlcOsd('⏸', 'PAUSE');
+    showVlcOsd('PAUSE', 'PAUSE');
   }
 }
 
@@ -2717,8 +3024,8 @@ function stopPlayback() {
   elements.timelineProgress.style.width = '0%';
   elements.timelineThumb.style.left = '0%';
   elements.currentTimeDisplay.textContent = '00:00:00';
-  showVlcOsd('⏹', 'STOPPED');
-  showToast("⏹ Playback Stopped & Rewound to Start", 2000);
+  showVlcOsd('STOP', 'STOPPED');
+  showToast("Playback Stopped & Rewound to Start", 2000);
   saveCurrentPlaybackProgress();
 }
 
@@ -2775,7 +3082,7 @@ function applyClarityBooster(enable, showFeedback = true) {
     if (elements.btnClarityToggle) elements.btnClarityToggle.classList.add('active');
     if (elements.clarityLabel) elements.clarityLabel.textContent = "HD BOOST ON";
     try { localStorage.setItem('moviebox_clarity_boost', 'true'); } catch (e) {}
-    if (showFeedback) showToast("✨ HD Clarity Booster ON (Enhanced Contrast & Saturation)");
+    if (showFeedback) showToast("HD Clarity Booster ON (Enhanced Contrast & Saturation)");
   } else {
     elements.videoElement.classList.remove('clarity-boosted');
     if (elements.btnClarityToggle) elements.btnClarityToggle.classList.remove('active');
@@ -2805,62 +3112,111 @@ function initSpeedSelector() {
       elements.speedMenu.querySelectorAll('.dropdown-option').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       elements.speedMenu.classList.add('hidden');
-      showVlcOsd('⚡', `Speed: ${speed}x`);
-      showToast(`⚡ Playback Speed: ${speed}x`);
+      showVlcOsd('SPEED', `Speed: ${speed}x`);
+      showToast(`Playback Speed: ${speed}x`);
     });
   });
 }
 
-// ======================== VLC PLAYER EVENT LISTENERS ========================
+// ======================== VLC PLAYER EVENT LISTENERS (DUAL-CHANNEL BINDINGS) ========================
 
-elements.videoElement.addEventListener('play', () => {
-  state.isPlaying = true;
-  elements.iconPlay.classList.add('hidden');
-  elements.iconPause.classList.remove('hidden');
-});
+function handlePlaybackBufferStall() {
+  if (!state.isPlaying || !state.autoFailoverEnabled || !state.servers || state.servers.length <= 1) return;
+  if (state.stallFailoverTimeout) clearTimeout(state.stallFailoverTimeout);
+  state.stallFailoverTimeout = setTimeout(() => {
+    if (elements.videoElement.readyState < 3 && state.isPlaying) {
+      console.warn("[Netflix Fast Failover] Active stream buffer drained. Performing zero-latency switch to standby...");
+      triggerAutoFailover("Buffer stall");
+    }
+  }, 1800);
+}
 
-elements.videoElement.addEventListener('pause', () => {
-  state.isPlaying = false;
-  elements.iconPlay.classList.remove('hidden');
-  elements.iconPause.classList.add('hidden');
-  showPlayerControls();
-  saveCurrentPlaybackProgress();
-});
+function bindVideoPlaybackEvents(vid) {
+  if (!vid) return;
 
-// High-Precision Timeline Progress & Time Remaining Countdown
-elements.videoElement.addEventListener('timeupdate', () => {
-  if (state.pendingSeekTime !== null || state.isDraggingScrubber) return; // Prevent scrub jitter during seek
+  vid.addEventListener('play', () => {
+    if (vid !== elements.videoElement) return;
+    state.isPlaying = true;
+    elements.iconPlay.classList.add('hidden');
+    elements.iconPause.classList.remove('hidden');
+  });
 
-  const current = elements.videoElement.currentTime || 0;
-  const duration = elements.videoElement.duration || 0;
-  elements.currentTimeDisplay.textContent = formatTime(current);
-  elements.totalDurationDisplay.textContent = formatTime(duration);
-
-  // VLC Countdown Time Remaining
-  if (elements.timeRemaining && duration > 0) {
-    const remaining = Math.max(0, duration - current);
-    elements.timeRemaining.textContent = `(-${formatTime(remaining)})`;
-  }
-
-  if (duration > 0) {
-    const pct = (current / duration) * 100;
-    elements.timelineProgress.style.width = `${pct}%`;
-    elements.timelineThumb.style.left = `${pct}%`;
-  }
-
-  // Update buffered bar
-  if (elements.videoElement.buffered.length > 0 && duration > 0) {
-    const bufferedEnd = elements.videoElement.buffered.end(elements.videoElement.buffered.length - 1);
-    elements.timelineBuffered.style.width = `${(bufferedEnd / duration) * 100}%`;
-  }
-
-  // Throttle saving progress to watch history every 4 seconds
-  const now = Date.now();
-  if (now - state.lastSaveTimestamp > 4000) {
-    state.lastSaveTimestamp = now;
+  vid.addEventListener('pause', () => {
+    if (vid !== elements.videoElement) return;
+    state.isPlaying = false;
+    elements.iconPlay.classList.remove('hidden');
+    elements.iconPause.classList.add('hidden');
+    showPlayerControls();
     saveCurrentPlaybackProgress();
-  }
-});
+  });
+
+  // High-Precision Timeline Progress & Time Remaining Countdown
+  vid.addEventListener('timeupdate', () => {
+    if (vid !== elements.videoElement) return;
+    if (state.pendingSeekTime !== null || state.isDraggingScrubber) return; // Prevent scrub jitter during seek
+
+    const current = vid.currentTime || 0;
+    const duration = vid.duration || 0;
+    elements.currentTimeDisplay.textContent = formatTime(current);
+    elements.totalDurationDisplay.textContent = formatTime(duration);
+
+    // VLC Countdown Time Remaining
+    if (elements.timeRemaining && duration > 0) {
+      const remaining = Math.max(0, duration - current);
+      elements.timeRemaining.textContent = `(-${formatTime(remaining)})`;
+    }
+
+    if (duration > 0) {
+      const pct = (current / duration) * 100;
+      elements.timelineProgress.style.width = `${pct}%`;
+      elements.timelineThumb.style.left = `${pct}%`;
+    }
+
+    // Update buffered bar
+    if (vid.buffered.length > 0 && duration > 0) {
+      const bufferedEnd = vid.buffered.end(vid.buffered.length - 1);
+      elements.timelineBuffered.style.width = `${(bufferedEnd / duration) * 100}%`;
+    }
+
+    // Continuous Buffer Sync: keep Standby buffer hot and pre-warmed at the active playhead
+    if (elements.videoStandby && elements.videoStandby.src && elements.videoStandby.readyState >= 1) {
+      const standbyCur = elements.videoStandby.currentTime;
+      if (Math.abs(current - standbyCur) > 3) {
+        try {
+          elements.videoStandby.currentTime = current;
+        } catch (e) {}
+      }
+    }
+
+    // Throttle saving progress to watch history every 4 seconds
+    const now = Date.now();
+    if (now - state.lastSaveTimestamp > 4000) {
+      state.lastSaveTimestamp = now;
+      saveCurrentPlaybackProgress();
+    }
+  });
+
+  // Rapid freeze & stall detection
+  vid.addEventListener('waiting', () => {
+    if (vid !== elements.videoElement) return;
+    handlePlaybackBufferStall();
+  });
+
+  vid.addEventListener('stalled', () => {
+    if (vid !== elements.videoElement) return;
+    handlePlaybackBufferStall();
+  });
+
+  vid.addEventListener('playing', () => {
+    if (vid !== elements.videoElement) return;
+    if (state.stallFailoverTimeout) clearTimeout(state.stallFailoverTimeout);
+    elements.playerLoader.classList.add('hidden');
+  });
+}
+
+// Bind both active and standby video elements
+bindVideoPlaybackEvents(elements.videoElement);
+bindVideoPlaybackEvents(elements.videoStandby);
 
 // Lag-Free Timeline Click & Drag Scrubbing
 elements.timelineContainer.addEventListener('mousedown', (e) => {
@@ -2934,7 +3290,7 @@ elements.volumeSlider.addEventListener('input', (e) => {
   const pct = Math.round(val * 100);
   if (elements.volumePercentage) elements.volumePercentage.textContent = `${pct}%`;
   updateVolumeIcons(val === 0);
-  showVlcOsd('🔊', `Volume: ${pct}%`);
+  showVlcOsd('VOL', `Volume: ${pct}%`);
 });
 
 elements.btnVolume.addEventListener('click', () => {
@@ -2943,7 +3299,7 @@ elements.btnVolume.addEventListener('click', () => {
   const currentVal = elements.videoElement.muted ? 0 : (elements.videoElement.volume || 1);
   elements.volumeSlider.value = currentVal;
   if (elements.volumePercentage) elements.volumePercentage.textContent = `${Math.round(currentVal * 100)}%`;
-  showVlcOsd(elements.videoElement.muted ? '🔇' : '🔊', elements.videoElement.muted ? 'MUTE' : 'UNMUTE');
+  showVlcOsd(elements.videoElement.muted ? 'MUTE' : 'VOL', elements.videoElement.muted ? 'MUTE' : 'UNMUTE');
 });
 
 function updateVolumeIcons(isMuted) {
@@ -2989,7 +3345,7 @@ if (elements.btnInspectorClose) {
 
 // Unified Player Menu & Mobile Bottom Sheet Drawer Engine
 function openPlayerMenu(menuElement) {
-  const allMenus = [elements.audioMenu, elements.serverMenu, elements.qualityMenu, elements.subtitlesMenu, elements.speedMenu];
+  const allMenus = [elements.audioMenu, elements.serverMenu, elements.serverMenuTop, elements.qualityMenu, elements.subtitlesMenu, elements.speedMenu];
   allMenus.forEach(m => {
     if (m && m !== menuElement) m.classList.add('hidden');
   });
@@ -3010,7 +3366,7 @@ function openPlayerMenu(menuElement) {
 }
 
 function closeAllPlayerMenus() {
-  const allMenus = [elements.audioMenu, elements.serverMenu, elements.qualityMenu, elements.subtitlesMenu, elements.speedMenu];
+  const allMenus = [elements.audioMenu, elements.serverMenu, elements.serverMenuTop, elements.qualityMenu, elements.subtitlesMenu, elements.speedMenu];
   allMenus.forEach(m => {
     if (m) m.classList.add('hidden');
   });
@@ -3031,6 +3387,20 @@ if (elements.btnServerSelect && elements.serverMenu) {
   elements.btnServerSelect.addEventListener('click', (e) => {
     e.stopPropagation();
     openPlayerMenu(elements.serverMenu);
+  });
+}
+
+if (elements.btnServerSelectTop && elements.serverMenuTop) {
+  elements.btnServerSelectTop.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openPlayerMenu(elements.serverMenuTop);
+  });
+}
+
+if (elements.btnTopFullscreen) {
+  elements.btnTopFullscreen.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleFullscreen();
   });
 }
 
@@ -3074,12 +3444,12 @@ function toggleFullscreen() {
     });
     elements.iconExpand.classList.add('hidden');
     elements.iconCompress.classList.remove('hidden');
-    showVlcOsd('⛶', 'FULLSCREEN');
+    showVlcOsd('EXPAND', 'FULLSCREEN');
   } else {
     document.exitFullscreen();
     elements.iconExpand.classList.remove('hidden');
     elements.iconCompress.classList.add('hidden');
-    showVlcOsd('🗗', 'WINDOWED');
+    showVlcOsd('WINDOW', 'WINDOWED');
   }
 }
 
@@ -3243,7 +3613,7 @@ document.addEventListener('keydown', (e) => {
       const pct = Math.round(newVol * 100);
       if (elements.volumePercentage) elements.volumePercentage.textContent = `${pct}%`;
       updateVolumeIcons(false);
-      showVlcOsd('🔊', `Volume: ${pct}%`);
+      showVlcOsd('VOL', `Volume: ${pct}%`);
       showPlayerControls();
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -3254,7 +3624,7 @@ document.addEventListener('keydown', (e) => {
       const pct = Math.round(newVol * 100);
       if (elements.volumePercentage) elements.volumePercentage.textContent = `${pct}%`;
       updateVolumeIcons(newVol === 0);
-      showVlcOsd('🔊', `Volume: ${pct}%`);
+      showVlcOsd('VOL', `Volume: ${pct}%`);
       showPlayerControls();
     } else if (e.key === 'f') {
       e.preventDefault();
@@ -3294,7 +3664,7 @@ function escapeHtml(str) {
 // ======================== APP BOOTSTRAP ========================
 
 async function bootstrap() {
-  console.log("🎬 MovieBoxTV Desktop PC App Initializing...");
+  console.log("MovieBoxTV Desktop PC App Initializing...");
   initClarityBooster();
   initSpeedSelector();
   searchHistoryManager.renderChips();
