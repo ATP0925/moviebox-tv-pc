@@ -355,9 +355,9 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
       ],
       servers: [
         {
-          id: "server-vidlink",
-          name: "Server 1: VidLink Ultra 4K (Hindi / Multi-Audio)",
-          tag: "4K UHD • Hindi Dubbed / Multi-Lang",
+          id: "server-1",
+          name: "Server 1: Cinema Cloud 4K",
+          tag: "4K UHD HDR Adaptive",
           quality: "4K UHD / 1080p",
           type: "embed",
           audioLanguages: ["Hindi", "English", "Multi-Audio"],
@@ -365,58 +365,157 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           isDefault: true
         },
         {
-          id: "server-embedsu",
-          name: "Server 2: EmbedSu Fast HLS",
-          tag: "Zero-Buffering High-Speed Mirror",
+          id: "server-2",
+          name: "Server 2: Cinema Multi-CDN",
+          tag: "Multi-CDN Global Network",
           quality: "1080p Full HD",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://embed.su/embed/movie/tt2285752"
+          url: "https://nontongo.win/embed/movie/tt2285752"
         },
         {
-          id: "server-vidsrc",
-          name: "Server 3: VidSrc Multi-Mirror Pro",
-          tag: "1080p Full HD • Auto-Buffering",
+          id: "server-3",
+          name: "Server 3: Cinema Turbo",
+          tag: "Turbo Fast Stream",
+          quality: "4K / 1080p",
+          type: "embed",
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://vidfast.pro/movie/tt2285752"
+        },
+        {
+          id: "server-4",
+          name: "Server 4: Cinema Premium",
+          tag: "Premium Multi-Source Player",
           quality: "1080p",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://vidsrc.cc/v2/embed/movie/tt2285752"
+          url: "https://vidsrc.pm/embed/movie/tt2285752"
         },
         {
-          id: "server-autoembed",
-          name: "Server 4: AutoEmbed VIP (Hindi Audio)",
-          tag: "1080p HD • Hindi Dubbed",
+          id: "server-5",
+          name: "Server 5: Cinema Ultra HD",
+          tag: "Ultra HD Streaming Engine",
           quality: "1080p",
           type: "embed",
-          audioLanguages: ["Hindi", "English", "Multi-Audio"],
-          url: "https://player.autoembed.cc/embed/movie/tt2285752"
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://vidjoy.pro/embed/movie/tt2285752"
         },
         {
-          id: "server-superembed",
-          name: "Server 5: MultiEmbed VIP Stream",
-          tag: "Fast Global VIP Cloud Mirror",
-          quality: "1080p",
-          type: "embed",
-          audioLanguages: ["Multi-Audio", "English"],
-          url: "https://multiembed.mov/?video_id=tt2285752&tmdb=1"
-        },
-        {
-          id: "server-smashystream",
-          name: "Server 6: SmashyStream Ultra",
-          tag: "Multi-Source Cloud Load Balanced",
+          id: "server-6",
+          name: "Server 6: Cinema Videasy",
+          tag: "Smart Adaptive Player",
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English", "Hindi"],
-          url: "https://player.smashystream.com/movie/tt2285752"
+          url: "https://player.videasy.net/movie/tt2285752"
         },
         {
-          id: "server-2embed",
-          name: "Server 7: 2Embed Emergency Fallback",
-          tag: "Guaranteed 100% Uptime Mirror",
+          id: "server-7",
+          name: "Server 7: Cinema NL Mirror",
+          tag: "Netherlands Fast Mirror",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://player.vidsrc.nl/embed/movie/tt2285752"
+        },
+        {
+          id: "server-8",
+          name: "Server 8: Cinema Skin",
+          tag: "Premium Cloud Skin Server",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://www.2embed.skin/embed/tt2285752"
+        },
+        {
+          id: "server-9",
+          name: "Server 9: Cinema RIP Mirror",
+          tag: "High-Speed RIP Mirror",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["English"],
+          url: "https://vidsrc.rip/embed/movie/tt2285752"
+        },
+        {
+          id: "server-10",
+          name: "Server 10: Cinema Global",
+          tag: "Global Cluster Backup",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://2embed.org/embed/movie/tt2285752"
+        },
+        {
+          id: "server-11",
+          name: "Server 11: Cinema VidBinge",
+          tag: "Binge-Optimized Stream",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["English"],
+          url: "https://vidbinge.dev/embed/movie/tt2285752"
+        },
+        {
+          id: "server-12",
+          name: "Server 12: Cinema CC",
+          tag: "CC Reliable Uptime Mirror",
           quality: "720p / 1080p",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
           url: "https://www.2embed.cc/embed/tt2285752"
+        },
+        {
+          id: "server-13",
+          name: "Server 13: Cinema AutoEmbed",
+          tag: "Auto-Source Multi-Provider",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["Hindi", "English", "Multi-Audio"],
+          url: "https://autoembed.co/movie/imdb/tt2285752"
+        },
+        {
+          id: "server-14",
+          name: "Server 14: Cinema EmbedRise",
+          tag: "Rise Ultra Stream Engine",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["English"],
+          url: "https://embedrise.com/embed/movie/tt2285752"
+        },
+        {
+          id: "server-15",
+          name: "Server 15: Cinema FrEmbed",
+          tag: "French Ultra-Fast Server",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://frembed.pro/api/film.php?id=tt2285752"
+        },
+        {
+          id: "server-16",
+          name: "Server 16: Cinema Dev",
+          tag: "Developer-Grade Stream",
+          quality: "720p / 1080p",
+          type: "embed",
+          audioLanguages: ["English"],
+          url: "https://vidsrc.dev/embed/movie/tt2285752"
+        },
+        {
+          id: "server-17",
+          name: "Server 17: Cinema 123 Net",
+          tag: "123 Network Backup Mirror",
+          quality: "720p / 1080p",
+          type: "embed",
+          audioLanguages: ["English"],
+          url: "https://play2.123embed.net/movie/tt2285752"
+        },
+        {
+          id: "server-18",
+          name: "Server 18: Cinema 111 Movies",
+          tag: "111 Movies Emergency Fallback",
+          quality: "720p / 1080p",
+          type: "embed",
+          audioLanguages: ["English"],
+          url: "https://111movies.com/embed/movie/tt2285752"
         },
         {
           id: "server-moviebox",
@@ -521,7 +620,7 @@ app.get('/api/play/:id', async (req, res) => {
       if (imdbId) {
         mock.data.imdbId = imdbId;
         mock.data.servers[1].url = isSeries ? `https://vidlink.pro/tv/${imdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://vidlink.pro/movie/${imdbId}?primaryColor=e50914&autoplay=false`;
-        mock.data.servers[2].url = isSeries ? `https://vidsrc.cc/v2/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.cc/v2/embed/movie/${imdbId}`;
+        mock.data.servers[2].url = isSeries ? `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://nontongo.win/embed/movie/${imdbId}`;
       }
       return res.json(mock);
     }
@@ -547,95 +646,113 @@ app.get('/api/play/:id', async (req, res) => {
     });
 
     if (imdbId) {
-      // Server 2: VidLink Ultra 4K (Hindi Dubbed + Multi-Audio)
+      // Server 2: VidLink Ultra 4K
       servers.push({
-        id: "server-vidlink",
-        name: "Server 2: VidLink Ultra 4K (Hindi / Multi-Audio)",
-        tag: "4K UHD • Hindi Dubbed / Multi-Lang",
-        quality: "4K UHD / 1080p",
-        type: "embed",
-        audioLanguages: ["Hindi", "English", "Multi-Audio"],
-        url: isSeries
-          ? `https://vidlink.pro/tv/${imdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false`
-          : `https://vidlink.pro/movie/${imdbId}?primaryColor=e50914&autoplay=false`
+        id: "server-2", name: "Server 2: Cinema Cloud 4K", tag: "4K UHD HDR Adaptive",
+        quality: "4K UHD / 1080p", type: "embed", audioLanguages: ["Hindi", "English", "Multi-Audio"],
+        url: isSeries ? `https://vidlink.pro/tv/${imdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://vidlink.pro/movie/${imdbId}?primaryColor=e50914&autoplay=false`
       });
-
-      // Server 3: VidSrc Multi-Mirror Pro (1080p Auto-Buffering)
+      // Server 3: Nontongo Multi-CDN
       servers.push({
-        id: "server-vidsrc",
-        name: "Server 3: VidSrc Multi-Mirror Pro",
-        tag: "1080p Full HD • Auto-Buffering",
-        quality: "1080p",
-        type: "embed",
-        audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries
-          ? `https://vidsrc.cc/v2/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`
-          : `https://vidsrc.cc/v2/embed/movie/${imdbId}`
+        id: "server-3", name: "Server 3: Cinema Multi-CDN", tag: "Multi-CDN Global Network",
+        quality: "1080p Full HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://nontongo.win/embed/movie/${imdbId}`
       });
-
-      // Server 4: AutoEmbed VIP (Hindi Dubbed & Regional)
+      // Server 4: VidFast Turbo
       servers.push({
-        id: "server-autoembed",
-        name: "Server 4: AutoEmbed VIP (Hindi Audio)",
-        tag: "1080p HD • Hindi Dubbed",
-        quality: "1080p",
-        type: "embed",
-        audioLanguages: ["Hindi", "English", "Multi-Audio"],
-        url: isSeries
-          ? `https://player.autoembed.cc/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`
-          : `https://player.autoembed.cc/embed/movie/${imdbId}`
+        id: "server-4", name: "Server 4: Cinema Turbo", tag: "Turbo Fast Stream",
+        quality: "4K / 1080p", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://vidfast.pro/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidfast.pro/movie/${imdbId}`
       });
-
-      // Server 5: MultiEmbed VIP Stream
+      // Server 5: VidSrc PM Premium
       servers.push({
-        id: "server-superembed",
-        name: "Server 5: MultiEmbed VIP Stream",
-        tag: "Fast Global VIP Cloud Mirror",
-        quality: "1080p",
-        type: "embed",
-        audioLanguages: ["Multi-Audio", "English"],
-        url: isSeries
-          ? `https://multiembed.mov/?video_id=${imdbId}&s=${seasonNum}&e=${episodeNum}`
-          : `https://multiembed.mov/?video_id=${imdbId}&tmdb=1`
+        id: "server-5", name: "Server 5: Cinema Premium", tag: "Premium Multi-Source Player",
+        quality: "1080p", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://vidsrc.pm/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.pm/embed/movie/${imdbId}`
       });
-
-      // Server 6: EmbedSu Fast HLS
+      // Server 6: VidJoy Ultra HD
       servers.push({
-        id: "server-embedsu",
-        name: "Server 6: EmbedSu Fast HLS",
-        tag: "Zero-Buffering High-Speed Mirror",
-        quality: "1080p Full HD",
-        type: "embed",
-        audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries
-          ? `https://embed.su/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`
-          : `https://embed.su/embed/movie/${imdbId}`
+        id: "server-6", name: "Server 6: Cinema Ultra HD", tag: "Ultra HD Streaming Engine",
+        quality: "1080p", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://vidjoy.pro/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidjoy.pro/embed/movie/${imdbId}`
       });
-
-      // Server 7: SmashyStream Ultra
+      // Server 7: Videasy
       servers.push({
-        id: "server-smashystream",
-        name: "Server 7: SmashyStream Ultra",
-        tag: "Multi-Source Cloud Load Balanced",
-        quality: "1080p HD",
-        type: "embed",
-        audioLanguages: ["English", "Hindi"],
-        url: isSeries
-          ? `https://player.smashystream.com/tv/${imdbId}/${seasonNum}/${episodeNum}`
-          : `https://player.smashystream.com/movie/${imdbId}`
+        id: "server-7", name: "Server 7: Cinema Videasy", tag: "Smart Adaptive Player",
+        quality: "1080p HD", type: "embed", audioLanguages: ["English", "Hindi"],
+        url: isSeries ? `https://player.videasy.net/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://player.videasy.net/movie/${imdbId}`
       });
-
-      // Server 8: 2Embed Emergency Fallback
+      // Server 8: VidSrc NL
       servers.push({
-        id: "server-2embed",
-        name: "Server 8: 2Embed Emergency Fallback",
-        tag: "Guaranteed 100% Uptime Mirror",
-        quality: "720p / 1080p",
-        type: "embed",
-        audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries
-          ? `https://www.2embed.cc/embedtv/${imdbId}&s=${seasonNum}&e=${episodeNum}`
-          : `https://www.2embed.cc/embed/${imdbId}`
+        id: "server-8", name: "Server 8: Cinema NL Mirror", tag: "Netherlands Fast Mirror",
+        quality: "1080p HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://player.vidsrc.nl/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://player.vidsrc.nl/embed/movie/${imdbId}`
+      });
+      // Server 9: 2Embed Skin
+      servers.push({
+        id: "server-9", name: "Server 9: Cinema Skin", tag: "Premium Cloud Skin Server",
+        quality: "1080p HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://www.2embed.skin/embedtv/${imdbId}&s=${seasonNum}&e=${episodeNum}` : `https://www.2embed.skin/embed/${imdbId}`
+      });
+      // Server 10: VidSrc RIP
+      servers.push({
+        id: "server-10", name: "Server 10: Cinema RIP Mirror", tag: "High-Speed RIP Mirror",
+        quality: "1080p HD", type: "embed", audioLanguages: ["English"],
+        url: isSeries ? `https://vidsrc.rip/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.rip/embed/movie/${imdbId}`
+      });
+      // Server 11: 2Embed Org
+      servers.push({
+        id: "server-11", name: "Server 11: Cinema Global", tag: "Global Cluster Backup",
+        quality: "1080p HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://2embed.org/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://2embed.org/embed/movie/${imdbId}`
+      });
+      // Server 12: VidBinge
+      servers.push({
+        id: "server-12", name: "Server 12: Cinema VidBinge", tag: "Binge-Optimized Stream",
+        quality: "1080p HD", type: "embed", audioLanguages: ["English"],
+        url: isSeries ? `https://vidbinge.dev/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidbinge.dev/embed/movie/${imdbId}`
+      });
+      // Server 13: 2Embed CC
+      servers.push({
+        id: "server-13", name: "Server 13: Cinema CC", tag: "CC Reliable Uptime Mirror",
+        quality: "720p / 1080p", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://www.2embed.cc/embedtv/${imdbId}&s=${seasonNum}&e=${episodeNum}` : `https://www.2embed.cc/embed/${imdbId}`
+      });
+      // Server 14: AutoEmbed
+      servers.push({
+        id: "server-14", name: "Server 14: Cinema AutoEmbed", tag: "Auto-Source Multi-Provider",
+        quality: "1080p HD", type: "embed", audioLanguages: ["Hindi", "English", "Multi-Audio"],
+        url: isSeries ? `https://autoembed.co/tv/imdb/${imdbId}-${seasonNum}-${episodeNum}` : `https://autoembed.co/movie/imdb/${imdbId}`
+      });
+      // Server 15: EmbedRise
+      servers.push({
+        id: "server-15", name: "Server 15: Cinema EmbedRise", tag: "Rise Ultra Stream Engine",
+        quality: "1080p HD", type: "embed", audioLanguages: ["English"],
+        url: isSeries ? `https://embedrise.com/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://embedrise.com/embed/movie/${imdbId}`
+      });
+      // Server 16: FrEmbed
+      servers.push({
+        id: "server-16", name: "Server 16: Cinema FrEmbed", tag: "French Ultra-Fast Server",
+        quality: "1080p HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries ? `https://frembed.pro/api/tv.php?id=${imdbId}&s=${seasonNum}&e=${episodeNum}` : `https://frembed.pro/api/film.php?id=${imdbId}`
+      });
+      // Server 17: VidSrc Dev
+      servers.push({
+        id: "server-17", name: "Server 17: Cinema Dev", tag: "Developer-Grade Stream",
+        quality: "720p / 1080p", type: "embed", audioLanguages: ["English"],
+        url: isSeries ? `https://vidsrc.dev/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.dev/embed/movie/${imdbId}`
+      });
+      // Server 18: 123Embed
+      servers.push({
+        id: "server-18", name: "Server 18: Cinema 123 Net", tag: "123 Network Backup Mirror",
+        quality: "720p / 1080p", type: "embed", audioLanguages: ["English"],
+        url: isSeries ? `https://play2.123embed.net/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://play2.123embed.net/movie/${imdbId}`
+      });
+      // Server 19: 111Movies
+      servers.push({
+        id: "server-19", name: "Server 19: Cinema 111 Movies", tag: "111 Movies Emergency Fallback",
+        quality: "720p / 1080p", type: "embed", audioLanguages: ["English"],
+        url: isSeries ? `https://111movies.com/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://111movies.com/embed/movie/${imdbId}`
       });
     }
 

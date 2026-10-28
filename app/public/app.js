@@ -742,29 +742,73 @@ const EmbeddedEngine = {
       ? `https://vidlink.pro/tv/${imdbId}/${se || 1}/${ep || 1}?primaryColor=e50914&autoplay=false`
       : `https://vidlink.pro/movie/${imdbId}?primaryColor=e50914&autoplay=false`;
 
-    const embedSuUrl = isSeries
-      ? `https://embed.su/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
-      : `https://embed.su/embed/movie/${imdbId}`;
+    const nontrongoUrl = isSeries
+      ? `https://nontongo.win/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://nontongo.win/embed/movie/${imdbId}`;
 
-    const vidsrcUrl = isSeries
-      ? `https://vidsrc.cc/v2/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
-      : `https://vidsrc.cc/v2/embed/movie/${imdbId}`;
+    const vidfastUrl = isSeries
+      ? `https://vidfast.pro/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://vidfast.pro/movie/${imdbId}`;
 
-    const autoembedUrl = isSeries
-      ? `https://player.autoembed.cc/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
-      : `https://player.autoembed.cc/embed/movie/${imdbId}`;
+    const vidsrcPmUrl = isSeries
+      ? `https://vidsrc.pm/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://vidsrc.pm/embed/movie/${imdbId}`;
 
-    const superembedUrl = isSeries
-      ? `https://multiembed.mov/?video_id=${imdbId}&s=${se || 1}&e=${ep || 1}`
-      : `https://multiembed.mov/?video_id=${imdbId}&tmdb=1`;
+    const vidjoyUrl = isSeries
+      ? `https://vidjoy.pro/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://vidjoy.pro/embed/movie/${imdbId}`;
 
-    const smashystreamUrl = isSeries
-      ? `https://player.smashystream.com/tv/${imdbId}/${se || 1}/${ep || 1}`
-      : `https://player.smashystream.com/movie/${imdbId}`;
+    const videasyUrl = isSeries
+      ? `https://player.videasy.net/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://player.videasy.net/movie/${imdbId}`;
 
-    const twoEmbedUrl = isSeries
+    const vidsrcNlUrl = isSeries
+      ? `https://player.vidsrc.nl/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://player.vidsrc.nl/embed/movie/${imdbId}`;
+
+    const twoEmbedSkinUrl = isSeries
+      ? `https://www.2embed.skin/embedtv/${imdbId}&s=${se || 1}&e=${ep || 1}`
+      : `https://www.2embed.skin/embed/${imdbId}`;
+
+    const vidsrcRipUrl = isSeries
+      ? `https://vidsrc.rip/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://vidsrc.rip/embed/movie/${imdbId}`;
+
+    const twoEmbedOrgUrl = isSeries
+      ? `https://2embed.org/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://2embed.org/embed/movie/${imdbId}`;
+
+    const vidbingeUrl = isSeries
+      ? `https://vidbinge.dev/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://vidbinge.dev/embed/movie/${imdbId}`;
+
+    const twoEmbedCcUrl = isSeries
       ? `https://www.2embed.cc/embedtv/${imdbId}&s=${se || 1}&e=${ep || 1}`
       : `https://www.2embed.cc/embed/${imdbId}`;
+
+    const autoembedUrl = isSeries
+      ? `https://autoembed.co/tv/imdb/${imdbId}-${se || 1}-${ep || 1}`
+      : `https://autoembed.co/movie/imdb/${imdbId}`;
+
+    const embedriseUrl = isSeries
+      ? `https://embedrise.com/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://embedrise.com/embed/movie/${imdbId}`;
+
+    const frembedUrl = isSeries
+      ? `https://frembed.pro/api/tv.php?id=${imdbId}&s=${se || 1}&e=${ep || 1}`
+      : `https://frembed.pro/api/film.php?id=${imdbId}`;
+
+    const vidsrcDevUrl = isSeries
+      ? `https://vidsrc.dev/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://vidsrc.dev/embed/movie/${imdbId}`;
+
+    const embed123Url = isSeries
+      ? `https://play2.123embed.net/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://play2.123embed.net/movie/${imdbId}`;
+
+    const movies111Url = isSeries
+      ? `https://111movies.com/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://111movies.com/embed/movie/${imdbId}`;
 
     const supportedLangs = sub.audioLangs || (sub.countryName === 'India' ? ['hin', 'eng'] : ['eng']);
     const allLangDefs = {
@@ -785,7 +829,7 @@ const EmbeddedEngine = {
       {
         id: "cinema-stream-1",
         name: "Cinema Cloud 1 (4K HDR Adaptive)",
-        tag: "4K HDR Adaptive Bitrate • VidLink Ultra",
+        tag: "4K HDR Adaptive Bitrate • Ultra Premium",
         quality: "4K UHD / 1080p",
         type: "embed",
         isDefault: true,
@@ -793,51 +837,139 @@ const EmbeddedEngine = {
       },
       {
         id: "cinema-stream-2",
-        name: "Cinema Cloud 2 (1080p Fast HLS)",
-        tag: "Fast HLS Cloud Mirror • EmbedSu Zero Buffering",
+        name: "Cinema Cloud 2 (Multi-CDN)",
+        tag: "Multi-CDN Global Network • 186K Engine",
         quality: "1080p Full HD",
         type: "embed",
-        url: embedSuUrl
+        url: nontrongoUrl
       },
       {
         id: "cinema-stream-3",
-        name: "Cinema Cloud 3 (Global Mirror)",
-        tag: "Global Content Delivery Mirror • VidSrc Pro",
-        quality: "1080p HD",
+        name: "Cinema Cloud 3 (Turbo)",
+        tag: "Turbo Fast Stream • Zero Buffering",
+        quality: "4K / 1080p",
         type: "embed",
-        url: vidsrcUrl
+        url: vidfastUrl
       },
       {
         id: "cinema-stream-4",
-        name: "Cinema Dubbed Stream (Multi-Language)",
-        tag: "Hindi Dubbed & Multi-Language Regional Stream",
+        name: "Cinema Cloud 4 (Premium)",
+        tag: "Premium Multi-Source Player",
+        quality: "1080p HD",
+        type: "embed",
+        url: vidsrcPmUrl
+      },
+      {
+        id: "cinema-stream-5",
+        name: "Cinema Cloud 5 (Ultra HD)",
+        tag: "Ultra HD Streaming Engine",
+        quality: "1080p HD",
+        type: "embed",
+        url: vidjoyUrl
+      },
+      {
+        id: "cinema-stream-6",
+        name: "Cinema Cloud 6 (Videasy)",
+        tag: "Smart Adaptive Player",
+        quality: "1080p HD",
+        type: "embed",
+        url: videasyUrl
+      },
+      {
+        id: "cinema-stream-7",
+        name: "Cinema Cloud 7 (NL Mirror)",
+        tag: "Netherlands Fast Mirror",
+        quality: "1080p HD",
+        type: "embed",
+        url: vidsrcNlUrl
+      },
+      {
+        id: "cinema-stream-8",
+        name: "Cinema Cloud 8 (Skin)",
+        tag: "Premium Cloud Skin Server",
+        quality: "1080p HD",
+        type: "embed",
+        url: twoEmbedSkinUrl
+      },
+      {
+        id: "cinema-stream-9",
+        name: "Cinema Cloud 9 (RIP Mirror)",
+        tag: "High-Speed RIP Mirror Server",
+        quality: "1080p HD",
+        type: "embed",
+        url: vidsrcRipUrl
+      },
+      {
+        id: "cinema-stream-10",
+        name: "Cinema Cloud 10 (Global)",
+        tag: "Global Cluster Backup",
+        quality: "1080p HD",
+        type: "embed",
+        url: twoEmbedOrgUrl
+      },
+      {
+        id: "cinema-stream-11",
+        name: "Cinema Cloud 11 (VidBinge)",
+        tag: "Binge-Optimized Stream",
+        quality: "1080p HD",
+        type: "embed",
+        url: vidbingeUrl
+      },
+      {
+        id: "cinema-stream-12",
+        name: "Cinema Cloud 12 (CC)",
+        tag: "CC Reliable Uptime Mirror",
+        quality: "720p / 1080p",
+        type: "embed",
+        url: twoEmbedCcUrl
+      },
+      {
+        id: "cinema-stream-13",
+        name: "Cinema Cloud 13 (AutoEmbed)",
+        tag: "Auto-Source Multi-Provider",
         quality: "1080p HD",
         type: "embed",
         url: autoembedUrl
       },
       {
-        id: "cinema-stream-5",
-        name: "Cinema VIP Multi-Mirror",
-        tag: "VIP Multi-Cluster Backup Stream",
+        id: "cinema-stream-14",
+        name: "Cinema Cloud 14 (EmbedRise)",
+        tag: "Rise Ultra Stream Engine",
         quality: "1080p HD",
         type: "embed",
-        url: superembedUrl
+        url: embedriseUrl
       },
       {
-        id: "cinema-stream-6",
-        name: "Cinema Cloud 4 (SmashyStream)",
-        tag: "High-Availability Multi-Provider Server",
+        id: "cinema-stream-15",
+        name: "Cinema Cloud 15 (FrEmbed)",
+        tag: "French Ultra-Fast Server",
         quality: "1080p HD",
         type: "embed",
-        url: smashystreamUrl
+        url: frembedUrl
       },
       {
-        id: "cinema-stream-7",
-        name: "Cinema Emergency Fallback (2Embed)",
-        tag: "Guaranteed 100% Uptime Mirror",
+        id: "cinema-stream-16",
+        name: "Cinema Cloud 16 (Dev)",
+        tag: "Developer-Grade Stream",
         quality: "720p / 1080p",
         type: "embed",
-        url: twoEmbedUrl
+        url: vidsrcDevUrl
+      },
+      {
+        id: "cinema-stream-17",
+        name: "Cinema Cloud 17 (123 Net)",
+        tag: "123 Network Backup Mirror",
+        quality: "720p / 1080p",
+        type: "embed",
+        url: embed123Url
+      },
+      {
+        id: "cinema-stream-18",
+        name: "Cinema Cloud 18 (111 Movies)",
+        tag: "111 Movies Emergency Fallback",
+        quality: "720p / 1080p",
+        type: "embed",
+        url: movies111Url
       },
       {
         id: "cinema-stream-8",
@@ -2566,6 +2698,31 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     elements.playerIframe.src = server.url;
     elements.playerIframe.classList.remove('hidden');
     elements.playerLoader.classList.add('hidden');
+
+    // Detect embed load failure (sandbox error, blocked, etc.) and auto-switch to next server
+    if (state._embedFailoverTimer) clearTimeout(state._embedFailoverTimer);
+    state._embedFailoverTimer = setTimeout(() => {
+      try {
+        // If iframe loaded but content is tiny (error page), switch server
+        const nextIdx = serverIndex + 1;
+        if (nextIdx < state.servers.length && state.servers[nextIdx]?.type === 'embed') {
+          console.log(`[Auto-Failover] Server ${serverIndex + 1} may have failed, trying Server ${nextIdx + 1}`);
+          // Don't auto-switch if user interacted — only on initial load
+          if (!state._userSwitchedServer) {
+            launchServerStream(nextIdx, resumeTime, remainingText);
+          }
+        }
+      } catch (e) { /* cross-origin, ignore */ }
+    }, 15000);
+
+    // Listen for iframe load event to cancel failover timer
+    elements.playerIframe.onload = () => {
+      // Successfully loaded — cancel auto-failover
+      if (state._embedFailoverTimer) {
+        clearTimeout(state._embedFailoverTimer);
+        state._embedFailoverTimer = null;
+      }
+    };
 
     // Arm parallel Hot Standby Backup Channel
     armHotStandbyServer();

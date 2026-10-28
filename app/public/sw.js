@@ -4,8 +4,8 @@
  * Enables offline app shell and native PWA installation on Android & PC
  */
 
-const CACHE_NAME = 'moviebox-shell-v3.3.0';
-const IMAGE_CACHE_NAME = 'moviebox-images-v3.3.0';
+const CACHE_NAME = 'moviebox-shell-v4.0.0';
+const IMAGE_CACHE_NAME = 'moviebox-images-v4.0.0';
 
 const PRECACHE_ASSETS = [
   '/',
