@@ -2573,10 +2573,6 @@ button, a, input, select, .movie-card, .dropdown-option, .control-btn {
   contain: layout paint;
 }
 
-@keyframes posterShimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
 
 .card-poster {
   opacity: 0;
