@@ -536,23 +536,7 @@ const EmbeddedEngine = {
   ],
 
   subjects: [
-    {
-      subjectId: "1436232475147128696",
-      title: "The Dog Stars",
-      cover: { url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=80" },
-      imdbRatingValue: "8.4",
-      score: "8.4",
-      releaseDate: "2026-03-15",
-      duration: 7136,
-      subjectType: 1,
-      genre: "Sci-Fi / Post-Apocalyptic / Drama",
-      countryName: "United States",
-      imdbId: "tt21285562",
-      tmdbId: "846872",
-      audioLangs: ["eng"],
-      description: "In a post-apocalyptic world ravaged by a lethal global flu, a lone pilot and his beloved dog survive in an abandoned airplane hangar, searching across the desolate skies for signs of hope.",
-      staffList: [{ name: "Mark Strong" }, { name: "Pedro Pascal" }, { name: "Rebecca Ferguson" }]
-    },
+    // ==================== MOVIES (category: 'movie', subjectType: 1) ====================
     {
       subjectId: "dp_wolv_2024",
       title: "Deadpool & Wolverine",
@@ -562,6 +546,7 @@ const EmbeddedEngine = {
       releaseDate: "2024-07-26",
       duration: 7620,
       subjectType: 1,
+      category: "movie",
       genre: "Action / Sci-Fi / Comedy",
       countryName: "United States",
       imdbId: "tt6263850",
@@ -569,23 +554,6 @@ const EmbeddedEngine = {
       audioLangs: ["hin", "eng"],
       description: "Wolverine is recovering from his injuries when he crosses paths with the loudmouth Deadpool. They team up to defeat a common enemy threatening their timelines.",
       staffList: [{ name: "Ryan Reynolds" }, { name: "Hugh Jackman" }, { name: "Emma Corrin" }]
-    },
-    {
-      subjectId: "st_s5_2025",
-      title: "Stranger Things: Season 5",
-      cover: { url: "https://image.tmdb.org/t/p/w500/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg" },
-      imdbRatingValue: "8.7",
-      score: "8.7",
-      releaseDate: "2025-10-31",
-      duration: 3900,
-      subjectType: 2,
-      genre: "Sci-Fi / Horror / Drama",
-      countryName: "United States",
-      imdbId: "tt4574334",
-      tmdbId: "66732",
-      audioLangs: ["hin", "eng"],
-      description: "The epic final season in Hawkins. The gang unites to face the ultimate evil of the Upside Down in a breathtaking battle for their town and reality itself.",
-      staffList: [{ name: "Millie Bobby Brown" }, { name: "David Harbour" }, { name: "Finn Wolfhard" }]
     },
     {
       subjectId: "animal_2023",
@@ -596,6 +564,7 @@ const EmbeddedEngine = {
       releaseDate: "2023-12-01",
       duration: 12240,
       subjectType: 1,
+      category: "movie",
       genre: "Action / Crime / Drama",
       countryName: "India",
       imdbId: "tt13751694",
@@ -605,21 +574,22 @@ const EmbeddedEngine = {
       staffList: [{ name: "Ranbir Kapoor" }, { name: "Anil Kapoor" }, { name: "Bobby Deol" }, { name: "Rashmika Mandanna" }]
     },
     {
-      subjectId: "avatar_3_2025",
-      title: "Avatar: Fire and Ash",
-      cover: { url: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
-      imdbRatingValue: "8.2",
-      score: "8.2",
-      releaseDate: "2025-12-19",
-      duration: 11400,
+      subjectId: "pushpa_2_2024",
+      title: "Pushpa 2: The Rule",
+      cover: { url: "https://image.tmdb.org/t/p/w500/1T21FblunT0y8fz7YaW8JMYgUKm.jpg" },
+      imdbRatingValue: "7.8",
+      score: "7.8",
+      releaseDate: "2024-12-05",
+      duration: 10800,
       subjectType: 1,
-      genre: "Action / Adventure / Sci-Fi",
-      countryName: "United States",
-      imdbId: "tt1757678",
-      tmdbId: "83533",
-      audioLangs: ["hin", "eng"],
-      description: "Jake Sully and Neytiri encounter a mysterious and aggressive new volcanic Na'vi tribe known as the Ash People on the breathtaking moon of Pandora.",
-      staffList: [{ name: "Sam Worthington" }, { name: "Zoe Saldana" }, { name: "Sigourney Weaver" }]
+      category: "movie",
+      genre: "Action / Thriller / Crime",
+      countryName: "India",
+      imdbId: "tt15428448",
+      tmdbId: "857598",
+      audioLangs: ["hin", "tel"],
+      description: "Pushpa Raj expands his red sandalwood empire while clashing with the ruthless police officer Bhanwar Singh Shekhawat in an explosive confrontation.",
+      staffList: [{ name: "Allu Arjun" }, { name: "Fahadh Faasil" }, { name: "Rashmika Mandanna" }]
     },
     {
       subjectId: "jawan_2023",
@@ -630,6 +600,7 @@ const EmbeddedEngine = {
       releaseDate: "2023-09-07",
       duration: 10140,
       subjectType: 1,
+      category: "movie",
       genre: "Action / Thriller",
       countryName: "India",
       imdbId: "tt15354916",
@@ -647,6 +618,7 @@ const EmbeddedEngine = {
       releaseDate: "2024-03-01",
       duration: 9960,
       subjectType: 1,
+      category: "movie",
       genre: "Sci-Fi / Adventure",
       countryName: "United States",
       imdbId: "tt15239678",
@@ -664,6 +636,7 @@ const EmbeddedEngine = {
       releaseDate: "2023-07-21",
       duration: 10800,
       subjectType: 1,
+      category: "movie",
       genre: "Biography / Drama / History",
       countryName: "United States",
       imdbId: "tt15398776",
@@ -671,57 +644,6 @@ const EmbeddedEngine = {
       audioLangs: ["hin", "eng"],
       description: "The story of American scientist J. Robert Oppenheimer and his role in the Manhattan Project, pioneering the development of the atomic bomb during World War II.",
       staffList: [{ name: "Cillian Murphy" }, { name: "Emily Blunt" }, { name: "Matt Damon" }, { name: "Robert Downey Jr." }]
-    },
-    {
-      subjectId: "solo_leveling_2024",
-      title: "Solo Leveling",
-      cover: { url: "https://image.tmdb.org/t/p/w500/geCRueV3ElhRTr0xtJuEWJt6dJ1.jpg" },
-      imdbRatingValue: "8.5",
-      score: "8.5",
-      releaseDate: "2024-01-06",
-      duration: 1440,
-      subjectType: 2,
-      genre: "Anime / Action / Fantasy",
-      countryName: "Japan",
-      imdbId: "tt21209876",
-      tmdbId: "209867",
-      audioLangs: ["jpn", "eng", "hin"],
-      description: "In a world where hunters must battle deadly monsters, Sung Jinwoo, the weakest hunter of all mankind, is chosen by a mysterious quest program unlocking infinite growth.",
-      staffList: [{ name: "Taito Ban" }, { name: "Genta Nakamura" }, { name: "Reina Ueda" }]
-    },
-    {
-      subjectId: "jjk_2024",
-      title: "Jujutsu Kaisen",
-      cover: { url: "https://image.tmdb.org/t/p/w500/6qQzMJG27XOJsyAEEIisoJB45j2.jpg" },
-      imdbRatingValue: "8.6",
-      score: "8.6",
-      releaseDate: "2020-10-03",
-      duration: 1440,
-      subjectType: 2,
-      genre: "Anime / Dark Fantasy / Action",
-      countryName: "Japan",
-      imdbId: "tt12343534",
-      tmdbId: "95479",
-      audioLangs: ["jpn", "eng", "hin"],
-      description: "Yuji Itadori, a kind teenager, swallows a cursed finger of the King of Curses Ryomen Sukuna and enters Tokyo Jujutsu High to protect humanity from cursed spirits.",
-      staffList: [{ name: "Junya Enoki" }, { name: "Yuma Uchida" }, { name: "Asami Seto" }]
-    },
-    {
-      subjectId: "pushpa_2_2024",
-      title: "Pushpa 2: The Rule",
-      cover: { url: "https://image.tmdb.org/t/p/w500/1T21FblunT0y8fz7YaW8JMYgUKm.jpg" },
-      imdbRatingValue: "7.8",
-      score: "7.8",
-      releaseDate: "2024-12-05",
-      duration: 10800,
-      subjectType: 1,
-      genre: "Action / Thriller / Crime",
-      countryName: "India",
-      imdbId: "tt15428448",
-      tmdbId: "993710",
-      audioLangs: ["hin", "tel"],
-      description: "Pushpa Raj expands his red sandalwood empire while clashing with the ruthless police officer Bhanwar Singh Shekhawat in an explosive confrontation.",
-      staffList: [{ name: "Allu Arjun" }, { name: "Fahadh Faasil" }, { name: "Rashmika Mandanna" }]
     },
     {
       subjectId: "interstellar_2014",
@@ -732,6 +654,7 @@ const EmbeddedEngine = {
       releaseDate: "2014-11-07",
       duration: 10140,
       subjectType: 1,
+      category: "movie",
       genre: "Sci-Fi / Adventure / Drama",
       countryName: "United States",
       imdbId: "tt0816692",
@@ -739,6 +662,462 @@ const EmbeddedEngine = {
       audioLangs: ["eng"],
       description: "When Earth becomes uninhabitable, a team of explorers travels through a wormhole in space in an attempt to ensure humanity's survival across interstellar dimensions.",
       staffList: [{ name: "Matthew McConaughey" }, { name: "Anne Hathaway" }, { name: "Jessica Chastain" }]
+    },
+    {
+      subjectId: "dark_knight",
+      title: "The Dark Knight",
+      cover: { url: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" },
+      imdbRatingValue: "9.0",
+      score: "9.0",
+      releaseDate: "2008-07-18",
+      duration: 9120,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Crime / Drama",
+      countryName: "United States",
+      imdbId: "tt0468569",
+      tmdbId: "155",
+      audioLangs: ["hin", "eng"],
+      description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+      staffList: [{ name: "Christian Bale" }, { name: "Heath Ledger" }, { name: "Aaron Eckhart" }]
+    },
+    {
+      subjectId: "inception_2010",
+      title: "Inception",
+      cover: { url: "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg" },
+      imdbRatingValue: "8.8",
+      score: "8.8",
+      releaseDate: "2010-07-16",
+      duration: 8880,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Sci-Fi / Thriller",
+      countryName: "United States",
+      imdbId: "tt1375666",
+      tmdbId: "27205",
+      audioLangs: ["hin", "eng"],
+      description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+      staffList: [{ name: "Leonardo DiCaprio" }, { name: "Joseph Gordon-Levitt" }, { name: "Elliot Page" }]
+    },
+    {
+      subjectId: "avatar_3_2025",
+      title: "Avatar: Fire and Ash",
+      cover: { url: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2025-12-19",
+      duration: 11400,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Adventure / Sci-Fi",
+      countryName: "United States",
+      imdbId: "tt1757678",
+      tmdbId: "83533",
+      audioLangs: ["hin", "eng"],
+      description: "Jake Sully and Neytiri encounter a mysterious and aggressive new volcanic Na'vi tribe known as the Ash People on the breathtaking moon of Pandora.",
+      staffList: [{ name: "Sam Worthington" }, { name: "Zoe Saldana" }, { name: "Sigourney Weaver" }]
+    },
+    {
+      subjectId: "1436232475147128696",
+      title: "The Dog Stars",
+      cover: { url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=80" },
+      imdbRatingValue: "8.4",
+      score: "8.4",
+      releaseDate: "2026-03-15",
+      duration: 7136,
+      subjectType: 1,
+      category: "movie",
+      genre: "Sci-Fi / Post-Apocalyptic / Drama",
+      countryName: "United States",
+      imdbId: "tt21285562",
+      tmdbId: "846872",
+      audioLangs: ["eng"],
+      description: "In a post-apocalyptic world ravaged by a lethal global flu, a lone pilot and his beloved dog survive in an abandoned airplane hangar, searching across the desolate skies for signs of hope.",
+      staffList: [{ name: "Mark Strong" }, { name: "Pedro Pascal" }, { name: "Rebecca Ferguson" }]
+    },
+
+    // ==================== TV SERIES (category: 'series', subjectType: 2) ====================
+    {
+      subjectId: "st_s5_2025",
+      title: "Stranger Things: Season 5",
+      cover: { url: "https://image.tmdb.org/t/p/w500/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg" },
+      imdbRatingValue: "8.7",
+      score: "8.7",
+      releaseDate: "2025-10-31",
+      duration: 3900,
+      subjectType: 2,
+      category: "series",
+      genre: "Sci-Fi / Horror / Drama",
+      countryName: "United States",
+      imdbId: "tt4574334",
+      tmdbId: "66732",
+      audioLangs: ["hin", "eng"],
+      description: "The epic final season in Hawkins. The gang unites to face the ultimate evil of the Upside Down in a breathtaking battle for their town and reality itself.",
+      staffList: [{ name: "Millie Bobby Brown" }, { name: "David Harbour" }, { name: "Finn Wolfhard" }]
+    },
+    {
+      subjectId: "breaking_bad",
+      title: "Breaking Bad",
+      cover: { url: "https://image.tmdb.org/t/p/w500/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg" },
+      imdbRatingValue: "9.5",
+      score: "9.5",
+      releaseDate: "2008-01-20",
+      duration: 2820,
+      subjectType: 2,
+      category: "series",
+      genre: "Crime / Drama / Thriller",
+      countryName: "United States",
+      imdbId: "tt0903747",
+      tmdbId: "1396",
+      audioLangs: ["hin", "eng"],
+      description: "A chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine with a former student in order to secure his family's financial future.",
+      staffList: [{ name: "Bryan Cranston" }, { name: "Aaron Paul" }, { name: "Anna Gunn" }]
+    },
+    {
+      subjectId: "game_of_thrones",
+      title: "Game of Thrones",
+      cover: { url: "https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg" },
+      imdbRatingValue: "9.2",
+      score: "9.2",
+      releaseDate: "2011-04-17",
+      duration: 3420,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Adventure / Drama",
+      countryName: "United States",
+      imdbId: "tt0944947",
+      tmdbId: "1399",
+      audioLangs: ["hin", "eng"],
+      description: "Nine noble families fight for control over the lands of Westeros, while an ancient enemy returns after being dormant for millennia.",
+      staffList: [{ name: "Emilia Clarke" }, { name: "Peter Dinklage" }, { name: "Kit Harington" }]
+    },
+    {
+      subjectId: "the_boys",
+      title: "The Boys",
+      cover: { url: "https://images.metahub.space/poster/medium/tt1190634/img" },
+      imdbRatingValue: "8.7",
+      score: "8.7",
+      releaseDate: "2019-07-26",
+      duration: 3600,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Comedy / Sci-Fi",
+      countryName: "United States",
+      imdbId: "tt1190634",
+      tmdbId: "76479",
+      audioLangs: ["hin", "eng"],
+      description: "A fun and irreverent take on what happens when superheroes—who are as popular as celebrities, as influential as politicians, and as revered as gods—abuse their superpowers rather than use them for good.",
+      staffList: [{ name: "Karl Urban" }, { name: "Jack Quaid" }, { name: "Antony Starr" }]
+    },
+    {
+      subjectId: "loki_series",
+      title: "Loki",
+      cover: { url: "https://m.media-amazon.com/images/M/MV5BYzA2YjM2ZWQtYTZhMS00OTI3LTlhYzQtZjBiZWZkMDdlNjA5XkEyXkFqcGc@._V1_SX250.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2021-06-09",
+      duration: 3120,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Adventure / Fantasy",
+      countryName: "United States",
+      imdbId: "tt9140554",
+      tmdbId: "84958",
+      audioLangs: ["hin", "eng"],
+      description: "The mercurial villain Loki resumes his role as the God of Mischief in a new series that takes place after the events of Avengers: Endgame.",
+      staffList: [{ name: "Tom Hiddleston" }, { name: "Owen Wilson" }, { name: "Sophia Di Martino" }]
+    },
+    {
+      subjectId: "house_of_dragon",
+      title: "House of the Dragon",
+      cover: { url: "https://m.media-amazon.com/images/M/MV5BOWU2ZDA0M2EtNWEyYy00MWUwLWI4NjAtYzkxMDFjYzZkNGFiXkEyXkFqcGc@._V1_SX250.jpg" },
+      imdbRatingValue: "8.4",
+      score: "8.4",
+      releaseDate: "2022-08-21",
+      duration: 3720,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Adventure / Drama",
+      countryName: "United States",
+      imdbId: "tt11198330",
+      tmdbId: "94997",
+      audioLangs: ["hin", "eng"],
+      description: "An internal succession contest within House Targaryen at the height of its power, 172 years before the birth of Daenerys Targaryen.",
+      staffList: [{ name: "Matt Smith" }, { name: "Emma D'Arcy" }, { name: "Olivia Cooke" }]
+    },
+    {
+      subjectId: "wednesday_series",
+      title: "Wednesday",
+      cover: { url: "https://m.media-amazon.com/images/M/MV5BY2E1NDI5OWEtODJmYi00Nzg2LWI4MjUtODFiMTU2YWViOTU3XkEyXkFqcGc@._V1_SX250.jpg" },
+      imdbRatingValue: "8.1",
+      score: "8.1",
+      releaseDate: "2022-11-23",
+      duration: 3000,
+      subjectType: 2,
+      category: "series",
+      genre: "Comedy / Crime / Fantasy",
+      countryName: "United States",
+      imdbId: "tt13443470",
+      tmdbId: "119051",
+      audioLangs: ["hin", "eng"],
+      description: "Follows Wednesday Addams' years as a student, attempting to master her emerging psychic ability, thwart a monstrous killing spree, and solve a 25-year-old mystery.",
+      staffList: [{ name: "Jenna Ortega" }, { name: "Gwendoline Christie" }, { name: "Riki Lindhome" }]
+    },
+    {
+      subjectId: "the_last_of_us",
+      title: "The Last of Us",
+      cover: { url: "https://m.media-amazon.com/images/M/MV5BYWI3ODJlMzktY2U5NC00ZjdlLWE1MGItNWQxZDk3NWNjN2RhXkEyXkFqcGc@._V1_SX250.jpg" },
+      imdbRatingValue: "8.8",
+      score: "8.8",
+      releaseDate: "2023-01-15",
+      duration: 3600,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Adventure / Drama",
+      countryName: "United States",
+      imdbId: "tt3581920",
+      tmdbId: "100088",
+      audioLangs: ["hin", "eng"],
+      description: "After a global pandemic destroys civilization, a hardened survivor takes charge of a 14-year-old girl who may be humanity's last hope.",
+      staffList: [{ name: "Pedro Pascal" }, { name: "Bella Ramsey" }, { name: "Gabriel Luna" }]
+    },
+    {
+      subjectId: "mirzapur_series",
+      title: "Mirzapur",
+      cover: { url: "https://m.media-amazon.com/images/M/MV5BZTFjMzMxZTUtYTMyNy00OWNhLTk4ODQtNGI1NjI1NjJhMzc3XkEyXkFqcGc@._V1_SX250.jpg" },
+      imdbRatingValue: "8.5",
+      score: "8.5",
+      releaseDate: "2018-11-16",
+      duration: 3300,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Crime / Thriller",
+      countryName: "India",
+      imdbId: "tt6473300",
+      tmdbId: "84105",
+      audioLangs: ["hin"],
+      description: "A shocking incident at a wedding procession ignites a series of events entangling two families in the lawless city of Mirzapur, ruled by the mafia boss Akhandanand Tripathi.",
+      staffList: [{ name: "Pankaj Tripathi" }, { name: "Ali Fazal" }, { name: "Divyendu Sharma" }]
+    },
+    {
+      subjectId: "panchayat_series",
+      title: "Panchayat",
+      cover: { url: "https://m.media-amazon.com/images/M/MV5BNjMwYWMxNjYtY2I2NC00OWE0LTg4MmQtMmI5ZGI2NzU4ODhiXkEyXkFqcGc@._V1_SX250.jpg" },
+      imdbRatingValue: "8.9",
+      score: "8.9",
+      releaseDate: "2020-04-03",
+      duration: 2100,
+      subjectType: 2,
+      category: "series",
+      genre: "Comedy / Drama",
+      countryName: "India",
+      imdbId: "tt12004706",
+      tmdbId: "101088",
+      audioLangs: ["hin"],
+      description: "An engineering graduate takes up a job as a secretary of a Gram Panchayat in a remote village of Uttar Pradesh due to lack of better job options.",
+      staffList: [{ name: "Jitendra Kumar" }, { name: "Neena Gupta" }, { name: "Raghubir Yadav" }]
+    },
+
+    // ==================== ANIME (category: 'anime', subjectType: 2) ====================
+    {
+      subjectId: "solo_leveling_2024",
+      title: "Solo Leveling",
+      cover: { url: "https://image.tmdb.org/t/p/w500/geCRueV3ElhRTr0xtJuEWJt6dJ1.jpg" },
+      imdbRatingValue: "8.5",
+      score: "8.5",
+      releaseDate: "2024-01-06",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Action / Fantasy",
+      countryName: "Japan",
+      imdbId: "tt21209876",
+      tmdbId: "127532",
+      audioLangs: ["jpn", "eng", "hin"],
+      description: "In a world where hunters must battle deadly monsters, Sung Jinwoo, the weakest hunter of all mankind, is chosen by a mysterious quest program unlocking infinite growth.",
+      staffList: [{ name: "Taito Ban" }, { name: "Genta Nakamura" }, { name: "Reina Ueda" }]
+    },
+    {
+      subjectId: "frieren_2023",
+      title: "Frieren: Beyond Journey's End",
+      cover: { url: "https://image.tmdb.org/t/p/w500/dqZENchTd7lp5zht7BdlqM7RBhD.jpg" },
+      imdbRatingValue: "8.9",
+      score: "8.9",
+      releaseDate: "2023-09-29",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Fantasy / Adventure",
+      countryName: "Japan",
+      imdbId: "tt22248376",
+      tmdbId: "209867",
+      audioLangs: ["jpn", "eng", "hin"],
+      description: "After the party of heroes defeats the Demon King, elf mage Frieren begins a solitary journey across decades, discovering the depth of human connection.",
+      staffList: [{ name: "Atsumi Tanezaki" }, { name: "Kana Ichinose" }, { name: "Chiaki Kobayashi" }]
+    },
+    {
+      subjectId: "jjk_2024",
+      title: "Jujutsu Kaisen",
+      cover: { url: "https://image.tmdb.org/t/p/w500/6qQzMJG27XOJsyAEEIisoJB45j2.jpg" },
+      imdbRatingValue: "8.6",
+      score: "8.6",
+      releaseDate: "2020-10-03",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Dark Fantasy / Action",
+      countryName: "Japan",
+      imdbId: "tt12343534",
+      tmdbId: "95479",
+      audioLangs: ["jpn", "eng", "hin"],
+      description: "Yuji Itadori, a kind teenager, swallows a cursed finger of the King of Curses Ryomen Sukuna and enters Tokyo Jujutsu High to protect humanity from cursed spirits.",
+      staffList: [{ name: "Junya Enoki" }, { name: "Yuma Uchida" }, { name: "Asami Seto" }]
+    },
+    {
+      subjectId: "demon_slayer",
+      title: "Demon Slayer: Kimetsu no Yaiba",
+      cover: { url: "https://image.tmdb.org/t/p/w500/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg" },
+      imdbRatingValue: "8.6",
+      score: "8.6",
+      releaseDate: "2019-04-06",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Action / Fantasy",
+      countryName: "Japan",
+      imdbId: "tt9335498",
+      tmdbId: "85937",
+      audioLangs: ["jpn", "eng", "hin"],
+      description: "A family is attacked by demons and only two members survive - Tanjiro and his sister Nezuko, who is turning into a demon slowly. Tanjiro sets out to become a demon slayer to avenge his family and cure his sister.",
+      staffList: [{ name: "Natsuki Hanae" }, { name: "Akari Kito" }, { name: "Hiro Shimono" }]
+    },
+    {
+      subjectId: "attack_on_titan",
+      title: "Attack on Titan",
+      cover: { url: "https://image.tmdb.org/t/p/w500/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg" },
+      imdbRatingValue: "9.1",
+      score: "9.1",
+      releaseDate: "2013-04-07",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Dark Fantasy / Action",
+      countryName: "Japan",
+      imdbId: "tt2560140",
+      tmdbId: "1429",
+      audioLangs: ["jpn", "eng", "hin"],
+      description: "After his hometown is destroyed and his mother is killed, young Eren Jaeger vows to cleanse the earth of the giant humanoid Titans that have brought humanity to the brink of extinction.",
+      staffList: [{ name: "Yuki Kaji" }, { name: "Yui Ishikawa" }, { name: "Marina Inoue" }]
+    },
+    {
+      subjectId: "death_note",
+      title: "Death Note",
+      cover: { url: "https://image.tmdb.org/t/p/w500/tCZFfYTIwrR7n94J6G14Y4hAFU6.jpg" },
+      imdbRatingValue: "8.9",
+      score: "8.9",
+      releaseDate: "2006-10-04",
+      duration: 1400,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Crime / Mystery / Thriller",
+      countryName: "Japan",
+      imdbId: "tt0877057",
+      tmdbId: "13916",
+      audioLangs: ["jpn", "eng", "hin"],
+      description: "An intelligent high school student goes on a secret crusade to eliminate criminals from the world after discovering a notebook capable of killing anyone whose name is written into it.",
+      staffList: [{ name: "Mamoru Miyano" }, { name: "Kappei Yamaguchi" }, { name: "Brad Swaile" }]
+    },
+    {
+      subjectId: "one_piece",
+      title: "One Piece",
+      cover: { url: "https://m.media-amazon.com/images/M/MV5BMTNjNGU4NTUtYmVjMy00YjRiLTkxMWUtNzZkMDNiYjZhNmViXkEyXkFqcGc@._V1_SX250.jpg" },
+      imdbRatingValue: "9.0",
+      score: "9.0",
+      releaseDate: "1999-10-20",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Action / Adventure",
+      countryName: "Japan",
+      imdbId: "tt0388629",
+      tmdbId: "37854",
+      audioLangs: ["jpn", "eng"],
+      description: "Monkey D. Luffy and his pirate crew explore the fantastical seas and exotic islands in search of the world's ultimate treasure known as One Piece to become the next King of the Pirates.",
+      staffList: [{ name: "Mayumi Tanaka" }, { name: "Laurent Vernin" }, { name: "Akemi Okamura" }]
+    },
+
+    // ==================== KIDS & FAMILY (category: 'kids', subjectType: 1) ====================
+    {
+      subjectId: "spider_verse_2",
+      title: "Spider-Man: Across the Spider-Verse",
+      cover: { url: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg" },
+      imdbRatingValue: "8.6",
+      score: "8.6",
+      releaseDate: "2023-06-02",
+      duration: 8400,
+      subjectType: 1,
+      category: "kids",
+      genre: "Animation / Action / Family",
+      countryName: "United States",
+      imdbId: "tt9362722",
+      tmdbId: "569094",
+      audioLangs: ["hin", "eng"],
+      description: "Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People charged with protecting its very existence.",
+      staffList: [{ name: "Shameik Moore" }, { name: "Hailee Steinfeld" }, { name: "Oscar Isaac" }]
+    },
+    {
+      subjectId: "inside_out_2",
+      title: "Inside Out 2",
+      cover: { url: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" },
+      imdbRatingValue: "7.7",
+      score: "7.7",
+      releaseDate: "2024-06-14",
+      duration: 5760,
+      subjectType: 1,
+      category: "kids",
+      genre: "Animation / Family / Comedy",
+      countryName: "United States",
+      imdbId: "tt22022452",
+      tmdbId: "1022789",
+      audioLangs: ["hin", "eng"],
+      description: "Teenager Riley's mind headquarters undergoes a sudden demolition to make room for something entirely unexpected: new Emotions including Anxiety!",
+      staffList: [{ name: "Amy Poehler" }, { name: "Maya Hawke" }, { name: "Kensington Tallman" }]
+    },
+    {
+      subjectId: "despicable_me_4",
+      title: "Despicable Me 4",
+      cover: { url: "https://image.tmdb.org/t/p/w500/wWba3TaojhK7NdycRhoQpsG0FaH.jpg" },
+      imdbRatingValue: "6.2",
+      score: "6.2",
+      releaseDate: "2024-07-03",
+      duration: 5700,
+      subjectType: 1,
+      category: "kids",
+      genre: "Animation / Family / Comedy",
+      countryName: "United States",
+      imdbId: "tt7510222",
+      tmdbId: "519182",
+      audioLangs: ["hin", "eng"],
+      description: "Gru, Lucy and their girls welcome a new member to the family, Gru Jr., who is intent on tormenting his dad in high-flying comedy action.",
+      staffList: [{ name: "Steve Carell" }, { name: "Kristen Wiig" }, { name: "Will Ferrell" }]
+    },
+    {
+      subjectId: "kung_fu_panda_4",
+      title: "Kung Fu Panda 4",
+      cover: { url: "https://image.tmdb.org/t/p/w500/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg" },
+      imdbRatingValue: "6.3",
+      score: "6.3",
+      releaseDate: "2024-03-08",
+      duration: 5640,
+      subjectType: 1,
+      category: "kids",
+      genre: "Animation / Action / Family",
+      countryName: "United States",
+      imdbId: "tt21692408",
+      tmdbId: "1011985",
+      audioLangs: ["hin", "eng"],
+      description: "After Po is tapped to become the Spiritual Leader of the Valley of Peace, he needs to find and train a new Dragon Warrior while a wicked sorceress plans to re-summon all master villains.",
+      staffList: [{ name: "Jack Black" }, { name: "Awkwafina" }, { name: "Viola Davis" }]
     }
   ],
 
@@ -764,14 +1143,152 @@ const EmbeddedEngine = {
   },
 
   getHomeFeed(tabId) {
-    let filtered = this.subjects;
-    if (tabId === 'MOVIE') {
-      filtered = this.subjects.filter(s => s.subjectType === 1);
-    } else if (tabId === 'TV') {
-      filtered = this.subjects.filter(s => s.subjectType === 2);
-    } else if (tabId === 'ANIMATION') {
-      filtered = this.subjects.filter(s => s.genre && s.genre.includes('Anime'));
+    if (tabId === 'TV') {
+      const series = this.subjects.filter(s => s.subjectType === 2 && s.category === 'series');
+      const dramaCrime = series.filter(s => s.genre && (s.genre.includes('Drama') || s.genre.includes('Crime')));
+      const sciFiFantasy = series.filter(s => s.genre && (s.genre.includes('Sci-Fi') || s.genre.includes('Fantasy') || s.genre.includes('Action')));
+      const hindiIndian = series.filter(s => s.countryName === 'India' || (s.audioLangs && s.audioLangs.includes('hin')));
+
+      return {
+        code: 0,
+        data: {
+          items: [
+            {
+              type: "TV_OPS_BANNER",
+              title: "Featured TV Series",
+              subjects: [series[0] || this.subjects.find(s => s.subjectType === 2)]
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Trending TV Series (Top 10 Global)",
+              subjects: series.slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Critically Acclaimed Drama & Crime Series",
+              subjects: (dramaCrime.length >= 3 ? dramaCrime : series).slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Sci-Fi, Fantasy & Thriller Series",
+              subjects: (sciFiFantasy.length >= 3 ? sciFiFantasy : series).slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Top Hindi & Indian Original Web Series",
+              subjects: (hindiIndian.length >= 2 ? hindiIndian : series).slice(0, 6)
+            }
+          ]
+        }
+      };
     }
+
+    if (tabId === 'MOVIE') {
+      const movies = this.subjects.filter(s => s.subjectType === 1 && s.category === 'movie');
+      const actionThriller = movies.filter(s => s.genre && (s.genre.includes('Action') || s.genre.includes('Thriller')));
+      const sciFiCinematic = movies.filter(s => s.genre && (s.genre.includes('Sci-Fi') || s.genre.includes('Drama')));
+      const indianBlockbusters = movies.filter(s => s.countryName === 'India' || (s.audioLangs && s.audioLangs.includes('hin')));
+
+      return {
+        code: 0,
+        data: {
+          items: [
+            {
+              type: "TV_OPS_BANNER",
+              title: "Featured Blockbuster Movie",
+              subjects: [movies[0] || this.subjects[0]]
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Trending Blockbuster Movies (1080p / 4K)",
+              subjects: movies.slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "High-Octane Action & Thriller Hits",
+              subjects: (actionThriller.length >= 3 ? actionThriller : movies).slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Sci-Fi & Cinematic Masterpieces",
+              subjects: (sciFiCinematic.length >= 3 ? sciFiCinematic : movies).slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Bollywood & Indian Cinema Hits",
+              subjects: (indianBlockbusters.length >= 2 ? indianBlockbusters : movies).slice(0, 6)
+            }
+          ]
+        }
+      };
+    }
+
+    if (tabId === 'ANIMATION') {
+      const anime = this.subjects.filter(s => s.category === 'anime');
+      const shonenAction = anime.filter(s => s.genre && (s.genre.includes('Action') || s.genre.includes('Dark Fantasy')));
+      const masterpieces = anime.filter(s => parseFloat(s.score || s.imdbRatingValue || 0) >= 8.5);
+
+      return {
+        code: 0,
+        data: {
+          items: [
+            {
+              type: "TV_OPS_BANNER",
+              title: "Featured Anime Series",
+              subjects: [anime[0] || this.subjects.find(s => s.category === 'anime')]
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Trending Anime Series (English & Hindi Dub)",
+              subjects: anime.slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Top Shonen Action & Dark Fantasy",
+              subjects: (shonenAction.length >= 3 ? shonenAction : anime).slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "IMDb 8.5+ Anime Masterpieces",
+              subjects: (masterpieces.length >= 3 ? masterpieces : anime).slice(0, 6)
+            }
+          ]
+        }
+      };
+    }
+
+    if (tabId === 'KIDS') {
+      const kids = this.subjects.filter(s => s.category === 'kids');
+      return {
+        code: 0,
+        data: {
+          items: [
+            {
+              type: "TV_OPS_BANNER",
+              title: "Featured Animated Hit",
+              subjects: [kids[0] || this.subjects[0]]
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Top Family & Animated Blockbusters",
+              subjects: kids.slice(0, 6)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Fun Animated Adventures",
+              subjects: kids
+            }
+          ]
+        }
+      };
+    }
+
+    // Default / HOME Feed: curated multi-shelf presentation
+    const homeMovies = this.subjects.filter(s => s.category === 'movie');
+    const homeSeries = this.subjects.filter(s => s.category === 'series');
+    const homeAnime = this.subjects.filter(s => s.category === 'anime');
+    const homeIndian = this.subjects.filter(s => s.countryName === 'India' || (s.audioLangs && s.audioLangs.includes('hin')));
+    const homeKids = this.subjects.filter(s => s.category === 'kids');
 
     return {
       code: 0,
@@ -780,27 +1297,37 @@ const EmbeddedEngine = {
           {
             type: "TV_OPS_BANNER",
             title: "Featured Banner",
-            subjects: [filtered[0] || this.subjects[0]]
+            subjects: [this.subjects[0]]
           },
           {
             type: "TV_OPS_SUBJECTS",
             title: "Trending Today (Top 10 Global)",
-            subjects: filtered.slice(0, 6)
+            subjects: this.subjects.slice(0, 6)
           },
           {
             type: "TV_OPS_SUBJECTS",
-            title: "Netflix & Theater Blockbusters (1080p / 4K)",
-            subjects: filtered.slice(2, 8).concat(filtered.slice(0, 2))
+            title: "Hollywood & Global Blockbuster Movies",
+            subjects: homeMovies.slice(0, 6)
           },
           {
             type: "TV_OPS_SUBJECTS",
-            title: "High-Octane Action & Sci-Fi",
-            subjects: this.subjects.filter(s => s.genre && (s.genre.includes('Action') || s.genre.includes('Sci-Fi')))
+            title: "Binge-Worthy TV Series & Originals",
+            subjects: homeSeries.slice(0, 6)
           },
           {
             type: "TV_OPS_SUBJECTS",
-            title: "Anime Hits & Fan Favorites",
-            subjects: this.subjects.filter(s => s.genre && s.genre.includes('Anime')).concat(filtered.slice(1, 4))
+            title: "Top Anime Hits & Dark Fantasy",
+            subjects: homeAnime.slice(0, 6)
+          },
+          {
+            type: "TV_OPS_SUBJECTS",
+            title: "Indian Blockbusters & Regional Hits",
+            subjects: homeIndian.slice(0, 6)
+          },
+          {
+            type: "TV_OPS_SUBJECTS",
+            title: "Family & Kids Animated Blockbusters",
+            subjects: homeKids.slice(0, 6)
           }
         ]
       }
@@ -839,10 +1366,9 @@ const EmbeddedEngine = {
     if (!imdbId && titleHint) {
       const clean = titleHint.toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^\w\s:-]/g, '').trim();
       const byTitle = {
+        // Movies
         "deadpool & wolverine": "tt6263850",
         "deadpool and wolverine": "tt6263850",
-        "stranger things": "tt4574334",
-        "stranger things: season 5": "tt4574334",
         "animal": "tt13751694",
         "avatar: fire and ash": "tt1757678",
         "avatar: the way of water": "tt1630029",
@@ -851,21 +1377,49 @@ const EmbeddedEngine = {
         "dune: part two": "tt15239678",
         "dune 2": "tt15239678",
         "oppenheimer": "tt15398776",
-        "solo leveling": "tt21209876",
-        "jujutsu kaisen": "tt12343534",
         "pushpa 2: the rule": "tt15428448",
         "pushpa 2": "tt15428448",
         "interstellar": "tt0816692",
-        "the dog stars": "tt21285562"
+        "the dog stars": "tt21285562",
+        "the dark knight": "tt0468569",
+        "inception": "tt1375666",
+        "spider-man: across the spider-verse": "tt9362722",
+        "inside out 2": "tt22022452",
+        "despicable me 4": "tt7510222",
+        "kung fu panda 4": "tt21692408",
+
+        // TV Series
+        "stranger things": "tt4574334",
+        "stranger things: season 5": "tt4574334",
+        "breaking bad": "tt0903747",
+        "game of thrones": "tt0944947",
+        "the boys": "tt1190634",
+        "loki": "tt9140554",
+        "house of the dragon": "tt11198330",
+        "wednesday": "tt13443470",
+        "the last of us": "tt3581920",
+        "mirzapur": "tt6473300",
+        "panchayat": "tt12004706",
+
+        // Anime
+        "solo leveling": "tt21209876",
+        "frieren": "tt22248376",
+        "frieren: beyond journey's end": "tt22248376",
+        "jujutsu kaisen": "tt12343534",
+        "demon slayer": "tt9335498",
+        "demon slayer: kimetsu no yaiba": "tt9335498",
+        "attack on titan": "tt2560140",
+        "death note": "tt0877057",
+        "one piece": "tt0388629"
       }[clean];
       if (byTitle) imdbId = byTitle;
     }
     if (!imdbId) imdbId = sub.imdbId || "tt21285562";
 
     const tmdbMap = {
+      // Movies
       "tt21285562": "846872",
       "tt6263850": "533535",
-      "tt4574334": "66732",
       "tt13751694": "781732",
       "tt1757678": "83533",
       "tt1630029": "76600",
@@ -873,10 +1427,35 @@ const EmbeddedEngine = {
       "tt15354916": "872906",
       "tt15239678": "693134",
       "tt15398776": "872585",
-      "tt21209876": "209867",
-      "tt12343534": "95479",
-      "tt15428448": "993710",
-      "tt0816692": "157336"
+      "tt15428448": "857598",
+      "tt0816692": "157336",
+      "tt0468569": "155",
+      "tt1375666": "27205",
+      "tt9362722": "569094",
+      "tt22022452": "1022789",
+      "tt7510222": "519182",
+      "tt21692408": "1011985",
+
+      // TV Series
+      "tt4574334": "66732",
+      "tt0903747": "1396",
+      "tt0944947": "1399",
+      "tt1190634": "76479",
+      "tt9140554": "84958",
+      "tt11198330": "94997",
+      "tt13443470": "119051",
+      "tt3581920": "100088",
+      "tt6473300": "84105",
+      "tt12004706": "101088",
+
+      // Anime
+      "tt21209876": "127532", // Solo Leveling (TMDB 127532)
+      "tt22248376": "209867", // Frieren: Beyond Journey's End (TMDB 209867)
+      "tt12343534": "95479",  // Jujutsu Kaisen
+      "tt9335498": "85937",   // Demon Slayer
+      "tt2560140": "1429",    // Attack on Titan
+      "tt0877057": "13916",   // Death Note
+      "tt0388629": "37854"    // One Piece
     };
     const tmdbId = overrideTmdbId || sub.tmdbId || tmdbMap[imdbId] || "";
     const isSeries = (subjectType === 2 || se > 0);
@@ -1859,23 +2438,65 @@ function mountNextShelfBatch() {
 function mountInfiniteCuratedShelf(sentinel) {
   state.infiniteScrollCount = (state.infiniteScrollCount || 0) + 1;
 
-  const themes = [
-    { title: "Trending in India & Global Hits", filter: s => s.countryName === 'India' || s.audioLangs?.includes('hin') },
-    { title: "Critically Acclaimed Sci-Fi & Time Warps", filter: s => s.genre?.includes('Sci-Fi') || s.genre?.includes('Action') },
-    { title: "Hollywood High-Octane Action Blockbusters", filter: s => s.genre?.includes('Action') || s.genre?.includes('Thriller') },
-    { title: "Top Anime Hits & Dark Fantasy", filter: s => s.genre?.includes('Anime') || s.countryName === 'Japan' },
-    { title: "Binge-Worthy TV Series & Drama", filter: s => s.subjectType === 2 },
-    { title: "Oscar Nominees & IMDb 8.5+ Classics", filter: s => parseFloat(s.score || s.imdbRatingValue || 0) >= 8.0 },
-    { title: "Spectacular Visuals & Cinematic Masterpieces", filter: s => true }
-  ];
-
-  const themeIdx = (state.infiniteScrollCount - 1) % themes.length;
-  const currentTheme = themes[themeIdx];
-
+  const currentTab = state.currentTab || 'HOME';
   const allSubjects = (EmbeddedEngine && EmbeddedEngine.subjects) ? EmbeddedEngine.subjects : [];
-  let matching = allSubjects.filter(currentTheme.filter);
-  if (matching.length < 4) {
-    matching = allSubjects;
+
+  let candidatePool = allSubjects;
+  let tabThemes = [];
+
+  if (currentTab === 'TV') {
+    candidatePool = allSubjects.filter(s => s.subjectType === 2 && s.category === 'series');
+    tabThemes = [
+      { title: "Top Rated Drama & Crime Series", filter: s => s.genre?.includes('Drama') || s.genre?.includes('Crime') },
+      { title: "Binge-Worthy Thrillers & Mystery", filter: s => s.genre?.includes('Thriller') || s.genre?.includes('Mystery') || s.genre?.includes('Sci-Fi') },
+      { title: "Top Indian Original Web Series", filter: s => s.countryName === 'India' || s.audioLangs?.includes('hin') },
+      { title: "Critically Acclaimed Global TV Shows", filter: s => parseFloat(s.score || s.imdbRatingValue || 0) >= 8.5 }
+    ];
+  } else if (currentTab === 'MOVIE') {
+    candidatePool = allSubjects.filter(s => s.subjectType === 1 && s.category === 'movie');
+    tabThemes = [
+      { title: "High-Octane Action Blockbusters", filter: s => s.genre?.includes('Action') || s.genre?.includes('Thriller') },
+      { title: "Sci-Fi & Cinematic Masterpieces", filter: s => s.genre?.includes('Sci-Fi') || s.genre?.includes('Adventure') },
+      { title: "Bollywood & Indian Cinema Hits", filter: s => s.countryName === 'India' || s.audioLangs?.includes('hin') },
+      { title: "IMDb 8.5+ All-Time Classics", filter: s => parseFloat(s.score || s.imdbRatingValue || 0) >= 8.4 }
+    ];
+  } else if (currentTab === 'ANIMATION') {
+    candidatePool = allSubjects.filter(s => s.category === 'anime');
+    tabThemes = [
+      { title: "Top Shonen Action & Battle Sagas", filter: s => s.genre?.includes('Action') || s.genre?.includes('Dark Fantasy') },
+      { title: "Supernatural & Dark Fantasy Hits", filter: s => s.genre?.includes('Fantasy') || s.genre?.includes('Supernatural') },
+      { title: "IMDb 8.5+ Legendary Anime Masterpieces", filter: s => parseFloat(s.score || s.imdbRatingValue || 0) >= 8.5 }
+    ];
+  } else if (currentTab === 'KIDS') {
+    candidatePool = allSubjects.filter(s => s.category === 'kids');
+    tabThemes = [
+      { title: "Fun Animated Adventures & Heroes", filter: s => true }
+    ];
+  } else {
+    // HOME or other tabs
+    candidatePool = allSubjects;
+    tabThemes = [
+      { title: "Trending in India & Global Hits", filter: s => s.countryName === 'India' || s.audioLangs?.includes('hin') },
+      { title: "Critically Acclaimed Sci-Fi & Time Warps", filter: s => s.genre?.includes('Sci-Fi') || s.genre?.includes('Action') },
+      { title: "Hollywood High-Octane Action Blockbusters", filter: s => s.category === 'movie' && (s.genre?.includes('Action') || s.genre?.includes('Thriller')) },
+      { title: "Top Anime Hits & Dark Fantasy", filter: s => s.category === 'anime' },
+      { title: "Binge-Worthy TV Series & Drama", filter: s => s.subjectType === 2 && s.category === 'series' },
+      { title: "Family & Kids Animated Blockbusters", filter: s => s.category === 'kids' },
+      { title: "Oscar Nominees & IMDb 8.5+ Classics", filter: s => parseFloat(s.score || s.imdbRatingValue || 0) >= 8.5 }
+    ];
+  }
+
+  if (candidatePool.length === 0) candidatePool = allSubjects;
+  if (tabThemes.length === 0) {
+    tabThemes = [{ title: "More Recommended Titles", filter: () => true }];
+  }
+
+  const themeIdx = (state.infiniteScrollCount - 1) % tabThemes.length;
+  const currentTheme = tabThemes[themeIdx];
+
+  let matching = candidatePool.filter(currentTheme.filter);
+  if (matching.length < 3) {
+    matching = candidatePool;
   }
 
   // Deterministically permute subjects so each infinite shelf looks fresh

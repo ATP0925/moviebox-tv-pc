@@ -384,6 +384,94 @@ runTest("Dynamic Playback Resolution: Exact TMDB/IMDb URLs built for every selec
   assert(appJs.includes("overrideImdbId"), "app.js getPlayData must accept overrideImdbId");
 });
 
+// ----------------------------------------------------
+// TEST 20: Verified TMDB ID Resolution (Solo Leveling vs Frieren vs Pushpa 2)
+// ----------------------------------------------------
+runTest("Verified TMDB IDs: Solo Leveling is 127532 (NOT 209867), Frieren is 209867, Pushpa 2 is 857598", () => {
+  const serverJs = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+
+  // Ensure Solo Leveling is 127532 in server.js
+  assert(serverJs.includes('"tt21209876": "127532"'), "server.js: tt21209876 (Solo Leveling) must map to TMDB 127532");
+  assert(!serverJs.includes('"tt21209876": "209867"'), "server.js: Solo Leveling must NEVER map to Frieren's TMDB 209867");
+
+  // Ensure Frieren is 209867 in server.js
+  assert(serverJs.includes('"tt22248376": "209867"'), "server.js: tt22248376 (Frieren) must map to TMDB 209867");
+
+  // Ensure Pushpa 2 is 857598 in server.js
+  assert(serverJs.includes('"tt15428448": "857598"'), "server.js: tt15428448 (Pushpa 2) must map to TMDB 857598");
+  assert(!serverJs.includes('"tt15428448": "993710"'), "server.js: Pushpa 2 must NOT have invalid TMDB 993710");
+
+  // Ensure app.js EmbeddedEngine has correct IDs
+  assert(appJs.includes('"tt21209876": "127532"'), "app.js: tt21209876 must map to 127532");
+  assert(!appJs.includes('"tt21209876": "209867"'), "app.js: tt21209876 must NEVER map to 209867");
+  assert(appJs.includes('"tt22248376": "209867"'), "app.js: tt22248376 must map to 209867");
+  assert(appJs.includes('"tt15428448": "857598"'), "app.js: tt15428448 must map to 857598");
+});
+
+// ----------------------------------------------------
+// TEST 21: Strict Tab Feed Isolation
+// ----------------------------------------------------
+runTest("Strict Tab Feed Isolation: TV feed has 0 movies/anime, Movie feed has 0 series/anime, Anime has 100% anime", () => {
+  // Execute EmbeddedEngine simulation from app.js in isolated scope
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+
+  // Extract EmbeddedEngine object between start and next section
+  const startIdx = appJs.indexOf("const EmbeddedEngine = {");
+  const endMarker = "// Resilient Fetch with Candidate Cycling & Embedded Engine Fallback";
+  const endIdx = appJs.indexOf(endMarker);
+  assert(startIdx !== -1 && endIdx !== -1, "Could not find EmbeddedEngine boundaries in app.js");
+  const embeddedCode = appJs.slice(startIdx, endIdx);
+
+  // Evaluate safely in sandbox
+  const vm = require('vm');
+  const sandbox = { window: {}, localStorage: { getItem: () => null } };
+  vm.createContext(sandbox);
+  vm.runInContext("var isCloud = true;\n" + embeddedCode.replace("const EmbeddedEngine =", "EmbeddedEngine ="), sandbox);
+  const EmbeddedEngine = sandbox.EmbeddedEngine;
+  assert(EmbeddedEngine, "EmbeddedEngine must be initialized");
+
+  // 1. Verify TV Feed
+  const tvFeed = EmbeddedEngine.getHomeFeed('TV');
+  assert(tvFeed && tvFeed.data && tvFeed.data.items, "TV feed must return valid structure");
+  tvFeed.data.items.forEach(shelf => {
+    shelf.subjects.forEach(sub => {
+      assert.strictEqual(sub.subjectType, 2, `TV feed shelf '${shelf.title}' contains subjectType ${sub.subjectType} (${sub.title})`);
+      assert.strictEqual(sub.category, 'series', `TV feed shelf '${shelf.title}' contains non-series category '${sub.category}' (${sub.title})`);
+    });
+  });
+
+  // 2. Verify MOVIE Feed
+  const movieFeed = EmbeddedEngine.getHomeFeed('MOVIE');
+  assert(movieFeed && movieFeed.data && movieFeed.data.items, "MOVIE feed must return valid structure");
+  movieFeed.data.items.forEach(shelf => {
+    shelf.subjects.forEach(sub => {
+      assert.strictEqual(sub.subjectType, 1, `MOVIE feed shelf '${shelf.title}' contains subjectType ${sub.subjectType} (${sub.title})`);
+      assert.strictEqual(sub.category, 'movie', `MOVIE feed shelf '${shelf.title}' contains non-movie category '${sub.category}' (${sub.title})`);
+    });
+  });
+
+  // 3. Verify ANIMATION Feed
+  const animeFeed = EmbeddedEngine.getHomeFeed('ANIMATION');
+  assert(animeFeed && animeFeed.data && animeFeed.data.items, "ANIMATION feed must return valid structure");
+  animeFeed.data.items.forEach(shelf => {
+    shelf.subjects.forEach(sub => {
+      assert.strictEqual(sub.category, 'anime', `ANIMATION feed shelf '${shelf.title}' contains non-anime category '${sub.category}' (${sub.title})`);
+    });
+  });
+
+  // 4. Verify Solo Leveling Play Data
+  const soloPlay = EmbeddedEngine.getPlayData('solo_leveling_2024', 1, 1, 'Solo Leveling', 2);
+  const soloVidlink = soloPlay.data.servers.find(s => s.id === 'cinema-stream-1').url;
+  assert(soloVidlink.includes('/tv/127532/1/1'), `Solo Leveling must play TMDB 127532, got: ${soloVidlink}`);
+  assert(!soloVidlink.includes('209867'), "Solo Leveling Vidlink must NEVER contain Frieren's TMDB 209867");
+
+  // 5. Verify Frieren Play Data
+  const frierenPlay = EmbeddedEngine.getPlayData('frieren_2023', 1, 1, "Frieren: Beyond Journey's End", 2);
+  const frierenVidlink = frierenPlay.data.servers.find(s => s.id === 'cinema-stream-1').url;
+  assert(frierenVidlink.includes('/tv/209867/1/1'), `Frieren must play TMDB 209867, got: ${frierenVidlink}`);
+});
+
 console.log("\n=================================================");
 console.log(`🎯 RESULTS: ${passedCount} / ${totalCount} TESTS PASSED (100%)`);
 console.log("=================================================");

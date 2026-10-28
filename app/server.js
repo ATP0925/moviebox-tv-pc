@@ -35,41 +35,91 @@ for (const p of staticPaths) {
 }
 
 const IMDB_TO_TMDB_MAP = {
-  "tt21285562": "846872",
-  "tt6263850": "533535",
-  "tt4574334": "66732",
-  "tt13751694": "781732",
-  "tt1757678": "83533",
-  "tt1630029": "76600",
-  "tt15354916": "872906",
-  "tt15239678": "693134",
-  "tt15398776": "872585",
-  "tt21209876": "209867",
-  "tt12343534": "95479",
-  "tt15428448": "993710",
-  "tt0816692": "157336"
+  // Movies
+  "tt21285562": "846872",   // The Dog Stars
+  "tt6263850": "533535",     // Deadpool & Wolverine
+  "tt13751694": "781732",    // Animal
+  "tt1757678": "83533",      // Avatar: Fire and Ash
+  "tt1630029": "76600",      // Avatar: The Way of Water
+  "tt0499549": "19995",      // Avatar (2009)
+  "tt15354916": "872906",    // Jawan
+  "tt15239678": "693134",    // Dune: Part Two
+  "tt15398776": "872585",    // Oppenheimer
+  "tt15428448": "857598",    // Pushpa 2: The Rule (VERIFIED TMDB)
+  "tt0816692": "157336",     // Interstellar
+  "tt0468569": "155",        // The Dark Knight
+  "tt1375666": "27205",      // Inception
+  "tt9362722": "569094",     // Spider-Man: Across the Spider-Verse
+  "tt22022452": "1022789",   // Inside Out 2
+  "tt7510222": "519182",     // Despicable Me 4
+  "tt21692408": "1011985",   // Kung Fu Panda 4
+
+  // TV Series
+  "tt4574334": "66732",      // Stranger Things
+  "tt0903747": "1396",       // Breaking Bad
+  "tt0944947": "1399",       // Game of Thrones
+  "tt1190634": "76479",      // The Boys
+  "tt9140554": "84958",      // Loki
+  "tt11198330": "94997",     // House of the Dragon
+  "tt13443470": "119051",    // Wednesday
+  "tt3581920": "100088",     // The Last of Us
+  "tt6473300": "84105",      // Mirzapur
+  "tt12004706": "101088",    // Panchayat
+
+  // Anime
+  "tt21209876": "127532",    // Solo Leveling (VERIFIED TMDB: 127532, NOT 209867 Frieren!)
+  "tt22248376": "209867",    // Frieren: Beyond Journey's End (TMDB: 209867)
+  "tt12343534": "95479",     // Jujutsu Kaisen
+  "tt9335498": "85937",      // Demon Slayer: Kimetsu no Yaiba
+  "tt2560140": "1429",       // Attack on Titan
+  "tt0877057": "13916",      // Death Note
+  "tt0388629": "37854"       // One Piece
 };
 
 const SUBJECT_ID_MAP = {
+  // Movies
   "1436232475147128696": { imdbId: "tt21285562", tmdbId: "846872", title: "The Dog Stars", subjectType: 1 },
   "dp_wolv_2024": { imdbId: "tt6263850", tmdbId: "533535", title: "Deadpool & Wolverine", subjectType: 1 },
-  "st_s5_2025": { imdbId: "tt4574334", tmdbId: "66732", title: "Stranger Things: Season 5", isSeries: true, subjectType: 2 },
   "animal_2023": { imdbId: "tt13751694", tmdbId: "781732", title: "Animal", subjectType: 1 },
   "avatar_3_2025": { imdbId: "tt1757678", tmdbId: "83533", title: "Avatar: Fire and Ash", subjectType: 1 },
   "jawan_2023": { imdbId: "tt15354916", tmdbId: "872906", title: "Jawan", subjectType: 1 },
   "dune_2_2024": { imdbId: "tt15239678", tmdbId: "693134", title: "Dune: Part Two", subjectType: 1 },
   "oppenheimer_2023": { imdbId: "tt15398776", tmdbId: "872585", title: "Oppenheimer", subjectType: 1 },
-  "solo_leveling_2024": { imdbId: "tt21209876", tmdbId: "209867", title: "Solo Leveling", isSeries: true, subjectType: 2 },
+  "pushpa_2_2024": { imdbId: "tt15428448", tmdbId: "857598", title: "Pushpa 2: The Rule", subjectType: 1 },
+  "interstellar_2014": { imdbId: "tt0816692", tmdbId: "157336", title: "Interstellar", subjectType: 1 },
+  "dark_knight": { imdbId: "tt0468569", tmdbId: "155", title: "The Dark Knight", subjectType: 1 },
+  "inception_2010": { imdbId: "tt1375666", tmdbId: "27205", title: "Inception", subjectType: 1 },
+  "spider_verse_2": { imdbId: "tt9362722", tmdbId: "569094", title: "Spider-Man: Across the Spider-Verse", subjectType: 1 },
+  "inside_out_2": { imdbId: "tt22022452", tmdbId: "1022789", title: "Inside Out 2", subjectType: 1 },
+  "despicable_me_4": { imdbId: "tt7510222", tmdbId: "519182", title: "Despicable Me 4", subjectType: 1 },
+  "kung_fu_panda_4": { imdbId: "tt21692408", tmdbId: "1011985", title: "Kung Fu Panda 4", subjectType: 1 },
+
+  // TV Series
+  "st_s5_2025": { imdbId: "tt4574334", tmdbId: "66732", title: "Stranger Things: Season 5", isSeries: true, subjectType: 2 },
+  "breaking_bad": { imdbId: "tt0903747", tmdbId: "1396", title: "Breaking Bad", isSeries: true, subjectType: 2 },
+  "game_of_thrones": { imdbId: "tt0944947", tmdbId: "1399", title: "Game of Thrones", isSeries: true, subjectType: 2 },
+  "the_boys": { imdbId: "tt1190634", tmdbId: "76479", title: "The Boys", isSeries: true, subjectType: 2 },
+  "loki_series": { imdbId: "tt9140554", tmdbId: "84958", title: "Loki", isSeries: true, subjectType: 2 },
+  "house_of_dragon": { imdbId: "tt11198330", tmdbId: "94997", title: "House of the Dragon", isSeries: true, subjectType: 2 },
+  "wednesday_series": { imdbId: "tt13443470", tmdbId: "119051", title: "Wednesday", isSeries: true, subjectType: 2 },
+  "the_last_of_us": { imdbId: "tt3581920", tmdbId: "100088", title: "The Last of Us", isSeries: true, subjectType: 2 },
+  "mirzapur_series": { imdbId: "tt6473300", tmdbId: "84105", title: "Mirzapur", isSeries: true, subjectType: 2 },
+  "panchayat_series": { imdbId: "tt12004706", tmdbId: "101088", title: "Panchayat", isSeries: true, subjectType: 2 },
+
+  // Anime
+  "solo_leveling_2024": { imdbId: "tt21209876", tmdbId: "127532", title: "Solo Leveling", isSeries: true, subjectType: 2 },
+  "frieren_2023": { imdbId: "tt22248376", tmdbId: "209867", title: "Frieren: Beyond Journey's End", isSeries: true, subjectType: 2 },
   "jjk_2024": { imdbId: "tt12343534", tmdbId: "95479", title: "Jujutsu Kaisen", isSeries: true, subjectType: 2 },
-  "pushpa_2_2024": { imdbId: "tt15428448", tmdbId: "993710", title: "Pushpa 2: The Rule", subjectType: 1 },
-  "interstellar_2014": { imdbId: "tt0816692", tmdbId: "157336", title: "Interstellar", subjectType: 1 }
+  "demon_slayer": { imdbId: "tt9335498", tmdbId: "85937", title: "Demon Slayer: Kimetsu no Yaiba", isSeries: true, subjectType: 2 },
+  "attack_on_titan": { imdbId: "tt2560140", tmdbId: "1429", title: "Attack on Titan", isSeries: true, subjectType: 2 },
+  "death_note": { imdbId: "tt0877057", tmdbId: "13916", title: "Death Note", isSeries: true, subjectType: 2 },
+  "one_piece": { imdbId: "tt0388629", tmdbId: "37854", title: "One Piece", isSeries: true, subjectType: 2 }
 };
 
 const TITLE_TO_IMDB_MAP = {
+  // Movies
   "deadpool & wolverine": { imdbId: "tt6263850", tmdbId: "533535", isSeries: false },
   "deadpool and wolverine": { imdbId: "tt6263850", tmdbId: "533535", isSeries: false },
-  "stranger things": { imdbId: "tt4574334", tmdbId: "66732", isSeries: true },
-  "stranger things: season 5": { imdbId: "tt4574334", tmdbId: "66732", isSeries: true },
   "animal": { imdbId: "tt13751694", tmdbId: "781732", isSeries: false },
   "avatar: fire and ash": { imdbId: "tt1757678", tmdbId: "83533", isSeries: false },
   "avatar: the way of water": { imdbId: "tt1630029", tmdbId: "76600", isSeries: false },
@@ -78,13 +128,41 @@ const TITLE_TO_IMDB_MAP = {
   "dune: part two": { imdbId: "tt15239678", tmdbId: "693134", isSeries: false },
   "dune 2": { imdbId: "tt15239678", tmdbId: "693134", isSeries: false },
   "oppenheimer": { imdbId: "tt15398776", tmdbId: "872585", isSeries: false },
-  "solo leveling": { imdbId: "tt21209876", tmdbId: "209867", isSeries: true },
-  "jujutsu kaisen": { imdbId: "tt12343534", tmdbId: "95479", isSeries: true },
-  "pushpa 2: the rule": { imdbId: "tt15428448", tmdbId: "993710", isSeries: false },
-  "pushpa 2": { imdbId: "tt15428448", tmdbId: "993710", isSeries: false },
+  "pushpa 2: the rule": { imdbId: "tt15428448", tmdbId: "857598", isSeries: false },
+  "pushpa 2": { imdbId: "tt15428448", tmdbId: "857598", isSeries: false },
   "interstellar": { imdbId: "tt0816692", tmdbId: "157336", isSeries: false },
   "the dog stars": { imdbId: "tt21285562", tmdbId: "846872", isSeries: false },
-  "tears of steel": { imdbId: "tt2285752", tmdbId: "135600", isSeries: false }
+  "the dark knight": { imdbId: "tt0468569", tmdbId: "155", isSeries: false },
+  "inception": { imdbId: "tt1375666", tmdbId: "27205", isSeries: false },
+  "spider-man: across the spider-verse": { imdbId: "tt9362722", tmdbId: "569094", isSeries: false },
+  "inside out 2": { imdbId: "tt22022452", tmdbId: "1022789", isSeries: false },
+  "despicable me 4": { imdbId: "tt7510222", tmdbId: "519182", isSeries: false },
+  "kung fu panda 4": { imdbId: "tt21692408", tmdbId: "1011985", isSeries: false },
+  "tears of steel": { imdbId: "tt2285752", tmdbId: "135600", isSeries: false },
+
+  // TV Series
+  "stranger things": { imdbId: "tt4574334", tmdbId: "66732", isSeries: true },
+  "stranger things: season 5": { imdbId: "tt4574334", tmdbId: "66732", isSeries: true },
+  "breaking bad": { imdbId: "tt0903747", tmdbId: "1396", isSeries: true },
+  "game of thrones": { imdbId: "tt0944947", tmdbId: "1399", isSeries: true },
+  "the boys": { imdbId: "tt1190634", tmdbId: "76479", isSeries: true },
+  "loki": { imdbId: "tt9140554", tmdbId: "84958", isSeries: true },
+  "house of the dragon": { imdbId: "tt11198330", tmdbId: "94997", isSeries: true },
+  "wednesday": { imdbId: "tt13443470", tmdbId: "119051", isSeries: true },
+  "the last of us": { imdbId: "tt3581920", tmdbId: "100088", isSeries: true },
+  "mirzapur": { imdbId: "tt6473300", tmdbId: "84105", isSeries: true },
+  "panchayat": { imdbId: "tt12004706", tmdbId: "101088", isSeries: true },
+
+  // Anime
+  "solo leveling": { imdbId: "tt21209876", tmdbId: "127532", isSeries: true },
+  "frieren": { imdbId: "tt22248376", tmdbId: "209867", isSeries: true },
+  "frieren: beyond journey's end": { imdbId: "tt22248376", tmdbId: "209867", isSeries: true },
+  "jujutsu kaisen": { imdbId: "tt12343534", tmdbId: "95479", isSeries: true },
+  "demon slayer": { imdbId: "tt9335498", tmdbId: "85937", isSeries: true },
+  "demon slayer: kimetsu no yaiba": { imdbId: "tt9335498", tmdbId: "85937", isSeries: true },
+  "attack on titan": { imdbId: "tt2560140", tmdbId: "1429", isSeries: true },
+  "death note": { imdbId: "tt0877057", tmdbId: "13916", isSeries: true },
+  "one piece": { imdbId: "tt0388629", tmdbId: "37854", isSeries: true }
 };
 
 // MovieBoxTV Gateway Signing Config
