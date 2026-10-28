@@ -1,8 +1,9 @@
 const fs = require('fs');
+const path = require('path');
 const https = require('https');
 const http = require('http');
 
-const appJs = fs.readFileSync('app/public/app.js', 'utf8');
+const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
 
 const engineMatch = appJs.match(/const EmbeddedEngine = \{([\s\S]*?)\n\};/);
 const EmbeddedEngine = new Function('const EmbeddedEngine = {' + engineMatch[1] + '\n}; return EmbeddedEngine;')();

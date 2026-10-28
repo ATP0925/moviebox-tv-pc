@@ -70,6 +70,10 @@ const state = {
   isSeeking: false,
   isDraggingScrubber: false,
   inspectorInterval: null,
+
+  // MovieBox TV Native Favorites / Collection (v1.1.10)
+  favorites: [],
+  currentCollectionFilter: 'ALL',
 };
 
 // DOM Element References
@@ -268,6 +272,27 @@ const elements = {
   btnMobileRw10: document.getElementById('btn-mobile-rw10'),
   btnMobileFf10: document.getElementById('btn-mobile-ff10'),
   playerSheetBackdrop: document.getElementById('player-sheet-backdrop'),
+
+  // MovieBox APK Header & New Views (v1.1.10)
+  btnHeaderFavorite: document.getElementById('btn-header-favorite'),
+  btnHeaderSettings: document.getElementById('btn-header-settings'),
+  userStatusPill: document.getElementById('user-status-pill'),
+  collectionSection: document.getElementById('collection-section'),
+  collectionGrid: document.getElementById('collection-grid'),
+  collectionCount: document.getElementById('collection-count'),
+  collectionEmpty: document.getElementById('collection-empty'),
+  btnClearAllCollection: document.getElementById('btn-clear-all-collection'),
+  channelsSection: document.getElementById('channels-section'),
+  channelsGrid: document.getElementById('channels-grid'),
+  settingsModal: document.getElementById('settings-modal'),
+  btnSettingsClose: document.getElementById('btn-settings-close'),
+  settingQualitySelect: document.getElementById('setting-quality-select'),
+  settingAudioSelect: document.getElementById('setting-audio-select'),
+  settingAutoplayNext: document.getElementById('setting-autoplay-next'),
+  btnSettingsClearHistory: document.getElementById('btn-settings-clear-history'),
+  btnSettingsClearCache: document.getElementById('btn-settings-clear-cache'),
+  btnModalFavorite: document.getElementById('btn-modal-favorite'),
+  modalFavText: document.getElementById('modal-fav-text'),
 };
 
 // ======================== HIGH-SPEED IMAGE OPTIMIZER & COMPRESSION ========================
@@ -445,7 +470,69 @@ const EmbeddedEngine = {
     { tabId: "MOVIE", name: "Movies" },
     { tabId: "TV", name: "TV Series" },
     { tabId: "ANIMATION", name: "Anime" },
+    { tabId: "CHANNELS", name: "Live TV" },
     { tabId: "KIDS", name: "Kids" }
+  ],
+
+  channels: [
+    {
+      channelId: "live_nasa",
+      title: "NASA TV Live HD",
+      category: "Science & Space",
+      thumbnail: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=500&auto=format&fit=crop&q=80",
+      description: "Live views of Earth from the International Space Station, spacewalks, rocket launches and deep space exploration.",
+      streamUrl: "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8",
+      type: "direct"
+    },
+    {
+      channelId: "live_redbull",
+      title: "Red Bull TV Live",
+      category: "Action Sports",
+      thumbnail: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=500&auto=format&fit=crop&q=80",
+      description: "High-adrenaline action sports, extreme skiing, motorsports, bike freeride and world championship events.",
+      streamUrl: "https://rbmn-live.akamaized.net/hls/live/590964/geoSTPAL/master.m3u8",
+      type: "direct"
+    },
+    {
+      channelId: "live_skynews",
+      title: "Sky News Live 24/7",
+      category: "World News",
+      thumbnail: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500&auto=format&fit=crop&q=80",
+      description: "Breaking global news, special live broadcasts, interviews, and real-time world events analysis.",
+      streamUrl: "https://news.sky.com",
+      embedUrl: "https://www.youtube.com/embed/9Auq9mYxFEE?autoplay=1",
+      type: "embed"
+    },
+    {
+      channelId: "live_bloomberg",
+      title: "Bloomberg Financial TV",
+      category: "Business & Markets",
+      thumbnail: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500&auto=format&fit=crop&q=80",
+      description: "Global business leaders, Wall Street market trading sessions, crypto tracking, and technology trends.",
+      streamUrl: "https://bloomberg.com",
+      embedUrl: "https://www.youtube.com/embed/dp8PhLsUcFE?autoplay=1",
+      type: "embed"
+    },
+    {
+      channelId: "live_france24",
+      title: "France 24 English Live",
+      category: "International",
+      thumbnail: "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=500&auto=format&fit=crop&q=80",
+      description: "International news coverage with global perspectives from Paris across Europe, Africa, Asia, and the Americas.",
+      streamUrl: "https://france24.com",
+      embedUrl: "https://www.youtube.com/embed/a_426RiwST8?autoplay=1",
+      type: "embed"
+    },
+    {
+      channelId: "live_euronews",
+      title: "Euronews World Live",
+      category: "European & Global",
+      thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80",
+      description: "Unfiltered European perspectives, culture, diplomatic discussions, and continuous world events.",
+      streamUrl: "https://euronews.com",
+      embedUrl: "https://www.youtube.com/embed/pykdAUwiFfA?autoplay=1",
+      type: "embed"
+    }
   ],
 
   subjects: [
@@ -837,16 +924,16 @@ const EmbeddedEngine = {
       },
       {
         id: "cinema-stream-2",
-        name: "Cinema Cloud 2 (Multi-CDN)",
-        tag: "Multi-CDN Global Network • 186K Engine",
+        name: "Cinema Cloud 2 (1080p Fast HLS)",
+        tag: "Fast HLS Cloud Mirror • 186K Engine",
         quality: "1080p Full HD",
         type: "embed",
         url: nontrongoUrl
       },
       {
         id: "cinema-stream-3",
-        name: "Cinema Cloud 3 (Turbo)",
-        tag: "Turbo Fast Stream • Zero Buffering",
+        name: "Cinema Cloud 3 (Global Mirror)",
+        tag: "Global Content Delivery Mirror • Multi-CDN",
         quality: "4K / 1080p",
         type: "embed",
         url: vidfastUrl
@@ -1489,7 +1576,7 @@ function renderTabs(tabs) {
 
   // Render API tabs
   tabs.forEach(tab => {
-    if (["HOME", "MOVIE", "TV", "ANIMATION", "KIDS"].includes(tab.tabId)) {
+    if (["HOME", "MOVIE", "TV", "ANIMATION", "CHANNELS", "KIDS"].includes(tab.tabId)) {
       const btn = document.createElement('button');
       btn.className = `nav-tab ${tab.tabId === state.currentTab ? 'active' : ''}`;
       btn.dataset.tabId = tab.tabId;
@@ -1537,14 +1624,38 @@ async function switchTab(tabId) {
 
   if (tabId === 'HISTORY') {
     elements.feedContainer.classList.add('hidden');
+    elements.collectionSection?.classList.add('hidden');
+    elements.channelsSection?.classList.add('hidden');
     elements.historySection.classList.remove('hidden');
     renderHistoryView();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
 
+  if (tabId === 'FAVORITES' || tabId === 'COLLECTION') {
+    elements.feedContainer.classList.add('hidden');
+    elements.historySection.classList.add('hidden');
+    elements.channelsSection?.classList.add('hidden');
+    elements.collectionSection?.classList.remove('hidden');
+    renderCollectionSection(state.currentCollectionFilter || 'ALL');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  if (tabId === 'CHANNELS') {
+    elements.feedContainer.classList.add('hidden');
+    elements.historySection.classList.add('hidden');
+    elements.collectionSection?.classList.add('hidden');
+    elements.channelsSection?.classList.remove('hidden');
+    renderChannelsSection();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
   // Regular categories feed
   elements.historySection.classList.add('hidden');
+  elements.collectionSection?.classList.add('hidden');
+  elements.channelsSection?.classList.add('hidden');
   elements.feedContainer.classList.remove('hidden');
 
   await loadHomeFeed(tabId);
@@ -1916,6 +2027,143 @@ if (elements.btnClearAllHistory) {
   });
 }
 
+// ======================== FAVORITES & COLLECTION MANAGER (v1.1.10) ========================
+const favoritesManager = {
+  STORAGE_KEY: 'moviebox_favorites',
+
+  getFavorites() {
+    try {
+      return JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  },
+
+  isFavorite(subjectId) {
+    if (!subjectId) return false;
+    const favs = this.getFavorites();
+    return favs.some(f => String(f.subjectId) === String(subjectId));
+  },
+
+  toggle(subject) {
+    if (!subject || !subject.subjectId) return false;
+    let favs = this.getFavorites();
+    const idx = favs.findIndex(f => String(f.subjectId) === String(subject.subjectId));
+    let added = false;
+    if (idx >= 0) {
+      favs.splice(idx, 1);
+      added = false;
+    } else {
+      favs.unshift({
+        subjectId: subject.subjectId,
+        title: subject.title,
+        cover: subject.cover?.url ? subject.cover : { url: subject.cover || '' },
+        subjectType: subject.subjectType || 1,
+        imdbRatingValue: subject.imdbRatingValue || subject.score || '8.2',
+        releaseDate: subject.releaseDate || '2026',
+        genre: subject.genre || 'Action, Sci-Fi',
+        savedAt: Date.now()
+      });
+      added = true;
+    }
+    try { localStorage.setItem(this.STORAGE_KEY, JSON.stringify(favs)); } catch (e) {}
+    state.favorites = favs;
+    showToast(added ? "Added to My Collection" : "Removed from My Collection");
+    return added;
+  },
+
+  clearAll() {
+    try { localStorage.removeItem(this.STORAGE_KEY); } catch (e) {}
+    state.favorites = [];
+    renderCollectionSection(state.currentCollectionFilter || 'ALL');
+    showToast("Collection cleared");
+  }
+};
+
+function renderCollectionSection(filter = 'ALL') {
+  state.currentCollectionFilter = filter;
+  const favs = favoritesManager.getFavorites();
+
+  if (elements.collectionSection) {
+    elements.collectionSection.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.classList.toggle('active', pill.dataset.filter === filter);
+    });
+  }
+
+  const filtered = filter === 'ALL'
+    ? favs
+    : filter === 'MOVIE'
+      ? favs.filter(f => f.subjectType === 1)
+      : filter === 'TV'
+        ? favs.filter(f => f.subjectType === 2)
+        : filter === 'ANIMATION'
+          ? favs.filter(f => (f.genre || '').toLowerCase().includes('anim'))
+          : favs;
+
+  if (elements.collectionCount) {
+    elements.collectionCount.textContent = `${filtered.length} saved`;
+  }
+  if (!elements.collectionGrid) return;
+  elements.collectionGrid.innerHTML = '';
+
+  if (filtered.length === 0) {
+    elements.collectionEmpty?.classList.remove('hidden');
+    return;
+  }
+  elements.collectionEmpty?.classList.add('hidden');
+
+  filtered.forEach(item => {
+    const card = createMovieCard(item);
+    elements.collectionGrid.appendChild(card);
+  });
+}
+
+function renderChannelsSection() {
+  const channels = EmbeddedEngine.channels || [];
+  if (!elements.channelsGrid) return;
+  elements.channelsGrid.innerHTML = '';
+
+  channels.forEach(ch => {
+    const card = document.createElement('div');
+    card.className = 'channel-card';
+    card.innerHTML = `
+      <div class="channel-thumbnail-wrap">
+        <img class="channel-thumbnail" src="${ch.thumbnail}" alt="${escapeHtml(ch.title)}" loading="lazy">
+        <span class="channel-live-tag">LIVE</span>
+        <span class="channel-category-tag">${escapeHtml(ch.category)}</span>
+      </div>
+      <div class="channel-info">
+        <h3 class="channel-title">${escapeHtml(ch.title)}</h3>
+        <p class="channel-desc">${escapeHtml(ch.description)}</p>
+      </div>
+    `;
+
+    card.addEventListener('click', () => {
+      // Launch channel in Cinema Player
+      elements.playerOverlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      elements.playerTitle.textContent = ch.title;
+      elements.playerSubtitle.textContent = `Live Stream • ${ch.category}`;
+      if (elements.activeServerBadge) elements.activeServerBadge.textContent = "Live Stream Direct";
+      if (elements.activeAudioBadge) elements.activeAudioBadge.textContent = "Live Audio";
+
+      if (ch.type === 'embed' && ch.embedUrl) {
+        elements.videoElement.classList.add('hidden');
+        elements.playerIframe.removeAttribute('sandbox');
+        elements.playerIframe.src = ch.embedUrl;
+        elements.playerIframe.classList.remove('hidden');
+        elements.playerOverlay.classList.add('iframe-active');
+      } else {
+        elements.playerIframe.classList.add('hidden');
+        elements.playerOverlay.classList.remove('iframe-active');
+        initDirectMp4Playback(ch.streamUrl, "1080p Live HD");
+      }
+    });
+
+    elements.channelsGrid.appendChild(card);
+  });
+}
+
 // ======================== SHELVES & CAROUSELS ========================
 
 function createShelf(title, subjects, insertBeforeNode = null) {
@@ -2078,6 +2326,7 @@ function createMovieCard(subject) {
 
   const safeTitle = escapeHtml(subject.title || 'Movie');
   const safeTitleEscapedForAttr = safeTitle.replace(/'/g, "\\'");
+  const isFav = favoritesManager.isFavorite(subject.subjectId);
 
   card.innerHTML = `
     <div class="card-poster-wrap">
@@ -2092,6 +2341,11 @@ function createMovieCard(subject) {
            onload="this.classList.add('loaded'); if(this.parentElement) this.parentElement.classList.add('img-loaded');"
            onerror="handlePosterError(this, '${safeTitleEscapedForAttr}')">
       ${score ? `<div class="card-corner-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="#E5A00D" style="display:inline-block; vertical-align:middle; margin-right:2px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>${score}</div>` : ''}
+      <button class="card-fav-btn ${isFav ? 'active' : ''}" title="${isFav ? 'In Collection' : 'Save to Favorites'}">
+        <svg viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </button>
       ${progressBarHtml}
       <div class="card-overlay">
         <div class="card-quick-play" title="Watch Now">
@@ -2107,6 +2361,20 @@ function createMovieCard(subject) {
       </div>
     </div>
   `;
+
+  const favBtn = card.querySelector('.card-fav-btn');
+  if (favBtn) {
+    favBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const updatedFav = favoritesManager.toggle(subject);
+      favBtn.classList.toggle('active', updatedFav);
+      const svg = favBtn.querySelector('svg');
+      if (svg) svg.setAttribute('fill', updatedFav ? 'currentColor' : 'none');
+      if (state.currentTab === 'FAVORITES' || state.currentTab === 'COLLECTION') {
+        renderCollectionSection(state.currentCollectionFilter || 'ALL');
+      }
+    });
+  }
 
   const quickPlayBtn = card.querySelector('.card-quick-play');
   if (quickPlayBtn) {
@@ -2193,6 +2461,23 @@ async function openDetailModal(subjectId, autoPlay = false) {
       const ep = data.subjectType === 2 ? state.selectedEpisode : 0;
       startPlayback(data.subjectId, se, ep, data.title, data.cover?.url, data.subjectType);
     };
+
+    // Update Favorite / Collection button
+    if (elements.btnModalFavorite) {
+      const isFav = favoritesManager.isFavorite(data.subjectId);
+      elements.btnModalFavorite.classList.toggle('active', isFav);
+      if (elements.modalFavText) {
+        elements.modalFavText.textContent = isFav ? "Saved in Collection" : "Favorite";
+      }
+      elements.btnModalFavorite.onclick = (e) => {
+        e.stopPropagation();
+        const updated = favoritesManager.toggle(data);
+        elements.btnModalFavorite.classList.toggle('active', updated);
+        if (elements.modalFavText) {
+          elements.modalFavText.textContent = updated ? "Saved in Collection" : "Favorite";
+        }
+      };
+    }
 
     if (autoPlay) {
       elements.btnModalPlay.click();
@@ -4164,12 +4449,88 @@ function escapeHtml(str) {
   );
 }
 
+// ======================== SETTINGS & PREFERENCES MODAL (v1.1.10) ========================
+function initSettingsModal() {
+  if (elements.btnHeaderSettings) {
+    elements.btnHeaderSettings.addEventListener('click', () => {
+      elements.settingsModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  if (elements.userStatusPill) {
+    elements.userStatusPill.addEventListener('click', () => {
+      elements.settingsModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  if (elements.btnSettingsClose) {
+    elements.btnSettingsClose.addEventListener('click', () => {
+      elements.settingsModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+  }
+  if (elements.settingsModal) {
+    elements.settingsModal.addEventListener('click', (e) => {
+      if (e.target === elements.settingsModal) {
+        elements.settingsModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+  if (elements.btnSettingsClearHistory) {
+    elements.btnSettingsClearHistory.addEventListener('click', () => {
+      watchHistoryManager.clearAllHistory();
+      showToast("Watch History Cleared");
+    });
+  }
+  if (elements.btnSettingsClearCache) {
+    elements.btnSettingsClearCache.addEventListener('click', async () => {
+      showToast("Purging App Cache & Reloading...");
+      if ('caches' in window) {
+        try {
+          const names = await caches.keys();
+          await Promise.all(names.map(name => caches.delete(name)));
+        } catch (e) {}
+      }
+      if ('serviceWorker' in navigator) {
+        try {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (const reg of registrations) {
+            await reg.unregister();
+          }
+        } catch (e) {}
+      }
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 500);
+    });
+  }
+  if (elements.btnClearAllCollection) {
+    elements.btnClearAllCollection.addEventListener('click', () => {
+      favoritesManager.clearAll();
+    });
+  }
+  if (elements.btnHeaderFavorite) {
+    elements.btnHeaderFavorite.addEventListener('click', () => {
+      switchTab('FAVORITES');
+    });
+  }
+  if (elements.collectionSection) {
+    elements.collectionSection.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        renderCollectionSection(pill.dataset.filter);
+      });
+    });
+  }
+}
+
 // ======================== APP BOOTSTRAP ========================
 
 async function bootstrap() {
   console.log("MovieBoxTV Desktop PC App Initializing...");
   initClarityBooster();
   initSpeedSelector();
+  initSettingsModal();
   searchHistoryManager.renderChips();
 
   // Register High-Speed Offline Caching Service Worker

@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.0.0">
+  <link rel="stylesheet" href="styles.css?v=4.1.0">
   <!-- DASH.js for Native Multi-Bitrate 1080p / 4K DASH Streaming -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.7.4/dash.all.min.js"></script>
 </head>
@@ -59,6 +59,9 @@
           </button>
           <button class="nav-tab" data-tab-id="ANIMATION">
             <span class="tab-label">Anime</span>
+          </button>
+          <button class="nav-tab" data-tab-id="CHANNELS">
+            <span class="tab-label">Live TV</span>
           </button>
           <button class="nav-tab" data-tab-id="KIDS">
             <span class="tab-label">Kids</span>
@@ -100,6 +103,13 @@
           </div>
         </div>
 
+        <!-- Header Collection / Favorites Button -->
+        <button class="btn-icon btn-header-fav" id="btn-header-favorite" title="My Collection / Favorites">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
+
         <!-- Multi-Platform App Download Button (Android APK, Windows, Mac, iOS, Linux) -->
         <button class="btn-install-app" id="btn-pwa-install" title="Download MovieBox Native App (Android APK, Windows, iOS, Mac, Linux)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="install-svg">
@@ -111,10 +121,18 @@
         </button>
 
         <!-- VIP Status & Desktop Info -->
-        <div class="user-status-pill" title="Native VIP Engine Activated">
+        <div class="user-status-pill clickable" id="user-status-pill" title="Native VIP Engine Activated (Click for Settings)">
           <span class="pulse-dot"></span>
           <span class="status-text">VIP UNLOCKED</span>
         </div>
+
+        <!-- Settings Button -->
+        <button class="btn-icon" id="btn-header-settings" title="Settings & Preferences">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
         <!-- Fullscreen App Button -->
         <button class="btn-icon" id="btn-fullscreen-toggle" title="Toggle Fullscreen (F11)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -170,6 +188,49 @@
           <h3>No watch history yet</h3>
           <p>Titles you stream will automatically appear here with progress bars and remaining time.</p>
         </div>
+      </section>
+
+      <!-- My Collection / Favorites View (matches fragment_collection.xml) -->
+      <section class="collection-view-section hidden" id="collection-section">
+        <div class="section-header">
+          <div>
+            <h1 class="section-title">My Collection</h1>
+            <p class="section-subtitle-text" id="collection-subtitle">Your saved favorites, watchlists, and bookmarked movies.</p>
+          </div>
+          <div class="collection-header-actions">
+            <span class="results-count" id="collection-count">0 saved</span>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-all-collection">Clear All</button>
+          </div>
+        </div>
+        <div class="collection-filter-pills" id="collection-filter-pills">
+          <button class="filter-pill active" data-filter="ALL">All</button>
+          <button class="filter-pill" data-filter="MOVIE">Movies</button>
+          <button class="filter-pill" data-filter="TV">TV Series</button>
+          <button class="filter-pill" data-filter="ANIMATION">Anime</button>
+        </div>
+        <div class="cards-grid" id="collection-grid"></div>
+        <div class="empty-state hidden" id="collection-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <h3>Your Collection is Empty</h3>
+          <p>Click the bookmark icon on any movie or series to save it to your collection.</p>
+        </div>
+      </section>
+
+      <!-- Live TV Channels View (matches fragment_tv_channel.xml) -->
+      <section class="channels-view-section hidden" id="channels-section">
+        <div class="section-header">
+          <div>
+            <div class="live-channels-badge">
+              <span class="live-pulse-dot"></span>
+              <span>LIVE BROADCAST CLUSTER</span>
+            </div>
+            <h1 class="section-title">Live TV Channels</h1>
+            <p class="section-subtitle-text">24/7 global news, sports, entertainment, and documentary channels.</p>
+          </div>
+        </div>
+        <div class="channels-grid" id="channels-grid"></div>
       </section>
 
       <!-- Feed Container (Billboard + Continue Watching + Shelves) -->
@@ -288,6 +349,12 @@
                     <polygon points="5 3 19 12 5 21 5 3"></polygon>
                   </svg>
                   <span id="modal-play-text">Play Movie</span>
+                </button>
+                <button class="btn btn-secondary btn-modal-fav" id="btn-modal-favorite" title="Add to My Collection">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="bookmark-svg">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <span id="modal-fav-text">Favorite</span>
                 </button>
               </div>
 
@@ -794,6 +861,104 @@
       </div>
     </div>
 
+    <!-- Native MovieBox Settings & VIP Panel Modal (matches fragment_settings.xml) -->
+    <div class="modal-overlay hidden" id="settings-modal" role="dialog" aria-modal="true">
+      <div class="modal-container settings-modal-container">
+        <button class="modal-close-btn" id="btn-settings-close" title="Close (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="settings-header">
+          <h2 class="settings-title">Settings & VIP Membership</h2>
+          <span class="settings-app-tag">v1.1.10.0901.03</span>
+        </div>
+        <div class="settings-body">
+          <!-- VIP Membership Card -->
+          <div class="settings-vip-card">
+            <div class="vip-card-glow"></div>
+            <div class="vip-card-left">
+              <div class="vip-avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+              <div class="vip-info">
+                <div class="vip-tier-name">MovieBox VIP Member</div>
+                <div class="vip-id">Member ID: MBX-9182A-PREMIUM</div>
+              </div>
+            </div>
+            <div class="vip-status-badge">
+              <span class="vip-gold-star">PRO</span>
+              <span>VIP UNLOCKED</span>
+            </div>
+          </div>
+
+          <!-- Settings Groups -->
+          <div class="settings-group">
+            <h3 class="settings-group-title">Playback Preferences</h3>
+            <div class="setting-row">
+              <div class="setting-label-wrap">
+                <span class="setting-label">Default Streaming Quality</span>
+                <span class="setting-desc">Preferred video stream resolution</span>
+              </div>
+              <select class="setting-select" id="setting-quality-select">
+                <option value="auto">Auto (4K UHD Adaptive)</option>
+                <option value="1080p">1080p Full HD</option>
+                <option value="720p">720p Standard HD</option>
+              </select>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label-wrap">
+                <span class="setting-label">Audio Preference</span>
+                <span class="setting-desc">Preferred default audio language</span>
+              </div>
+              <select class="setting-select" id="setting-audio-select">
+                <option value="hin">Hindi Dubbed / Regional</option>
+                <option value="eng">English (Original Audio)</option>
+                <option value="multi">Multi-Audio / Dual Audio</option>
+              </select>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label-wrap">
+                <span class="setting-label">Auto-Play Next Episode</span>
+                <span class="setting-desc">Seamless binge playback for TV shows</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-autoplay-next" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <h3 class="settings-group-title">Storage & History</h3>
+            <div class="setting-row">
+              <div class="setting-label-wrap">
+                <span class="setting-label">Clear Watch History</span>
+                <span class="setting-desc">Remove all progress and continue watching</span>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btn-settings-clear-history">Clear History</button>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label-wrap">
+                <span class="setting-label">Reset Application Cache</span>
+                <span class="setting-desc">Purge offline service worker cache and reload latest code</span>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btn-settings-clear-cache">Purge Cache & Reload</button>
+            </div>
+          </div>
+
+          <div class="settings-footer-info">
+            <span>MovieBoxTV Pro Premium Edition • Cross-Platform WebApp</span>
+            <span>Build 2026.10 • 18-Cluster Multi-Server Engine</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Notification Toast -->
     <div class="toast-container hidden" id="toast">
       <span class="toast-icon">
@@ -831,6 +996,6 @@
     </nav>
   </div>
 
-  <script src="app.js?v=4.0.0"></script>
+  <script src="app.js?v=4.1.0"></script>
 </body>
 </html>
