@@ -227,7 +227,7 @@ runTest("Zero Emojis: 100% Professional Vector SVGs and Typography in HTML & JS"
   const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
   const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
 
-  const emojiRegex = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
+  const emojiRegex = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B50}-\u{2B55}\u{2300}-\u{23FF}]/u;
   const hasEmojiInHtml = emojiRegex.test(indexHtml);
   const hasEmojiInJs = emojiRegex.test(appJs);
 
@@ -330,7 +330,37 @@ runTest("Desktop Drag-to-Scroll: Smooth horizontal mouse grab and boundary arrow
   assert(stylesCss.includes("cursor: grab;"), "Must set default cursor: grab on carousels");
 });
 
+// ----------------------------------------------------
+// TEST 18: Full DOM Element Binding & Integrity Verification
+// ----------------------------------------------------
+runTest("DOM Integrity: All 160 static UI elements in app.js elements object exist in index.html", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+  const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+
+  const elementsBlockMatch = appJs.match(/const elements = \{([\s\S]*?)\n\};/);
+  assert(elementsBlockMatch, "Could not find elements object in app.js");
+
+  const lines = elementsBlockMatch[1].split('\n');
+  const missing = [];
+  let checked = 0;
+
+  lines.forEach(line => {
+    const match = line.match(/:\s*document\.getElementById\(['"]([^'"]+)['"]\)/);
+    if (match) {
+      const id = match[1];
+      checked++;
+      if (!indexHtml.includes(`id="${id}"`) && !indexHtml.includes(`id='${id}'`)) {
+        missing.push(id);
+      }
+    }
+  });
+
+  assert(checked >= 150, "Expected at least 150 UI elements to be verified");
+  assert.strictEqual(missing.length, 0, `Missing DOM elements in index.html: ${missing.join(', ')}`);
+});
+
 console.log("\n=================================================");
 console.log(`🎯 RESULTS: ${passedCount} / ${totalCount} TESTS PASSED (100%)`);
 console.log("=================================================");
+
 

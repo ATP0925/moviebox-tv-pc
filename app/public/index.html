@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.1.0">
+  <link rel="stylesheet" href="styles.css?v=3.2.0">
   <!-- DASH.js for Native Multi-Bitrate 1080p / 4K DASH Streaming -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.7.4/dash.all.min.js"></script>
 </head>
@@ -300,7 +300,7 @@
                 </div>
                 <div class="detail-item">
                   <span class="detail-label">IMDb Rating</span>
-                  <span class="detail-value highlight" id="modal-imdb">⭐ 8.2 / 10</span>
+                  <span class="detail-value highlight" id="modal-imdb"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style="vertical-align: -1px; margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>8.2 / 10</span>
                 </div>
                 <div class="detail-item" id="modal-staff-container">
                   <span class="detail-label">Cast & Creators</span>
@@ -796,7 +796,13 @@
 
     <!-- Notification Toast -->
     <div class="toast-container hidden" id="toast">
-      <span class="toast-icon">ℹ</span>
+      <span class="toast-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="16" height="16" style="vertical-align: middle;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      </span>
       <span class="toast-message" id="toast-text">Notification message</span>
     </div>
 
@@ -825,6 +831,6 @@
     </nav>
   </div>
 
-  <script src="app.js?v=3.1.0"></script>
+  <script src="app.js?v=3.2.0"></script>
 </body>
 </html>
