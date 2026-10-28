@@ -1927,6 +1927,15 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   gap: 4px;
 }
 
+/* Top Floating Header Dropdowns - Open DOWNWARDS smoothly without getting cut off */
+.player-top-actions .dropdown-menu,
+#server-menu-top {
+  top: calc(100% + 8px) !important;
+  bottom: auto !important;
+  right: 0 !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95) !important;
+}
+
 .dropdown-option {
   background: transparent;
   border: none;
