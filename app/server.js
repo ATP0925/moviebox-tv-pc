@@ -20,7 +20,34 @@ app.use((req, res, next) => {
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+const staticPaths = [
+  path.join(__dirname, 'public'),
+  path.join(process.cwd(), 'app', 'public'),
+  path.join(process.cwd(), 'public')
+];
+for (const p of staticPaths) {
+  try {
+    if (require('fs').existsSync(p)) {
+      app.use(express.static(p));
+    }
+  } catch (e) {}
+}
+
+const IMDB_TO_TMDB_MAP = {
+  "tt21285562": "846872",
+  "tt6263850": "533535",
+  "tt4574334": "66732",
+  "tt13751694": "781732",
+  "tt1757678": "83533",
+  "tt15354916": "872906",
+  "tt15239678": "693134",
+  "tt15398776": "872585",
+  "tt21209876": "209867",
+  "tt12343534": "95479",
+  "tt15428448": "993710",
+  "tt0816692": "157336"
+};
 
 // MovieBoxTV Gateway Signing Config
 const SECRET = "76iRl07s0xSN9jqmEWAt79EBJZulIQIsV64FZr2O";
@@ -619,7 +646,10 @@ app.get('/api/play/:id', async (req, res) => {
       const mock = getMockPlayData(title || "Cinema Stream (1080p Ultra HD)");
       if (imdbId) {
         mock.data.imdbId = imdbId;
-        mock.data.servers[1].url = isSeries ? `https://vidlink.pro/tv/${imdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://vidlink.pro/movie/${imdbId}?primaryColor=e50914&autoplay=false`;
+        const tmdbId = IMDB_TO_TMDB_MAP[imdbId] || "";
+        mock.data.servers[1].url = isSeries
+          ? (tmdbId ? `https://vidlink.pro/tv/${tmdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`)
+          : `https://vidlink.pro/movie/${tmdbId || imdbId}?primaryColor=e50914&autoplay=false`;
         mock.data.servers[2].url = isSeries ? `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://nontongo.win/embed/movie/${imdbId}`;
       }
       return res.json(mock);
@@ -646,11 +676,16 @@ app.get('/api/play/:id', async (req, res) => {
     });
 
     if (imdbId) {
+      const tmdbId = IMDB_TO_TMDB_MAP[imdbId] || "";
+      const vidlinkUrl = isSeries
+        ? (tmdbId ? `https://vidlink.pro/tv/${tmdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`)
+        : `https://vidlink.pro/movie/${tmdbId || imdbId}?primaryColor=e50914&autoplay=false`;
+
       // Server 2: VidLink Ultra 4K
       servers.push({
         id: "server-2", name: "Server 2: Cinema Cloud 4K", tag: "4K UHD HDR Adaptive",
         quality: "4K UHD / 1080p", type: "embed", audioLanguages: ["Hindi", "English", "Multi-Audio"],
-        url: isSeries ? `https://vidlink.pro/tv/${imdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://vidlink.pro/movie/${imdbId}?primaryColor=e50914&autoplay=false`
+        url: vidlinkUrl
       });
       // Server 3: Nontongo Multi-CDN
       servers.push({
@@ -936,6 +971,18 @@ app.get('/api/status', (req, res) => {
     authenticated: Boolean(cachedToken),
     version: "1.0.0"
   });
+});
+
+// Fallback middleware for SPA static index.html
+app.use((req, res, next) => {
+  if (req.method !== 'GET' || req.path.startsWith('/api')) return next();
+  for (const p of staticPaths) {
+    const indexPath = path.join(p, 'index.html');
+    if (require('fs').existsSync(indexPath)) {
+      return res.sendFile(indexPath);
+    }
+  }
+  next();
 });
 
 // Export app for serverless platforms (Vercel / Firebase Cloud Functions)

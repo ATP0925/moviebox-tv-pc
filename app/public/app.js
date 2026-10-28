@@ -548,6 +548,7 @@ const EmbeddedEngine = {
       genre: "Sci-Fi / Post-Apocalyptic / Drama",
       countryName: "United States",
       imdbId: "tt21285562",
+      tmdbId: "846872",
       audioLangs: ["eng"],
       description: "In a post-apocalyptic world ravaged by a lethal global flu, a lone pilot and his beloved dog survive in an abandoned airplane hangar, searching across the desolate skies for signs of hope.",
       staffList: [{ name: "Mark Strong" }, { name: "Pedro Pascal" }, { name: "Rebecca Ferguson" }]
@@ -564,6 +565,7 @@ const EmbeddedEngine = {
       genre: "Action / Sci-Fi / Comedy",
       countryName: "United States",
       imdbId: "tt6263850",
+      tmdbId: "533535",
       audioLangs: ["hin", "eng"],
       description: "Wolverine is recovering from his injuries when he crosses paths with the loudmouth Deadpool. They team up to defeat a common enemy threatening their timelines.",
       staffList: [{ name: "Ryan Reynolds" }, { name: "Hugh Jackman" }, { name: "Emma Corrin" }]
@@ -580,6 +582,7 @@ const EmbeddedEngine = {
       genre: "Sci-Fi / Horror / Drama",
       countryName: "United States",
       imdbId: "tt4574334",
+      tmdbId: "66732",
       audioLangs: ["hin", "eng"],
       description: "The epic final season in Hawkins. The gang unites to face the ultimate evil of the Upside Down in a breathtaking battle for their town and reality itself.",
       staffList: [{ name: "Millie Bobby Brown" }, { name: "David Harbour" }, { name: "Finn Wolfhard" }]
@@ -596,6 +599,7 @@ const EmbeddedEngine = {
       genre: "Action / Crime / Drama",
       countryName: "India",
       imdbId: "tt13751694",
+      tmdbId: "781732",
       audioLangs: ["hin", "tel", "tam"],
       description: "The hardened son of a powerful industrialist returns home after years away, swearing fierce and ruthless vengeance against enemies plotting to destroy his father.",
       staffList: [{ name: "Ranbir Kapoor" }, { name: "Anil Kapoor" }, { name: "Bobby Deol" }, { name: "Rashmika Mandanna" }]
@@ -612,6 +616,7 @@ const EmbeddedEngine = {
       genre: "Action / Adventure / Sci-Fi",
       countryName: "United States",
       imdbId: "tt1757678",
+      tmdbId: "83533",
       audioLangs: ["hin", "eng"],
       description: "Jake Sully and Neytiri encounter a mysterious and aggressive new volcanic Na'vi tribe known as the Ash People on the breathtaking moon of Pandora.",
       staffList: [{ name: "Sam Worthington" }, { name: "Zoe Saldana" }, { name: "Sigourney Weaver" }]
@@ -628,6 +633,7 @@ const EmbeddedEngine = {
       genre: "Action / Thriller",
       countryName: "India",
       imdbId: "tt15354916",
+      tmdbId: "872906",
       audioLangs: ["hin", "tam", "tel"],
       description: "A man driven by a personal vendetta to rectify the wrongs in society while keeping a promise made years ago takes on a corrupt arms dealer in high-voltage action.",
       staffList: [{ name: "Shah Rukh Khan" }, { name: "Nayanthara" }, { name: "Vijay Sethupathi" }]
@@ -644,6 +650,7 @@ const EmbeddedEngine = {
       genre: "Sci-Fi / Adventure",
       countryName: "United States",
       imdbId: "tt15239678",
+      tmdbId: "693134",
       audioLangs: ["hin", "eng"],
       description: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family, facing a choice between love and the fate of the universe.",
       staffList: [{ name: "Timothée Chalamet" }, { name: "Zendaya" }, { name: "Rebecca Ferguson" }]
@@ -660,6 +667,7 @@ const EmbeddedEngine = {
       genre: "Biography / Drama / History",
       countryName: "United States",
       imdbId: "tt15398776",
+      tmdbId: "872585",
       audioLangs: ["hin", "eng"],
       description: "The story of American scientist J. Robert Oppenheimer and his role in the Manhattan Project, pioneering the development of the atomic bomb during World War II.",
       staffList: [{ name: "Cillian Murphy" }, { name: "Emily Blunt" }, { name: "Matt Damon" }, { name: "Robert Downey Jr." }]
@@ -676,6 +684,7 @@ const EmbeddedEngine = {
       genre: "Anime / Action / Fantasy",
       countryName: "Japan",
       imdbId: "tt21209876",
+      tmdbId: "209867",
       audioLangs: ["jpn", "eng", "hin"],
       description: "In a world where hunters must battle deadly monsters, Sung Jinwoo, the weakest hunter of all mankind, is chosen by a mysterious quest program unlocking infinite growth.",
       staffList: [{ name: "Taito Ban" }, { name: "Genta Nakamura" }, { name: "Reina Ueda" }]
@@ -692,6 +701,7 @@ const EmbeddedEngine = {
       genre: "Anime / Dark Fantasy / Action",
       countryName: "Japan",
       imdbId: "tt12343534",
+      tmdbId: "95479",
       audioLangs: ["jpn", "eng", "hin"],
       description: "Yuji Itadori, a kind teenager, swallows a cursed finger of the King of Curses Ryomen Sukuna and enters Tokyo Jujutsu High to protect humanity from cursed spirits.",
       staffList: [{ name: "Junya Enoki" }, { name: "Yuma Uchida" }, { name: "Asami Seto" }]
@@ -708,6 +718,7 @@ const EmbeddedEngine = {
       genre: "Action / Thriller / Crime",
       countryName: "India",
       imdbId: "tt15428448",
+      tmdbId: "993710",
       audioLangs: ["hin", "tel"],
       description: "Pushpa Raj expands his red sandalwood empire while clashing with the ruthless police officer Bhanwar Singh Shekhawat in an explosive confrontation.",
       staffList: [{ name: "Allu Arjun" }, { name: "Fahadh Faasil" }, { name: "Rashmika Mandanna" }]
@@ -724,6 +735,7 @@ const EmbeddedEngine = {
       genre: "Sci-Fi / Adventure / Drama",
       countryName: "United States",
       imdbId: "tt0816692",
+      tmdbId: "157336",
       audioLangs: ["eng"],
       description: "When Earth becomes uninhabitable, a team of explorers travels through a wormhole in space in an attempt to ensure humanity's survival across interstellar dimensions.",
       staffList: [{ name: "Matthew McConaughey" }, { name: "Anne Hathaway" }, { name: "Jessica Chastain" }]
@@ -745,6 +757,7 @@ const EmbeddedEngine = {
       genre: "Action / Sci-Fi / Drama",
       countryName: "Global",
       imdbId: "tt21285562",
+      tmdbId: "846872",
       description: "High definition streaming provided by MovieBoxTV Pro Multi-Server Engine.",
       staffList: [{ name: "Featured Director" }, { name: "Leading Cast" }]
     };
@@ -823,11 +836,29 @@ const EmbeddedEngine = {
     const sub = this.getSubject(id);
     const title = titleHint || sub.title || "Cinema Stream";
     const imdbId = sub.imdbId || "tt21285562";
+    const tmdbMap = {
+      "tt21285562": "846872",
+      "tt6263850": "533535",
+      "tt4574334": "66732",
+      "tt13751694": "781732",
+      "tt1757678": "83533",
+      "tt15354916": "872906",
+      "tt15239678": "693134",
+      "tt15398776": "872585",
+      "tt21209876": "209867",
+      "tt12343534": "95479",
+      "tt15428448": "993710",
+      "tt0816692": "157336"
+    };
+    const tmdbId = sub.tmdbId || tmdbMap[imdbId] || "";
     const isSeries = (subjectType === 2 || se > 0);
 
+    // VidLink requires numeric TMDB ID for TV series; if not available, fallback to Nontongo (which natively supports IMDb ID)
     const vidlinkUrl = isSeries
-      ? `https://vidlink.pro/tv/${imdbId}/${se || 1}/${ep || 1}?primaryColor=e50914&autoplay=false`
-      : `https://vidlink.pro/movie/${imdbId}?primaryColor=e50914&autoplay=false`;
+      ? (tmdbId
+          ? `https://vidlink.pro/tv/${tmdbId}/${se || 1}/${ep || 1}?primaryColor=e50914&autoplay=false`
+          : `https://nontongo.win/embed/tv/${imdbId}/${se || 1}/${ep || 1}`)
+      : `https://vidlink.pro/movie/${tmdbId || imdbId}?primaryColor=e50914&autoplay=false`;
 
     const nontrongoUrl = isSeries
       ? `https://nontongo.win/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
