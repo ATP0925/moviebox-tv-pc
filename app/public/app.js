@@ -2558,6 +2558,11 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     elements.videoElement.classList.add('hidden');
 
     elements.playerOverlay.classList.add('iframe-active');
+    // Strip any sandbox restrictions so streaming providers can play full movies without error
+    elements.playerIframe.removeAttribute('sandbox');
+    if (elements.playerIframeStandby) {
+      elements.playerIframeStandby.removeAttribute('sandbox');
+    }
     elements.playerIframe.src = server.url;
     elements.playerIframe.classList.remove('hidden');
     elements.playerLoader.classList.add('hidden');
