@@ -1498,6 +1498,38 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   box-shadow: 0 0 16px var(--netflix-red-glow);
 }
 
+.audio-btn-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 168, 225, 0.22);
+  border: 1px solid rgba(0, 168, 225, 0.5);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.audio-btn-top:hover {
+  background: #00a8e1;
+  border-color: #00a8e1;
+  box-shadow: 0 0 16px rgba(0, 168, 225, 0.5);
+}
+
+.audio-active-pill {
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.audio-active-pill:hover {
+  transform: scale(1.05);
+  opacity: 0.95;
+}
+
 .btn-top-fullscreen {
   display: inline-flex;
   align-items: center;

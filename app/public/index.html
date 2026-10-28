@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.2.0">
+  <link rel="stylesheet" href="styles.css?v=4.5.0">
   <!-- DASH.js for Native Multi-Bitrate 1080p / 4K DASH Streaming -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.7.4/dash.all.min.js"></script>
 </head>
@@ -512,12 +512,12 @@
                   <span class="standby-dot"></span>
                   <span id="standby-server-text">Hot Standby: Server 2</span>
                 </span>
-                <span class="audio-active-pill" id="active-audio-badge">
+                <span class="audio-active-pill" id="active-audio-badge" title="Click to Change Audio Track">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align: -1px; margin-right: 4px;">
                     <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
                     <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
                   </svg>
-                  <span id="active-audio-text">Audio: Hindi</span>
+                  <span id="active-audio-text">Audio: Auto</span>
                 </span>
               </div>
               <h2 class="player-main-title" id="player-title">Movie Title</h2>
@@ -527,6 +527,20 @@
 
           <!-- Top Quick Actions (Always accessible in Direct and Cloud Embed modes) -->
           <div class="player-top-actions">
+            <!-- Audio Language Selector (Accessible in Direct and Embed Modes) -->
+            <div class="player-dropdown" id="dropdown-audio-top-container">
+              <button class="dropdown-trigger-btn netflix-dropdown-btn audio-btn-top" id="btn-audio-select-top" title="Switch Audio Track">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                  <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                  <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                </svg>
+                <span id="current-audio-top-label">Audio</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+              <div class="dropdown-menu netflix-menu hidden" id="audio-menu-top"></div>
+            </div>
+
+            <!-- Server Selector -->
             <div class="player-dropdown" id="dropdown-server-top-container">
               <button class="dropdown-trigger-btn netflix-dropdown-btn server-btn-top" id="btn-server-select-top" title="Switch Video Server (Dual Stream Protected)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
@@ -996,6 +1010,6 @@
     </nav>
   </div>
 
-  <script src="app.js?v=4.4.0"></script>
+  <script src="app.js?v=4.5.0"></script>
 </body>
 </html>

@@ -457,6 +457,40 @@ async function resolveImdbId(title, subjectType = 1) {
   return null;
 }
 
+function getAudioLanguagesForTitle(title = '', imdbId = '') {
+  const t = (title || '').toLowerCase();
+  const indianImdbs = ["tt13751694", "tt15428448", "tt15354916", "tt6473300", "tt12004706"];
+  const animeImdbs = ["tt21209876", "tt22248376", "tt12343534", "tt9335498", "tt2560140", "tt0877057", "tt0388629"];
+
+  if (indianImdbs.includes(imdbId) || t.includes('animal') || t.includes('pushpa') || t.includes('jawan') || t.includes('mirzapur') || t.includes('panchayat')) {
+    if (t.includes('animal') || t.includes('jawan')) {
+      return [
+        { code: "hin", name: "Hindi (हिंदी)", icon: "IN" },
+        { code: "tel", name: "Telugu (తెలుగు)", icon: "TE" },
+        { code: "tam", name: "Tamil (தமிழ்)", icon: "TA" }
+      ];
+    }
+    if (t.includes('pushpa')) {
+      return [
+        { code: "hin", name: "Hindi (हिंदी)", icon: "IN" },
+        { code: "tel", name: "Telugu (తెలుగు)", icon: "TE" }
+      ];
+    }
+    return [{ code: "hin", name: "Hindi (Original Audio)", icon: "IN" }];
+  }
+
+  if (animeImdbs.includes(imdbId) || t.includes('solo leveling') || t.includes('frieren') || t.includes('jujutsu') || t.includes('demon slayer') || t.includes('titan') || t.includes('death note') || t.includes('piece')) {
+    return [
+      { code: "jpn", name: "Japanese (Original Audio)", icon: "JP" },
+      { code: "eng", name: "English (Dubbed)", icon: "US" }
+    ];
+  }
+
+  return [
+    { code: "eng", name: "English (Original Audio)", icon: "US" }
+  ];
+}
+
 // Dynamic Mock & Fallback Stream Data Generator with 100% Correct Movie / Series URLs
 function getMockPlayData(title = "Cinema Stream", imdbId = "tt21285562", isSeries = false, seasonNum = 1, episodeNum = 1, tmdbId = "") {
   const finalImdb = imdbId || "tt21285562";
@@ -718,11 +752,7 @@ function getMockPlayData(title = "Cinema Stream", imdbId = "tt21285562", isSerie
           ]
         }
       ],
-      audioLanguages: [
-        { code: "hin", name: "Hindi (हिंदी)", icon: "🇮🇳" },
-        { code: "eng", name: "English (Original)", icon: "🇺🇸" },
-        { code: "multi", name: "Multi-Audio (Auto)", icon: "🌐" }
-      ]
+      audioLanguages: getAudioLanguagesForTitle(title, finalImdb)
     }
   };
 }
@@ -980,11 +1010,7 @@ app.get('/api/play/:id', async (req, res) => {
     if (playData && playData.data) {
       playData.data.imdbId = resolvedImdbId;
       playData.data.servers = servers;
-      playData.data.audioLanguages = [
-        { code: "hin", name: "Hindi (हिंदी)", icon: "🇮🇳" },
-        { code: "eng", name: "English (Original)", icon: "🇺🇸" },
-        { code: "multi", name: "Multi-Audio (Auto)", icon: "🌐" }
-      ];
+      playData.data.audioLanguages = getAudioLanguagesForTitle(queryTitle, resolvedImdbId);
     }
 
     res.json(playData);
