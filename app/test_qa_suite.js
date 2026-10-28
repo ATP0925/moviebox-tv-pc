@@ -263,6 +263,73 @@ runTest("Iframe Interactive Isolation: HTML5 bottom controls suppressed, floatin
   assert(stylesCss.includes(".player-overlay.iframe-active .cinema-iframe"), "Must style active cinema-iframe");
 });
 
+// ----------------------------------------------------
+// TEST 14: Poster WebP Transcoding & Quality Clamp
+// ----------------------------------------------------
+runTest("Poster WebP Transcoding: Amazon/IMDb URLs converted to WebP with QL65 and UX340", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+
+  assert(appJs.includes("_FMwebp_"), "Must transcode JPG to WebP format");
+  assert(appJs.includes("_QL65_"), "Must inject quality clamp _QL65_");
+  assert(appJs.includes("handlePosterError"), "Must define SVG fallback handler for broken posters");
+
+  // Run the function dynamically extracted from app.js
+  const match = appJs.match(/function optimizePosterUrl[\s\S]*?\n\}/);
+  assert(match, "optimizePosterUrl function must be defined");
+  const fn = new Function('return ' + match[0])();
+
+  const imdbSample = "https://m.media-amazon.com/images/M/MV5BZTk5ODY0MmQtMzA3Ni00NGY1LThiYzItZThiNjFiNDM4MTM3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg";
+  const opt = fn(imdbSample, 340);
+  assert(opt.includes("_FMwebp_"), "Must contain _FMwebp_");
+  assert(opt.includes("_QL65_"), "Must contain _QL65_");
+  assert(opt.includes("_UX340_"), "Must contain _UX340_");
+
+  const unsplashSample = "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&auto=format&fit=crop&q=80";
+  const optUnsplash = fn(unsplashSample, 340);
+  assert(optUnsplash.includes("fm=webp"), "Unsplash must request WebP");
+  assert(optUnsplash.includes("q=65"), "Unsplash must request q=65");
+  assert(optUnsplash.includes("w=340"), "Unsplash must request w=340");
+});
+
+// ----------------------------------------------------
+// TEST 15: Amazon-Style On-Scroll Progressive Row Loading
+// ----------------------------------------------------
+runTest("Progressive On-Scroll Hydration: IntersectionObserver sentinel and dynamic row batching", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+
+  assert(appJs.includes("setupShelfScrollObserver()"), "Must define setupShelfScrollObserver");
+  assert(appJs.includes("shelves-scroll-sentinel"), "Must create scroll sentinel element");
+  assert(appJs.includes("mountNextShelfBatch()"), "Must define mountNextShelfBatch");
+  assert(appJs.includes("mountInfiniteCuratedShelf("), "Must support infinite curated shelf expansion");
+  assert(appJs.includes("rootMargin: '450px 0px 450px 0px'"), "Observer must use rootMargin to preload content before viewport");
+});
+
+// ----------------------------------------------------
+// TEST 16: Zero CLS Shimmer Skeleton & Offscreen Containment
+// ----------------------------------------------------
+runTest("Zero CLS & Shimmer Animation: Skeleton shimmer and content-visibility: auto", () => {
+  const stylesCss = fs.readFileSync(path.join(__dirname, 'public', 'styles.css'), 'utf8');
+
+  assert(stylesCss.includes("@keyframes posterShimmer"), "Must define posterShimmer keyframe animation");
+  assert(stylesCss.includes("content-visibility: auto;"), "Must enable content-visibility for offscreen performance");
+  assert(stylesCss.includes("contain-intrinsic-size:"), "Must declare contain-intrinsic-size to prevent scrollbar jumping");
+  assert(stylesCss.includes(".card-poster.loaded"), "Must define fade-in class for loaded images");
+  assert(stylesCss.includes(".card-poster-wrap.img-loaded"), "Must cancel shimmer once image loads");
+});
+
+// ----------------------------------------------------
+// TEST 17: Desktop Mouse Drag-to-Scroll & Boundary Arrow Auto-Toggle
+// ----------------------------------------------------
+runTest("Desktop Drag-to-Scroll: Smooth horizontal mouse grab and boundary arrow toggle", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(__dirname, 'public', 'styles.css'), 'utf8');
+
+  assert(appJs.includes("enableCarouselInteractions("), "Must implement enableCarouselInteractions");
+  assert(appJs.includes("grabbing"), "Must toggle grabbing class on mousedown/mouseup");
+  assert(stylesCss.includes(".shelf-carousel.grabbing"), "Must style .shelf-carousel.grabbing cursor");
+  assert(stylesCss.includes("cursor: grab;"), "Must set default cursor: grab on carousels");
+});
+
 console.log("\n=================================================");
 console.log(`🎯 RESULTS: ${passedCount} / ${totalCount} TESTS PASSED (100%)`);
 console.log("=================================================");
