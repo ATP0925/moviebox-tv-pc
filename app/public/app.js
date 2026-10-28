@@ -832,16 +832,44 @@ const EmbeddedEngine = {
     };
   },
 
-  getPlayData(id, se = 0, ep = 0, titleHint = '', subjectType = 1) {
-    const sub = this.getSubject(id);
+  getPlayData(id, se = 0, ep = 0, titleHint = '', subjectType = 1, overrideImdbId = '', overrideTmdbId = '') {
+    const sub = this.getSubject(id) || {};
     const title = titleHint || sub.title || "Cinema Stream";
-    const imdbId = sub.imdbId || "tt21285562";
+    let imdbId = overrideImdbId || (sub.imdbId && sub.imdbId !== "tt21285562" ? sub.imdbId : "");
+    if (!imdbId && titleHint) {
+      const clean = titleHint.toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^\w\s:-]/g, '').trim();
+      const byTitle = {
+        "deadpool & wolverine": "tt6263850",
+        "deadpool and wolverine": "tt6263850",
+        "stranger things": "tt4574334",
+        "stranger things: season 5": "tt4574334",
+        "animal": "tt13751694",
+        "avatar: fire and ash": "tt1757678",
+        "avatar: the way of water": "tt1630029",
+        "avatar": "tt0499549",
+        "jawan": "tt15354916",
+        "dune: part two": "tt15239678",
+        "dune 2": "tt15239678",
+        "oppenheimer": "tt15398776",
+        "solo leveling": "tt21209876",
+        "jujutsu kaisen": "tt12343534",
+        "pushpa 2: the rule": "tt15428448",
+        "pushpa 2": "tt15428448",
+        "interstellar": "tt0816692",
+        "the dog stars": "tt21285562"
+      }[clean];
+      if (byTitle) imdbId = byTitle;
+    }
+    if (!imdbId) imdbId = sub.imdbId || "tt21285562";
+
     const tmdbMap = {
       "tt21285562": "846872",
       "tt6263850": "533535",
       "tt4574334": "66732",
       "tt13751694": "781732",
       "tt1757678": "83533",
+      "tt1630029": "76600",
+      "tt0499549": "19995",
       "tt15354916": "872906",
       "tt15239678": "693134",
       "tt15398776": "872585",
@@ -850,7 +878,7 @@ const EmbeddedEngine = {
       "tt15428448": "993710",
       "tt0816692": "157336"
     };
-    const tmdbId = sub.tmdbId || tmdbMap[imdbId] || "";
+    const tmdbId = overrideTmdbId || sub.tmdbId || tmdbMap[imdbId] || "";
     const isSeries = (subjectType === 2 || se > 0);
 
     // VidLink requires numeric TMDB ID for TV series; if not available, fallback to Nontongo (which natively supports IMDb ID)
@@ -1249,7 +1277,9 @@ async function safeApiFetch(path) {
     const ep = parseInt(url.searchParams.get('ep'), 10) || 0;
     const title = url.searchParams.get('title') || '';
     const type = parseInt(url.searchParams.get('type'), 10) || 1;
-    return EmbeddedEngine.getPlayData(id, se, ep, title, type);
+    const imdbId = url.searchParams.get('imdbId') || '';
+    const tmdbId = url.searchParams.get('tmdbId') || '';
+    return EmbeddedEngine.getPlayData(id, se, ep, title, type, imdbId, tmdbId);
   }
   if (path.startsWith('/api/search')) {
     const url = new URL('http://dummy' + path);
@@ -1283,8 +1313,8 @@ const api = {
   getSeason(id) {
     return safeApiFetch(`/api/season/${id}`);
   },
-  getPlayInfo(id, se = 0, ep = 0, title = '', type = 1) {
-    return safeApiFetch(`/api/play/${id}?se=${se}&ep=${ep}&title=${encodeURIComponent(title || '')}&type=${type}`);
+  getPlayInfo(id, se = 0, ep = 0, title = '', type = 1, imdbId = '', tmdbId = '') {
+    return safeApiFetch(`/api/play/${id}?se=${se}&ep=${ep}&title=${encodeURIComponent(title || '')}&type=${type}&imdbId=${encodeURIComponent(imdbId || '')}&tmdbId=${encodeURIComponent(tmdbId || '')}`);
   },
   search(keyword, page = 1) {
     return safeApiFetch(`/api/search?q=${encodeURIComponent(keyword)}&page=${page}`);
@@ -1385,6 +1415,8 @@ const watchHistoryManager = {
       season: se || 0,
       episode: ep || 0,
       subjectType: subject.subjectType || 1,
+      imdbId: subject.imdbId || '',
+      tmdbId: subject.tmdbId || '',
       currentTime: curTime,
       duration: dur,
       percentage: percentage,
@@ -1881,7 +1913,7 @@ function setupBillboard(subject) {
     if (subject.subjectType === 2) {
       openDetailModal(subject.subjectId, true);
     } else {
-      startPlayback(subject.subjectId, 0, 0, subject.title, coverUrl, subject.subjectType || 1);
+      startPlayback(subject.subjectId, 0, 0, subject.title, coverUrl, subject.subjectType || 1, subject.imdbId, subject.tmdbId);
     }
   };
   elements.btnBillboardDetails.onclick = () => {
@@ -1955,7 +1987,7 @@ function renderContinueWatchingShelf() {
 
     // Card click: Resume playback immediately
     card.addEventListener('click', () => {
-      startPlayback(item.subjectId, item.season, item.episode, item.title, item.cover, item.subjectType);
+      startPlayback(item.subjectId, item.season, item.episode, item.title, item.cover, item.subjectType, item.imdbId, item.tmdbId);
     });
 
     elements.continueWatchingCarousel.appendChild(card);
@@ -2042,7 +2074,7 @@ function renderHistoryView() {
 
     // Card click: Resume playback immediately
     card.addEventListener('click', () => {
-      startPlayback(item.subjectId, item.season, item.episode, item.title, item.cover, item.subjectType);
+      startPlayback(item.subjectId, item.season, item.episode, item.title, item.cover, item.subjectType, item.imdbId, item.tmdbId);
     });
 
     elements.historyGrid.appendChild(card);
@@ -2414,7 +2446,7 @@ function createMovieCard(subject) {
       if (isSeries) {
         openDetailModal(subject.subjectId, true);
       } else {
-        startPlayback(subject.subjectId, 0, 0, subject.title, posterUrl, 1);
+        startPlayback(subject.subjectId, 0, 0, subject.title, posterUrl, 1, subject.imdbId, subject.tmdbId);
       }
     });
   }
@@ -2490,7 +2522,7 @@ async function openDetailModal(subjectId, autoPlay = false) {
       document.body.style.overflow = '';
       const se = data.subjectType === 2 ? state.selectedSeason : 0;
       const ep = data.subjectType === 2 ? state.selectedEpisode : 0;
-      startPlayback(data.subjectId, se, ep, data.title, data.cover?.url, data.subjectType);
+      startPlayback(data.subjectId, se, ep, data.title, data.cover?.url, data.subjectType, data.imdbId, data.tmdbId);
     };
 
     // Update Favorite / Collection button
@@ -2528,7 +2560,7 @@ async function openDetailModal(subjectId, autoPlay = false) {
     elements.btnModalPlay.onclick = () => {
       elements.detailModal.classList.add('hidden');
       document.body.style.overflow = '';
-      startPlayback(data.subjectId, 0, 0, data.title, data.cover?.url, data.subjectType);
+      startPlayback(data.subjectId, 0, 0, data.title, data.cover?.url, data.subjectType, data.imdbId, data.tmdbId);
     };
   }
 }
@@ -2593,7 +2625,9 @@ function renderEpisodes(season) {
         i,
         state.activeSubject.title,
         state.activeSubject.cover?.url || '',
-        state.activeSubject.subjectType || 2
+        state.activeSubject.subjectType || 2,
+        state.activeSubject.imdbId,
+        state.activeSubject.tmdbId
       );
     });
     elements.episodesGrid.appendChild(btn);
@@ -2728,7 +2762,7 @@ async function performSearch(query) {
 // ======================== VLC-STYLE CINEMA VIDEO PLAYER & YOUTUBE STREAMING ENGINE ========================
 
 // 1. Core Playback Starter
-async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUrl = "", subjectType = 1) {
+async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUrl = "", subjectType = 1, imdbId = "", tmdbId = "") {
   elements.playerOverlay.classList.remove('hidden');
   elements.playerLoader.classList.remove('hidden');
   elements.playerLoadingText.textContent = "Connecting to High-Speed Multi-Servers...";
@@ -2741,14 +2775,23 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
   if (elements.vlcOsd) elements.vlcOsd.classList.add('hidden');
   if (elements.qualityToast) elements.qualityToast.classList.add('hidden');
 
+  // Look up known subject to extract imdbId / tmdbId if not explicitly provided
+  const knownSub = EmbeddedEngine.subjects.find(s => s.subjectId === String(subjectId));
+  const activeSub = (state.activeSubject && String(state.activeSubject.subjectId) === String(subjectId)) ? state.activeSubject : null;
+  const finalImdbId = imdbId || activeSub?.imdbId || knownSub?.imdbId || "";
+  const finalTmdbId = tmdbId || activeSub?.tmdbId || knownSub?.tmdbId || "";
+  const finalType = subjectType || (se > 0 ? 2 : (activeSub?.subjectType || knownSub?.subjectType || 1));
+
   // Record active playback details for history saving
   state.currentPlaybackSubject = {
     subjectId,
     title,
-    cover: coverUrl || state.activeSubject?.cover?.url || '',
-    subjectType: subjectType || (se > 0 ? 2 : 1),
+    cover: coverUrl || activeSub?.cover?.url || knownSub?.cover?.url || '',
+    subjectType: finalType,
     season: se,
-    episode: ep
+    episode: ep,
+    imdbId: finalImdbId,
+    tmdbId: finalTmdbId
   };
 
   // Setup Season Episode Navigation Buttons
@@ -2762,7 +2805,7 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
   cleanupActivePlayer();
 
   try {
-    const playRes = await api.getPlayInfo(subjectId, se, ep, title, subjectType);
+    const playRes = await api.getPlayInfo(subjectId, se, ep, title, finalType, finalImdbId, finalTmdbId);
     if (!playRes || playRes.code !== 0 || !playRes.data) {
       throw new Error(playRes?.message || "Stream play info unavailable");
     }
@@ -2812,7 +2855,7 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
   } catch (err) {
     console.warn("Playback stream resolution warning, activating instant failover:", err);
     try {
-      const fallbackData = EmbeddedEngine.getPlayData(subjectId, se, ep, title, subjectType).data;
+      const fallbackData = EmbeddedEngine.getPlayData(subjectId, se, ep, title, finalType, finalImdbId, finalTmdbId).data;
       state.currentPlayData = fallbackData;
       state.servers = fallbackData.servers || [];
       state.audioLanguages = fallbackData.audioLanguages || [
@@ -3800,13 +3843,13 @@ function updateEpisodeNavButtons(se, ep) {
       elements.btnPrevEp.classList.remove('hidden');
       elements.btnPrevEp.disabled = ep <= 1;
       elements.btnPrevEp.onclick = () => {
-        if (ep > 1) startPlayback(state.currentPlaybackSubject.subjectId, se, ep - 1, state.currentPlaybackSubject.title);
+        if (ep > 1) startPlayback(state.currentPlaybackSubject.subjectId, se, ep - 1, state.currentPlaybackSubject.title, state.currentPlaybackSubject.cover, state.currentPlaybackSubject.subjectType || 2, state.currentPlaybackSubject.imdbId, state.currentPlaybackSubject.tmdbId);
       };
     }
     if (elements.btnNextEp) {
       elements.btnNextEp.classList.remove('hidden');
       elements.btnNextEp.onclick = () => {
-        startPlayback(state.currentPlaybackSubject.subjectId, se, ep + 1, state.currentPlaybackSubject.title);
+        startPlayback(state.currentPlaybackSubject.subjectId, se, ep + 1, state.currentPlaybackSubject.title, state.currentPlaybackSubject.cover, state.currentPlaybackSubject.subjectType || 2, state.currentPlaybackSubject.imdbId, state.currentPlaybackSubject.tmdbId);
       };
     }
   } else {

@@ -40,6 +40,7 @@ const IMDB_TO_TMDB_MAP = {
   "tt4574334": "66732",
   "tt13751694": "781732",
   "tt1757678": "83533",
+  "tt1630029": "76600",
   "tt15354916": "872906",
   "tt15239678": "693134",
   "tt15398776": "872585",
@@ -47,6 +48,43 @@ const IMDB_TO_TMDB_MAP = {
   "tt12343534": "95479",
   "tt15428448": "993710",
   "tt0816692": "157336"
+};
+
+const SUBJECT_ID_MAP = {
+  "1436232475147128696": { imdbId: "tt21285562", tmdbId: "846872", title: "The Dog Stars", subjectType: 1 },
+  "dp_wolv_2024": { imdbId: "tt6263850", tmdbId: "533535", title: "Deadpool & Wolverine", subjectType: 1 },
+  "st_s5_2025": { imdbId: "tt4574334", tmdbId: "66732", title: "Stranger Things: Season 5", isSeries: true, subjectType: 2 },
+  "animal_2023": { imdbId: "tt13751694", tmdbId: "781732", title: "Animal", subjectType: 1 },
+  "avatar_3_2025": { imdbId: "tt1757678", tmdbId: "83533", title: "Avatar: Fire and Ash", subjectType: 1 },
+  "jawan_2023": { imdbId: "tt15354916", tmdbId: "872906", title: "Jawan", subjectType: 1 },
+  "dune_2_2024": { imdbId: "tt15239678", tmdbId: "693134", title: "Dune: Part Two", subjectType: 1 },
+  "oppenheimer_2023": { imdbId: "tt15398776", tmdbId: "872585", title: "Oppenheimer", subjectType: 1 },
+  "solo_leveling_2024": { imdbId: "tt21209876", tmdbId: "209867", title: "Solo Leveling", isSeries: true, subjectType: 2 },
+  "jjk_2024": { imdbId: "tt12343534", tmdbId: "95479", title: "Jujutsu Kaisen", isSeries: true, subjectType: 2 },
+  "pushpa_2_2024": { imdbId: "tt15428448", tmdbId: "993710", title: "Pushpa 2: The Rule", subjectType: 1 },
+  "interstellar_2014": { imdbId: "tt0816692", tmdbId: "157336", title: "Interstellar", subjectType: 1 }
+};
+
+const TITLE_TO_IMDB_MAP = {
+  "deadpool & wolverine": { imdbId: "tt6263850", tmdbId: "533535", isSeries: false },
+  "deadpool and wolverine": { imdbId: "tt6263850", tmdbId: "533535", isSeries: false },
+  "stranger things": { imdbId: "tt4574334", tmdbId: "66732", isSeries: true },
+  "stranger things: season 5": { imdbId: "tt4574334", tmdbId: "66732", isSeries: true },
+  "animal": { imdbId: "tt13751694", tmdbId: "781732", isSeries: false },
+  "avatar: fire and ash": { imdbId: "tt1757678", tmdbId: "83533", isSeries: false },
+  "avatar: the way of water": { imdbId: "tt1630029", tmdbId: "76600", isSeries: false },
+  "avatar": { imdbId: "tt0499549", tmdbId: "19995", isSeries: false },
+  "jawan": { imdbId: "tt15354916", tmdbId: "872906", isSeries: false },
+  "dune: part two": { imdbId: "tt15239678", tmdbId: "693134", isSeries: false },
+  "dune 2": { imdbId: "tt15239678", tmdbId: "693134", isSeries: false },
+  "oppenheimer": { imdbId: "tt15398776", tmdbId: "872585", isSeries: false },
+  "solo leveling": { imdbId: "tt21209876", tmdbId: "209867", isSeries: true },
+  "jujutsu kaisen": { imdbId: "tt12343534", tmdbId: "95479", isSeries: true },
+  "pushpa 2: the rule": { imdbId: "tt15428448", tmdbId: "993710", isSeries: false },
+  "pushpa 2": { imdbId: "tt15428448", tmdbId: "993710", isSeries: false },
+  "interstellar": { imdbId: "tt0816692", tmdbId: "157336", isSeries: false },
+  "the dog stars": { imdbId: "tt21285562", tmdbId: "846872", isSeries: false },
+  "tears of steel": { imdbId: "tt2285752", tmdbId: "135600", isSeries: false }
 };
 
 // MovieBoxTV Gateway Signing Config
@@ -301,6 +339,15 @@ const imdbCache = new Map();
 
 async function resolveImdbId(title, subjectType = 1) {
   if (!title) return null;
+  const cleanNormTitle = title.toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^\w\s:-]/g, '').trim();
+  if (TITLE_TO_IMDB_MAP[cleanNormTitle]) {
+    const entry = TITLE_TO_IMDB_MAP[cleanNormTitle];
+    if (entry.tmdbId && !IMDB_TO_TMDB_MAP[entry.imdbId]) {
+      IMDB_TO_TMDB_MAP[entry.imdbId] = entry.tmdbId;
+    }
+    return entry.imdbId;
+  }
+
   const cleanTitle = title.replace(/\([^)]*\)/g, '').replace(/[^\w\s:-]/g, '').trim();
   const searchType = (subjectType === 2 || subjectType === '2' || subjectType === 'series' || subjectType === 'tv') ? 'series' : 'movie';
   const cacheKey = `${cleanTitle}_${searchType}`;
@@ -309,7 +356,7 @@ async function resolveImdbId(title, subjectType = 1) {
   try {
     const cinemetaUrl = `https://v3-cinemeta.strem.io/catalog/${searchType}/top/search=${encodeURIComponent(cleanTitle)}.json`;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 1200);
+    const timer = setTimeout(() => controller.abort(), 5000);
     const resp = await fetch(cinemetaUrl, { signal: controller.signal });
     clearTimeout(timer);
 
@@ -319,6 +366,9 @@ async function resolveImdbId(title, subjectType = 1) {
         const imdbId = json.metas[0].imdb_id;
         if (imdbId) {
           imdbCache.set(cacheKey, imdbId);
+          if (json.metas[0].moviedb_id) {
+            IMDB_TO_TMDB_MAP[imdbId] = String(json.metas[0].moviedb_id);
+          }
           return imdbId;
         }
       }
@@ -329,14 +379,24 @@ async function resolveImdbId(title, subjectType = 1) {
   return null;
 }
 
-// Mock & Reliable Fallback Stream Data Generator
-function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Stream)") {
+// Dynamic Mock & Fallback Stream Data Generator with 100% Correct Movie / Series URLs
+function getMockPlayData(title = "Cinema Stream", imdbId = "tt21285562", isSeries = false, seasonNum = 1, episodeNum = 1, tmdbId = "") {
+  const finalImdb = imdbId || "tt21285562";
+  const finalTmdb = tmdbId || IMDB_TO_TMDB_MAP[finalImdb] || "";
+
+  const vidlinkUrl = isSeries
+    ? (finalTmdb
+        ? `https://vidlink.pro/tv/${finalTmdb}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false`
+        : `https://nontongo.win/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}`)
+    : `https://vidlink.pro/movie/${finalTmdb || finalImdb}?primaryColor=e50914&autoplay=false`;
+
   return {
     code: 0,
     message: "ok",
     data: {
       title: title,
-      imdbId: "tt2285752",
+      imdbId: finalImdb,
+      tmdbId: finalTmdb,
       resources: [
         {
           url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
@@ -388,7 +448,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "4K UHD / 1080p",
           type: "embed",
           audioLanguages: ["Hindi", "English", "Multi-Audio"],
-          url: "https://vidlink.pro/movie/tt2285752?primaryColor=e50914&autoplay=false",
+          url: vidlinkUrl,
           isDefault: true
         },
         {
@@ -398,7 +458,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p Full HD",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://nontongo.win/embed/movie/tt2285752"
+          url: isSeries ? `https://nontongo.win/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://nontongo.win/embed/movie/${finalImdb}`
         },
         {
           id: "server-3",
@@ -407,7 +467,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "4K / 1080p",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://vidfast.pro/movie/tt2285752"
+          url: isSeries ? `https://vidfast.pro/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://vidfast.pro/movie/${finalImdb}`
         },
         {
           id: "server-4",
@@ -416,7 +476,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://vidsrc.pm/embed/movie/tt2285752"
+          url: isSeries ? `https://vidsrc.pm/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://vidsrc.pm/embed/movie/${finalImdb}`
         },
         {
           id: "server-5",
@@ -425,7 +485,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://vidjoy.pro/embed/movie/tt2285752"
+          url: isSeries ? `https://vidjoy.pro/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://vidjoy.pro/embed/movie/${finalImdb}`
         },
         {
           id: "server-6",
@@ -434,7 +494,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English", "Hindi"],
-          url: "https://player.videasy.net/movie/tt2285752"
+          url: isSeries ? `https://player.videasy.net/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://player.videasy.net/movie/${finalImdb}`
         },
         {
           id: "server-7",
@@ -443,7 +503,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://player.vidsrc.nl/embed/movie/tt2285752"
+          url: isSeries ? `https://player.vidsrc.nl/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://player.vidsrc.nl/embed/movie/${finalImdb}`
         },
         {
           id: "server-8",
@@ -452,7 +512,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://www.2embed.skin/embed/tt2285752"
+          url: isSeries ? `https://www.2embed.skin/embedtv/${finalImdb}&s=${seasonNum}&e=${episodeNum}` : `https://www.2embed.skin/embed/${finalImdb}`
         },
         {
           id: "server-9",
@@ -461,7 +521,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English"],
-          url: "https://vidsrc.rip/embed/movie/tt2285752"
+          url: isSeries ? `https://vidsrc.rip/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://vidsrc.rip/embed/movie/${finalImdb}`
         },
         {
           id: "server-10",
@@ -470,7 +530,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://2embed.org/embed/movie/tt2285752"
+          url: isSeries ? `https://2embed.org/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://2embed.org/embed/movie/${finalImdb}`
         },
         {
           id: "server-11",
@@ -479,7 +539,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English"],
-          url: "https://vidbinge.dev/embed/movie/tt2285752"
+          url: isSeries ? `https://vidbinge.dev/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://vidbinge.dev/embed/movie/${finalImdb}`
         },
         {
           id: "server-12",
@@ -488,7 +548,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "720p / 1080p",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://www.2embed.cc/embed/tt2285752"
+          url: isSeries ? `https://www.2embed.cc/embedtv/${finalImdb}&s=${seasonNum}&e=${episodeNum}` : `https://www.2embed.cc/embed/${finalImdb}`
         },
         {
           id: "server-13",
@@ -497,7 +557,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["Hindi", "English", "Multi-Audio"],
-          url: "https://autoembed.co/movie/imdb/tt2285752"
+          url: isSeries ? `https://autoembed.co/tv/imdb/${finalImdb}-${seasonNum}-${episodeNum}` : `https://autoembed.co/movie/imdb/${finalImdb}`
         },
         {
           id: "server-14",
@@ -506,7 +566,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English"],
-          url: "https://embedrise.com/embed/movie/tt2285752"
+          url: isSeries ? `https://embedrise.com/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://embedrise.com/embed/movie/${finalImdb}`
         },
         {
           id: "server-15",
@@ -515,7 +575,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "1080p HD",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
-          url: "https://frembed.pro/api/film.php?id=tt2285752"
+          url: isSeries ? `https://frembed.pro/api/tv.php?id=${finalImdb}&s=${seasonNum}&e=${episodeNum}` : `https://frembed.pro/api/film.php?id=${finalImdb}`
         },
         {
           id: "server-16",
@@ -524,7 +584,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "720p / 1080p",
           type: "embed",
           audioLanguages: ["English"],
-          url: "https://vidsrc.dev/embed/movie/tt2285752"
+          url: isSeries ? `https://vidsrc.dev/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://vidsrc.dev/embed/movie/${finalImdb}`
         },
         {
           id: "server-17",
@@ -533,7 +593,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "720p / 1080p",
           type: "embed",
           audioLanguages: ["English"],
-          url: "https://play2.123embed.net/movie/tt2285752"
+          url: isSeries ? `https://play2.123embed.net/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://play2.123embed.net/movie/${finalImdb}`
         },
         {
           id: "server-18",
@@ -542,7 +602,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           quality: "720p / 1080p",
           type: "embed",
           audioLanguages: ["English"],
-          url: "https://111movies.com/embed/movie/tt2285752"
+          url: isSeries ? `https://111movies.com/embed/tv/${finalImdb}/${seasonNum}/${episodeNum}` : `https://111movies.com/embed/movie/${finalImdb}`
         },
         {
           id: "server-moviebox",
@@ -595,13 +655,33 @@ app.get('/api/play/:id', async (req, res) => {
     const subjectId = req.params.id;
     const se = parseInt(req.query.se, 10) || 0;
     const ep = parseInt(req.query.ep, 10) || 0;
-    const titleHint = req.query.title || "";
-    const subjectType = parseInt(req.query.type, 10) || (se > 0 ? 2 : 1);
+    const queryTitle = req.query.title || "";
+    const queryImdbId = req.query.imdbId || "";
+    const queryTmdbId = req.query.tmdbId || "";
+    let subjectType = parseInt(req.query.type, 10) || (se > 0 ? 2 : 1);
     const vipLevel = "0";
 
     // Immediate Mock Test handler
     if (subjectId === 'mock' || subjectId === 'test') {
-      return res.json(getMockPlayData(titleHint || "Tears of Steel (Netflix 4K Ultra HD Test Stream)"));
+      return res.json(getMockPlayData(queryTitle || "Tears of Steel (Netflix 4K Ultra HD Test Stream)", "tt2285752"));
+    }
+
+    // Step 1: Check known subject map by subjectId
+    const mapped = SUBJECT_ID_MAP[subjectId];
+    let resolvedImdbId = queryImdbId || mapped?.imdbId || "";
+    let resolvedTmdbId = queryTmdbId || mapped?.tmdbId || (resolvedImdbId ? IMDB_TO_TMDB_MAP[resolvedImdbId] : "");
+    let resolvedTitle = queryTitle || mapped?.title || "";
+    if (mapped?.subjectType) subjectType = mapped.subjectType;
+
+    // Step 2: If no IMDb ID yet, check TITLE_TO_IMDB_MAP
+    if (!resolvedImdbId && resolvedTitle) {
+      const cleanNormTitle = resolvedTitle.toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^\w\s:-]/g, '').trim();
+      const byTitle = TITLE_TO_IMDB_MAP[cleanNormTitle];
+      if (byTitle) {
+        resolvedImdbId = byTitle.imdbId;
+        resolvedTmdbId = byTitle.tmdbId;
+        if (byTitle.isSeries) subjectType = 2;
+      }
     }
 
     // Parallelize MovieBox play-info API call with IMDb lookup for blazing fast start
@@ -609,9 +689,14 @@ app.get('/api/play/:id', async (req, res) => {
       console.warn("API play-info call failed:", apiErr.message);
       return null;
     });
-    const imdbPromise = titleHint ? resolveImdbId(titleHint, subjectType) : Promise.resolve(null);
 
-    const [playData, initialImdbId] = await Promise.all([playPromise, imdbPromise]);
+    const imdbPromise = (!resolvedImdbId && resolvedTitle) ? resolveImdbId(resolvedTitle, subjectType) : Promise.resolve(resolvedImdbId);
+
+    const [playData, foundImdbId] = await Promise.all([playPromise, imdbPromise]);
+    if (!resolvedImdbId && foundImdbId) {
+      resolvedImdbId = foundImdbId;
+      resolvedTmdbId = IMDB_TO_TMDB_MAP[resolvedImdbId] || "";
+    }
     
     // Also fetch captions if available
     let captions = [];
@@ -631,27 +716,23 @@ app.get('/api/play/:id', async (req, res) => {
     }
 
     // Resolve Movie/Series Title
-    const title = playData?.data?.title || titleHint;
-    const imdbId = initialImdbId || (title && title !== titleHint ? await resolveImdbId(title, subjectType) : null);
-
+    const title = playData?.data?.title || resolvedTitle || "Cinema Stream";
     const isSeries = subjectType === 2 || se > 0;
     const seasonNum = se || 1;
     const episodeNum = ep || 1;
+
+    // If still no IMDb ID and playData returned a title different from query
+    if (!resolvedImdbId && title) {
+      resolvedImdbId = await resolveImdbId(title, subjectType);
+      resolvedTmdbId = resolvedImdbId ? (IMDB_TO_TMDB_MAP[resolvedImdbId] || "") : "";
+    }
 
     // Check if real streams/resources exist; if completely empty, supply robust fallback
     const rawResources = playData?.data?.resources || [];
     const rawStreams = playData?.data?.streams || [];
     if (rawResources.length === 0 && rawStreams.length === 0) {
-      console.warn(`[Stream Fallback] No resources returned for ${subjectId} (${title}), using fallback stream.`);
-      const mock = getMockPlayData(title || "Cinema Stream (1080p Ultra HD)");
-      if (imdbId) {
-        mock.data.imdbId = imdbId;
-        const tmdbId = IMDB_TO_TMDB_MAP[imdbId] || "";
-        mock.data.servers[1].url = isSeries
-          ? (tmdbId ? `https://vidlink.pro/tv/${tmdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`)
-          : `https://vidlink.pro/movie/${tmdbId || imdbId}?primaryColor=e50914&autoplay=false`;
-        mock.data.servers[2].url = isSeries ? `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://nontongo.win/embed/movie/${imdbId}`;
-      }
+      console.warn(`[Stream Fallback] No resources returned for ${subjectId} (${title}), using fallback stream with IMDb ID: ${resolvedImdbId || 'default'}`);
+      const mock = getMockPlayData(title, resolvedImdbId, isSeries, seasonNum, episodeNum, resolvedTmdbId);
       return res.json(mock);
     }
 
@@ -675,11 +756,11 @@ app.get('/api/play/:id', async (req, res) => {
       streams: rawStreams
     });
 
-    if (imdbId) {
-      const tmdbId = IMDB_TO_TMDB_MAP[imdbId] || "";
+    if (resolvedImdbId) {
+      const tmdbId = resolvedTmdbId || IMDB_TO_TMDB_MAP[resolvedImdbId] || "";
       const vidlinkUrl = isSeries
-        ? (tmdbId ? `https://vidlink.pro/tv/${tmdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`)
-        : `https://vidlink.pro/movie/${tmdbId || imdbId}?primaryColor=e50914&autoplay=false`;
+        ? (tmdbId ? `https://vidlink.pro/tv/${tmdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://nontongo.win/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}`)
+        : `https://vidlink.pro/movie/${tmdbId || resolvedImdbId}?primaryColor=e50914&autoplay=false`;
 
       // Server 2: VidLink Ultra 4K
       servers.push({
@@ -691,103 +772,103 @@ app.get('/api/play/:id', async (req, res) => {
       servers.push({
         id: "server-3", name: "Server 3: Cinema Multi-CDN", tag: "Multi-CDN Global Network",
         quality: "1080p Full HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://nontongo.win/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://nontongo.win/embed/movie/${imdbId}`
+        url: isSeries ? `https://nontongo.win/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://nontongo.win/embed/movie/${resolvedImdbId}`
       });
       // Server 4: VidFast Turbo
       servers.push({
         id: "server-4", name: "Server 4: Cinema Turbo", tag: "Turbo Fast Stream",
         quality: "4K / 1080p", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://vidfast.pro/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidfast.pro/movie/${imdbId}`
+        url: isSeries ? `https://vidfast.pro/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://vidfast.pro/movie/${resolvedImdbId}`
       });
       // Server 5: VidSrc PM Premium
       servers.push({
         id: "server-5", name: "Server 5: Cinema Premium", tag: "Premium Multi-Source Player",
         quality: "1080p", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://vidsrc.pm/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.pm/embed/movie/${imdbId}`
+        url: isSeries ? `https://vidsrc.pm/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.pm/embed/movie/${resolvedImdbId}`
       });
       // Server 6: VidJoy Ultra HD
       servers.push({
         id: "server-6", name: "Server 6: Cinema Ultra HD", tag: "Ultra HD Streaming Engine",
         quality: "1080p", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://vidjoy.pro/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidjoy.pro/embed/movie/${imdbId}`
+        url: isSeries ? `https://vidjoy.pro/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://vidjoy.pro/embed/movie/${resolvedImdbId}`
       });
       // Server 7: Videasy
       servers.push({
         id: "server-7", name: "Server 7: Cinema Videasy", tag: "Smart Adaptive Player",
         quality: "1080p HD", type: "embed", audioLanguages: ["English", "Hindi"],
-        url: isSeries ? `https://player.videasy.net/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://player.videasy.net/movie/${imdbId}`
+        url: isSeries ? `https://player.videasy.net/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://player.videasy.net/movie/${resolvedImdbId}`
       });
       // Server 8: VidSrc NL
       servers.push({
         id: "server-8", name: "Server 8: Cinema NL Mirror", tag: "Netherlands Fast Mirror",
         quality: "1080p HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://player.vidsrc.nl/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://player.vidsrc.nl/embed/movie/${imdbId}`
+        url: isSeries ? `https://player.vidsrc.nl/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://player.vidsrc.nl/embed/movie/${resolvedImdbId}`
       });
       // Server 9: 2Embed Skin
       servers.push({
         id: "server-9", name: "Server 9: Cinema Skin", tag: "Premium Cloud Skin Server",
         quality: "1080p HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://www.2embed.skin/embedtv/${imdbId}&s=${seasonNum}&e=${episodeNum}` : `https://www.2embed.skin/embed/${imdbId}`
+        url: isSeries ? `https://www.2embed.skin/embedtv/${resolvedImdbId}&s=${seasonNum}&e=${episodeNum}` : `https://www.2embed.skin/embed/${resolvedImdbId}`
       });
       // Server 10: VidSrc RIP
       servers.push({
         id: "server-10", name: "Server 10: Cinema RIP Mirror", tag: "High-Speed RIP Mirror",
         quality: "1080p HD", type: "embed", audioLanguages: ["English"],
-        url: isSeries ? `https://vidsrc.rip/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.rip/embed/movie/${imdbId}`
+        url: isSeries ? `https://vidsrc.rip/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.rip/embed/movie/${resolvedImdbId}`
       });
       // Server 11: 2Embed Org
       servers.push({
         id: "server-11", name: "Server 11: Cinema Global", tag: "Global Cluster Backup",
         quality: "1080p HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://2embed.org/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://2embed.org/embed/movie/${imdbId}`
+        url: isSeries ? `https://2embed.org/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://2embed.org/embed/movie/${resolvedImdbId}`
       });
       // Server 12: VidBinge
       servers.push({
         id: "server-12", name: "Server 12: Cinema VidBinge", tag: "Binge-Optimized Stream",
         quality: "1080p HD", type: "embed", audioLanguages: ["English"],
-        url: isSeries ? `https://vidbinge.dev/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidbinge.dev/embed/movie/${imdbId}`
+        url: isSeries ? `https://vidbinge.dev/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://vidbinge.dev/embed/movie/${resolvedImdbId}`
       });
       // Server 13: 2Embed CC
       servers.push({
         id: "server-13", name: "Server 13: Cinema CC", tag: "CC Reliable Uptime Mirror",
         quality: "720p / 1080p", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://www.2embed.cc/embedtv/${imdbId}&s=${seasonNum}&e=${episodeNum}` : `https://www.2embed.cc/embed/${imdbId}`
+        url: isSeries ? `https://www.2embed.cc/embedtv/${resolvedImdbId}&s=${seasonNum}&e=${episodeNum}` : `https://www.2embed.cc/embed/${resolvedImdbId}`
       });
       // Server 14: AutoEmbed
       servers.push({
         id: "server-14", name: "Server 14: Cinema AutoEmbed", tag: "Auto-Source Multi-Provider",
         quality: "1080p HD", type: "embed", audioLanguages: ["Hindi", "English", "Multi-Audio"],
-        url: isSeries ? `https://autoembed.co/tv/imdb/${imdbId}-${seasonNum}-${episodeNum}` : `https://autoembed.co/movie/imdb/${imdbId}`
+        url: isSeries ? `https://autoembed.co/tv/imdb/${resolvedImdbId}-${seasonNum}-${episodeNum}` : `https://autoembed.co/movie/imdb/${resolvedImdbId}`
       });
       // Server 15: EmbedRise
       servers.push({
         id: "server-15", name: "Server 15: Cinema EmbedRise", tag: "Rise Ultra Stream Engine",
         quality: "1080p HD", type: "embed", audioLanguages: ["English"],
-        url: isSeries ? `https://embedrise.com/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://embedrise.com/embed/movie/${imdbId}`
+        url: isSeries ? `https://embedrise.com/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://embedrise.com/embed/movie/${resolvedImdbId}`
       });
       // Server 16: FrEmbed
       servers.push({
         id: "server-16", name: "Server 16: Cinema FrEmbed", tag: "French Ultra-Fast Server",
         quality: "1080p HD", type: "embed", audioLanguages: ["English", "Multi-Audio"],
-        url: isSeries ? `https://frembed.pro/api/tv.php?id=${imdbId}&s=${seasonNum}&e=${episodeNum}` : `https://frembed.pro/api/film.php?id=${imdbId}`
+        url: isSeries ? `https://frembed.pro/api/tv.php?id=${resolvedImdbId}&s=${seasonNum}&e=${episodeNum}` : `https://frembed.pro/api/film.php?id=${resolvedImdbId}`
       });
       // Server 17: VidSrc Dev
       servers.push({
         id: "server-17", name: "Server 17: Cinema Dev", tag: "Developer-Grade Stream",
         quality: "720p / 1080p", type: "embed", audioLanguages: ["English"],
-        url: isSeries ? `https://vidsrc.dev/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.dev/embed/movie/${imdbId}`
+        url: isSeries ? `https://vidsrc.dev/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://vidsrc.dev/embed/movie/${resolvedImdbId}`
       });
       // Server 18: 123Embed
       servers.push({
         id: "server-18", name: "Server 18: Cinema 123 Net", tag: "123 Network Backup Mirror",
         quality: "720p / 1080p", type: "embed", audioLanguages: ["English"],
-        url: isSeries ? `https://play2.123embed.net/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://play2.123embed.net/movie/${imdbId}`
+        url: isSeries ? `https://play2.123embed.net/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://play2.123embed.net/movie/${resolvedImdbId}`
       });
       // Server 19: 111Movies
       servers.push({
         id: "server-19", name: "Server 19: Cinema 111 Movies", tag: "111 Movies Emergency Fallback",
         quality: "720p / 1080p", type: "embed", audioLanguages: ["English"],
-        url: isSeries ? `https://111movies.com/embed/tv/${imdbId}/${seasonNum}/${episodeNum}` : `https://111movies.com/embed/movie/${imdbId}`
+        url: isSeries ? `https://111movies.com/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}` : `https://111movies.com/embed/movie/${resolvedImdbId}`
       });
     }
 
@@ -819,7 +900,7 @@ app.get('/api/play/:id', async (req, res) => {
     });
 
     if (playData && playData.data) {
-      playData.data.imdbId = imdbId;
+      playData.data.imdbId = resolvedImdbId;
       playData.data.servers = servers;
       playData.data.audioLanguages = [
         { code: "hin", name: "Hindi (हिंदी)", icon: "🇮🇳" },

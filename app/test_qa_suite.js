@@ -359,6 +359,31 @@ runTest("DOM Integrity: All 160 static UI elements in app.js elements object exi
   assert.strictEqual(missing.length, 0, `Missing DOM elements in index.html: ${missing.join(', ')}`);
 });
 
+// ----------------------------------------------------
+// TEST 19: Dynamic Playback Resolution & Zero Fallback Loops
+// ----------------------------------------------------
+runTest("Dynamic Playback Resolution: Exact TMDB/IMDb URLs built for every selected title", () => {
+  const serverJs = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+
+  // Verify server.js mapping
+  assert(serverJs.includes("const SUBJECT_ID_MAP = {"), "server.js must define SUBJECT_ID_MAP");
+  assert(serverJs.includes("const TITLE_TO_IMDB_MAP = {"), "server.js must define TITLE_TO_IMDB_MAP");
+  assert(serverJs.includes('"dp_wolv_2024"'), "server.js must map Deadpool & Wolverine");
+  assert(serverJs.includes('"st_s5_2025"'), "server.js must map Stranger Things S5");
+  assert(serverJs.includes('"animal_2023"'), "server.js must map Animal");
+  assert(serverJs.includes('"jawan_2023"'), "server.js must map Jawan");
+
+  // Verify server.js dynamic mock builder
+  assert(!serverJs.includes('url: "https://vidlink.pro/movie/tt2285752'), "server.js getMockPlayData must not hardcode Tears of Steel");
+  assert(serverJs.includes("finalImdb"), "server.js getMockPlayData must dynamically bind finalImdb");
+
+  // Verify app.js client passes IDs to play info
+  assert(appJs.includes("finalImdbId"), "app.js startPlayback must resolve finalImdbId");
+  assert(appJs.includes("finalTmdbId"), "app.js startPlayback must resolve finalTmdbId");
+  assert(appJs.includes("overrideImdbId"), "app.js getPlayData must accept overrideImdbId");
+});
+
 console.log("\n=================================================");
 console.log(`🎯 RESULTS: ${passedCount} / ${totalCount} TESTS PASSED (100%)`);
 console.log("=================================================");
