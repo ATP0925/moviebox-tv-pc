@@ -312,21 +312,21 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
       imdbId: "tt2285752",
       resources: [
         {
-          url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+          url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
           duration: 734,
           resolution: "1080p",
           codec: "h264",
           resourceId: "mock_1080p"
         },
         {
-          url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4",
           duration: 596,
           resolution: "720p",
           codec: "h264",
           resourceId: "mock_720p"
         },
         {
-          url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+          url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
           duration: 653,
           resolution: "480p",
           codec: "h264",
@@ -338,7 +338,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           streamType: 1,
           codecName: "h264",
           resolutions: "1080,720,480",
-          url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+          url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
           duration: 734,
           format: "MP4",
           id: "mock_stream_1"
@@ -364,14 +364,14 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           isDefault: true,
           resources: [
             {
-              url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
               duration: 734,
               resolution: "1080p",
               codec: "h264",
               resourceId: "mock_1080p"
             },
             {
-              url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4",
               duration: 596,
               resolution: "720p",
               codec: "h264",
@@ -383,7 +383,7 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
               streamType: 1,
               codecName: "h264",
               resolutions: "1080,720,480",
-              url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
               duration: 734,
               format: "MP4",
               id: "mock_stream_1"
@@ -419,12 +419,39 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
         },
         {
           id: "server-superembed",
-          name: "Server 5: SuperEmbed Cloud Mirror",
-          tag: "Fast Global Mirror",
+          name: "Server 5: MultiEmbed VIP Stream",
+          tag: "Fast Global VIP Cloud Mirror",
           quality: "1080p",
           type: "embed",
           audioLanguages: ["Multi-Audio", "English"],
           url: "https://multiembed.mov/?video_id=tt2285752&tmdb=1"
+        },
+        {
+          id: "server-embedsu",
+          name: "Server 6: EmbedSu Fast HLS",
+          tag: "Zero-Buffering High-Speed Mirror",
+          quality: "1080p Full HD",
+          type: "embed",
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://embed.su/embed/movie/tt2285752"
+        },
+        {
+          id: "server-smashystream",
+          name: "Server 7: SmashyStream Ultra",
+          tag: "Multi-Source Cloud Load Balanced",
+          quality: "1080p HD",
+          type: "embed",
+          audioLanguages: ["English", "Hindi"],
+          url: "https://player.smashystream.com/movie/tt2285752"
+        },
+        {
+          id: "server-2embed",
+          name: "Server 8: 2Embed Emergency Fallback",
+          tag: "Guaranteed 100% Uptime Mirror",
+          quality: "720p / 1080p",
+          type: "embed",
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://www.2embed.cc/embed/tt2285752"
         }
       ],
       audioLanguages: [
@@ -559,17 +586,56 @@ app.get('/api/play/:id', async (req, res) => {
           : `https://player.autoembed.cc/embed/movie/${imdbId}`
       });
 
-      // Server 5: SuperEmbed Cloud Mirror
+      // Server 5: MultiEmbed VIP Stream
       servers.push({
         id: "server-superembed",
-        name: "Server 5: SuperEmbed Cloud Mirror",
-        tag: "Fast Global Mirror",
+        name: "Server 5: MultiEmbed VIP Stream",
+        tag: "Fast Global VIP Cloud Mirror",
         quality: "1080p",
         type: "embed",
         audioLanguages: ["Multi-Audio", "English"],
         url: isSeries
-          ? `https://multiembed.mov/?video_id=${imdbId}&tmdb=1&s=${seasonNum}&e=${episodeNum}`
+          ? `https://multiembed.mov/?video_id=${imdbId}&s=${seasonNum}&e=${episodeNum}`
           : `https://multiembed.mov/?video_id=${imdbId}&tmdb=1`
+      });
+
+      // Server 6: EmbedSu Fast HLS
+      servers.push({
+        id: "server-embedsu",
+        name: "Server 6: EmbedSu Fast HLS",
+        tag: "Zero-Buffering High-Speed Mirror",
+        quality: "1080p Full HD",
+        type: "embed",
+        audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries
+          ? `https://embed.su/embed/tv/${imdbId}/${seasonNum}/${episodeNum}`
+          : `https://embed.su/embed/movie/${imdbId}`
+      });
+
+      // Server 7: SmashyStream Ultra
+      servers.push({
+        id: "server-smashystream",
+        name: "Server 7: SmashyStream Ultra",
+        tag: "Multi-Source Cloud Load Balanced",
+        quality: "1080p HD",
+        type: "embed",
+        audioLanguages: ["English", "Hindi"],
+        url: isSeries
+          ? `https://player.smashystream.com/tv/${imdbId}/${seasonNum}/${episodeNum}`
+          : `https://player.smashystream.com/movie/${imdbId}`
+      });
+
+      // Server 8: 2Embed Emergency Fallback
+      servers.push({
+        id: "server-2embed",
+        name: "Server 8: 2Embed Emergency Fallback",
+        tag: "Guaranteed 100% Uptime Mirror",
+        quality: "720p / 1080p",
+        type: "embed",
+        audioLanguages: ["English", "Multi-Audio"],
+        url: isSeries
+          ? `https://www.2embed.cc/embedtv/${imdbId}&s=${seasonNum}&e=${episodeNum}`
+          : `https://www.2embed.cc/embed/${imdbId}`
       });
     }
 
@@ -583,14 +649,14 @@ app.get('/api/play/:id', async (req, res) => {
       audioLanguages: ["Original Audio", "English", "Hindi"],
       resources: [
         {
-          url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+          url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
           duration: 734,
           resolution: "1080p",
           codec: "h264",
           resourceId: "mock_1080p"
         },
         {
-          url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4",
           duration: 596,
           resolution: "720p",
           codec: "h264",

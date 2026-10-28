@@ -533,20 +533,6 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  content-visibility: auto;
-  contain-intrinsic-size: 1000px 360px;
-  animation: shelfFadeIn 0.35s ease-out;
-}
-
-@keyframes shelfFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .shelf-header {
@@ -590,7 +576,7 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
 }
 .btn-scroll:hover {
   background: rgba(255, 255, 255, 0.16);
@@ -601,7 +587,7 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   height: 16px;
 }
 
-/* Carousel Track with Desktop Mouse Grab-to-Scroll */
+/* Carousel Track */
 .shelf-carousel {
   display: flex;
   align-items: flex-start;
@@ -610,19 +596,12 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   scroll-behavior: smooth;
   padding: 10px 60px 25px 60px;
   scrollbar-width: none;
-  cursor: grab;
-}
-.shelf-carousel.grabbing {
-  cursor: grabbing;
-  cursor: -webkit-grabbing;
-  user-select: none;
-  scroll-behavior: auto;
 }
 .shelf-carousel::-webkit-scrollbar {
   display: none;
 }
 
-/* Movie Card — Strictly uniform 180px width with offscreen rendering acceleration */
+/* Movie Card — Strictly uniform 180px width */
 .movie-card {
   flex: 0 0 180px;
   width: 180px;
@@ -634,44 +613,24 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   cursor: pointer;
   border-radius: 12px;
   transition: transform 0.35s var(--ease-smooth);
-  content-visibility: auto;
-  contain-intrinsic-size: 180px 315px;
 }
 
-/* Shimmer Keyframe Animation */
-@keyframes posterShimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* Poster Wrap — Strictly enforced 2:3 vertical aspect ratio (180px x 270px) + Zero CLS Shimmer */
+/* Poster Wrap — Strictly enforced 2:3 vertical aspect ratio (180px x 270px) */
 .card-poster-wrap {
   position: relative;
   width: 180px;
   height: 270px;
   min-height: 270px;
   max-height: 270px;
-  aspect-ratio: 2 / 3;
   border-radius: 12px;
   overflow: hidden;
-  background: #131722 linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.02) 100%);
-  background-size: 200% 100%;
-  animation: posterShimmer 1.8s infinite linear;
+  background: var(--bg-card);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   border: 1px solid var(--border-subtle);
   transition: all 0.35s var(--ease-smooth);
 }
 
-.card-poster-wrap.img-loaded {
-  animation: none;
-  background: var(--bg-card);
-}
-
-/* Poster Image — Absolutely fills the 180x270 container with object-fit cover and smooth fade-in */
+/* Poster Image — Absolutely fills the 180x270 container with object-fit cover regardless of native resolution */
 .card-poster {
   position: absolute;
   top: 0;
@@ -680,57 +639,7 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   height: 100%;
   object-fit: cover;
   display: block;
-  opacity: 0;
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s ease;
-}
-
-.card-poster.loaded {
-  opacity: 1;
-}
-
-/* Sentinel Infinite Loader */
-.shelves-scroll-sentinel {
-  width: 100%;
-  padding: 30px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 70px;
-}
-
-.sentinel-loader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sentinel-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--accent-red);
-  opacity: 0.6;
-  animation: sentinelPulse 1.2s infinite ease-in-out;
-}
-
-.sentinel-dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.sentinel-dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes sentinelPulse {
-  0%, 100% {
-    transform: scale(0.8);
-    opacity: 0.4;
-  }
-  50% {
-    transform: scale(1.3);
-    opacity: 1;
-    box-shadow: 0 0 12px var(--accent-glow);
-  }
+  transition: transform 0.5s ease;
 }
 
 .card-overlay {
@@ -1210,18 +1119,18 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
 }
 
 /* ==========================================================================
-   Netflix Ultra Stream Cinema Video Player (Full VLC Features & Netflix Look)
+    Ultra Stream Cinema Video Player 
    ========================================================================== */
 :root {
-  --netflix-red: #e50914;
+  --netflix-red: #de91ff;
   --netflix-red-hover: #f40612;
-  --netflix-red-glow: rgba(229, 9, 20, 0.55);
+  --netflix-red-glow: rgba(116, 230, 243, 0.55);
   --netflix-dark: #141414;
   --netflix-surface: rgba(20, 20, 20, 0.95);
   --netflix-glass: rgba(14, 14, 14, 0.92);
   --netflix-border: rgba(255, 255, 255, 0.12);
-  --vlc-orange: #e50914;
-  --vlc-orange-hover: #f40612;
+  --vlc-orange: #ec797f;
+  --vlc-orange-hover: #ee777d;
   --vlc-orange-glow: rgba(229, 9, 20, 0.5);
   --vlc-surface: #141414;
   --vlc-panel: rgba(18, 18, 18, 0.96);
@@ -1270,7 +1179,7 @@ h1, h2, h3, h4, h5, .logo-title, .brand-logo, .tab-label {
   width: 100%;
   height: 100%;
   border: none;
-  background: #000;
+  background: #342e2e;
   z-index: 5;
 }
 
@@ -2573,6 +2482,10 @@ button, a, input, select, .movie-card, .dropdown-option, .control-btn {
   contain: layout paint;
 }
 
+@keyframes posterShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
 
 .card-poster {
   opacity: 0;
@@ -3367,4 +3280,37 @@ button, a, input, select, .movie-card, .dropdown-option, .control-btn {
   padding: 6px 18px;
   border-radius: 20px;
 }
+
+/* Zero CLS & Shimmer Animation */
+@keyframes posterShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shelf-row,
+.shelf-container {
+  content-visibility: auto;
+  contain-intrinsic-size: 340px 420px;
+}
+
+.card-poster.loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.card-poster-wrap.img-loaded {
+  animation: none !important;
+  background: transparent !important;
+}
+
+/* Desktop Drag-to-Scroll */
+.shelf-carousel {
+  cursor: grab;
+}
+
+.shelf-carousel.grabbing {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
 

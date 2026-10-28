@@ -321,7 +321,14 @@ function optimizePosterUrl(url, targetWidth = 340) {
 
 // Fallback SVG Generator for Broken or Blocked Posters (Zero Network Requests)
 function handlePosterError(img, title = 'MovieBox Cinema') {
-  if (!img || img.dataset.fallbackApplied) return;
+  if (!img) return;
+  // If optimized URL failed, try the unoptimized raw source first
+  if (img.dataset.rawSrc && img.src !== img.dataset.rawSrc && !img.dataset.triedRaw) {
+    img.dataset.triedRaw = 'true';
+    img.src = img.dataset.rawSrc;
+    return;
+  }
+  if (img.dataset.fallbackApplied) return;
   img.dataset.fallbackApplied = 'true';
   const cleanTitle = (title || 'MovieBox Title').slice(0, 26);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="340" height="510" viewBox="0 0 340 510">
@@ -477,7 +484,7 @@ const EmbeddedEngine = {
     {
       subjectId: "st_s5_2025",
       title: "Stranger Things: Season 5",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BMDZkYmVhNjMtNWU4MC00MDQxLWE3YTgtZTZlN2RmZDU2PC9lXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg" },
       imdbRatingValue: "8.7",
       score: "8.7",
       releaseDate: "2025-10-31",
@@ -493,7 +500,7 @@ const EmbeddedEngine = {
     {
       subjectId: "animal_2023",
       title: "Animal",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BNGViM2M4NmUtMmNkNy00MTU5LWEyNy1kMGExODUxNWYyZDFkXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/pwBtk8ngoMtqn0qv8j1feSFTKUn.jpg" },
       imdbRatingValue: "7.1",
       score: "7.1",
       releaseDate: "2023-12-01",
@@ -509,7 +516,7 @@ const EmbeddedEngine = {
     {
       subjectId: "avatar_3_2025",
       title: "Avatar: Fire and Ash",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
       imdbRatingValue: "8.2",
       score: "8.2",
       releaseDate: "2025-12-19",
@@ -525,7 +532,7 @@ const EmbeddedEngine = {
     {
       subjectId: "jawan_2023",
       title: "Jawan",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BMmQxNmU2ODgtOTBhYS00NWNiLTg1YTEtOTRhNmYxMDU3ZTk2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/jFt1gS4BGHlK8xt76Y81Alp4dbt.jpg" },
       imdbRatingValue: "7.5",
       score: "7.5",
       releaseDate: "2023-09-07",
@@ -541,7 +548,7 @@ const EmbeddedEngine = {
     {
       subjectId: "dune_2_2024",
       title: "Dune: Part Two",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BN2QyZGUgkLWEtNzJjMy00NDc5LWI4MzQtODM3Yzg5ODBlZDY4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg" },
       imdbRatingValue: "8.6",
       score: "8.6",
       releaseDate: "2024-03-01",
@@ -557,7 +564,7 @@ const EmbeddedEngine = {
     {
       subjectId: "oppenheimer_2023",
       title: "Oppenheimer",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BN2JkMDc5MGQtZjg3YS00NmFiLWIyZmQtZTGCZjAxMmZkM2ZmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" },
       imdbRatingValue: "8.9",
       score: "8.9",
       releaseDate: "2023-07-21",
@@ -573,7 +580,7 @@ const EmbeddedEngine = {
     {
       subjectId: "solo_leveling_2024",
       title: "Solo Leveling",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BODJhZTNkM2YtNWU0YS00N2EzLWJiYmItZTVkZjM1YjYyYTZjXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/geCRueV3ElhRTr0xtJuEWJt6dJ1.jpg" },
       imdbRatingValue: "8.5",
       score: "8.5",
       releaseDate: "2024-01-06",
@@ -589,7 +596,7 @@ const EmbeddedEngine = {
     {
       subjectId: "jjk_2024",
       title: "Jujutsu Kaisen",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BNGY4MTg3NzgtMmFkZi00NTg5LWExMmEtMWI3YzI1ODdmMWQ1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/6qQzMJG27XOJsyAEEIisoJB45j2.jpg" },
       imdbRatingValue: "8.6",
       score: "8.6",
       releaseDate: "2020-10-03",
@@ -605,7 +612,7 @@ const EmbeddedEngine = {
     {
       subjectId: "pushpa_2_2024",
       title: "Pushpa 2: The Rule",
-      cover: { url: "https://m.media-amazon.com/images/M/MV5BMjA1OTU5Nzg4NF5BMl5BanBnXkFtZTgwNTkzMjgyMTE@._V1_FMjpg_UX1000_.jpg" },
+      cover: { url: "https://image.tmdb.org/t/p/w500/1T21FblunT0y8fz7YaW8JMYgUKm.jpg" },
       imdbRatingValue: "7.8",
       score: "7.8",
       releaseDate: "2024-12-05",
@@ -747,7 +754,17 @@ const EmbeddedEngine = {
       ? `https://player.autoembed.cc/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
       : `https://player.autoembed.cc/embed/movie/${imdbId}`;
 
-    const superembedUrl = `https://multiembed.mov/?video_id=${imdbId}&tmdb=1`;
+    const superembedUrl = isSeries
+      ? `https://multiembed.mov/?video_id=${imdbId}&s=${se || 1}&e=${ep || 1}`
+      : `https://multiembed.mov/?video_id=${imdbId}&tmdb=1`;
+
+    const smashystreamUrl = isSeries
+      ? `https://player.smashystream.com/tv/${imdbId}/${se || 1}/${ep || 1}`
+      : `https://player.smashystream.com/movie/${imdbId}`;
+
+    const twoEmbedUrl = isSeries
+      ? `https://www.2embed.cc/embedtv/${imdbId}&s=${se || 1}&e=${ep || 1}`
+      : `https://www.2embed.cc/embed/${imdbId}`;
 
     const supportedLangs = sub.audioLangs || (sub.countryName === 'India' ? ['hin', 'eng'] : ['eng']);
     const allLangDefs = {
@@ -774,18 +791,25 @@ const EmbeddedEngine = {
         isDefault: true,
         resources: [
           {
-            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+            url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
             duration: 7136,
             resolution: "1080p",
             codec: "h264",
             resourceId: "cdn_1080p"
           },
           {
-            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4",
             duration: 7136,
             resolution: "720p",
             codec: "h264",
             resourceId: "cdn_720p"
+          },
+          {
+            url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
+            duration: 7136,
+            resolution: "480p",
+            codec: "h264",
+            resourceId: "cdn_480p"
           }
         ],
         streams: [
@@ -793,7 +817,7 @@ const EmbeddedEngine = {
             streamType: 1,
             codecName: "h264",
             resolutions: "1080,720,480",
-            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+            url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
             duration: 7136,
             format: "MP4",
             id: "stream_1"
@@ -803,7 +827,7 @@ const EmbeddedEngine = {
       {
         id: "cinema-stream-2",
         name: "Cinema Cloud 1 (4K HDR Adaptive)",
-        tag: "4K HDR Adaptive Bitrate • Daily Updated",
+        tag: "4K HDR Adaptive Bitrate • Hindi + English Audio",
         quality: "4K UHD / 1080p",
         type: "embed",
         url: vidlinkUrl
@@ -823,29 +847,40 @@ const EmbeddedEngine = {
         quality: "1080p HD",
         type: "embed",
         url: vidsrcUrl
-      }
-    ];
-
-    if (supportedLangs.includes('hin')) {
-      cinemaServers.push({
-        id: "cinema-stream-hindi",
+      },
+      {
+        id: "cinema-stream-5",
         name: "Cinema Dubbed Stream (Multi-Language)",
-        tag: "Hindi Dubbed Regional Stream",
+        tag: "Hindi Dubbed & Multi-Language Regional Stream",
         quality: "1080p HD",
         type: "embed",
         url: autoembedUrl
-      });
-    }
-
-    // Secondary backup mirror
-    cinemaServers.push({
-      id: "cinema-stream-backup",
-      name: "Cinema Secondary Backup",
-      tag: "Redundant Secondary Mirror",
-      quality: "1080p",
-      type: "embed",
-      url: superembedUrl
-    });
+      },
+      {
+        id: "cinema-stream-6",
+        name: "Cinema VIP Multi-Mirror",
+        tag: "Redundant Secondary Cloud Mirror",
+        quality: "1080p HD",
+        type: "embed",
+        url: superembedUrl
+      },
+      {
+        id: "cinema-stream-7",
+        name: "Cinema Cloud 4 (SmashyStream)",
+        tag: "High-Availability Multi-Provider Server",
+        quality: "1080p HD",
+        type: "embed",
+        url: smashystreamUrl
+      },
+      {
+        id: "cinema-stream-8",
+        name: "Cinema Emergency Fallback (2Embed)",
+        tag: "Guaranteed 100% Uptime Mirror",
+        quality: "720p / 1080p",
+        type: "embed",
+        url: twoEmbedUrl
+      }
+    ];
 
     return {
       code: 0,
@@ -855,21 +890,21 @@ const EmbeddedEngine = {
         imdbId: imdbId,
         resources: [
           {
-            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+            url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
             duration: 7136,
             resolution: "1080p",
             codec: "h264",
             resourceId: "cdn_1080p"
           },
           {
-            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4",
             duration: 7136,
             resolution: "720p",
             codec: "h264",
             resourceId: "cdn_720p"
           },
           {
-            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4",
             duration: 7136,
             resolution: "480p",
             codec: "h264",
@@ -881,7 +916,7 @@ const EmbeddedEngine = {
             streamType: 1,
             codecName: "h264",
             resolutions: "1080,720,480",
-            url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+            url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
             duration: 7136,
             format: "MP4",
             id: "stream_1"
@@ -1916,6 +1951,7 @@ function createMovieCard(subject) {
     <div class="card-poster-wrap">
       <img class="card-poster"
            src="${posterUrl}"
+           data-raw-src="${escapeHtml(subject.cover?.url || '')}"
            alt="${safeTitle}"
            width="180"
            height="270"
@@ -2436,11 +2472,11 @@ function armHotStandbyServer() {
       }
     } catch (e) {}
   } else if (standbyServer.type === 'embed') {
-    if (elements.playerIframeStandby && standbyServer.url) {
-      if (elements.playerIframeStandby.src !== standbyServer.url) {
-        elements.playerIframeStandby.src = standbyServer.url;
-      }
+    // Keep iframe standby unpopulated until actually needed to avoid rogue background popups/redirects
+    if (elements.playerIframeStandby && elements.playerIframeStandby.src !== 'about:blank') {
+      elements.playerIframeStandby.src = 'about:blank';
     }
+    // Only preconnect embed origin for DNS/TLS warm-up
     try {
       if (standbyServer.url && !state.preloadedUrls.has(standbyServer.url)) {
         state.preloadedUrls.add(standbyServer.url);
@@ -2474,6 +2510,7 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     elements.playerIframe.src = 'about:blank';
     if (elements.playerIframeStandby) {
       elements.playerIframeStandby.classList.add('hidden');
+      elements.playerIframeStandby.src = 'about:blank';
     }
     elements.videoElement.classList.remove('hidden');
 
@@ -2492,7 +2529,7 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
       }
     } else {
       // Fallback to high-speed verified 4K/1080p stream
-      const backupUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4";
+      const backupUrl = "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4";
       initDirectMp4Playback(backupUrl, "1080p", resumeTime, remainingText);
     }
 
@@ -2502,11 +2539,11 @@ function launchServerStream(serverIndex, resumeTime = 0, remainingText = "") {
     // Set Auto-Failover Watchdog Timer (3.2 seconds for rapid silent failover)
     if (state.autoFailoverEnabled && state.servers.length > 1) {
       state.failoverTimeout = setTimeout(() => {
-        if (elements.videoElement.readyState < 2 && !state.isPlaying) {
-          console.warn("[Silent Watchdog] Stream buffer timeout, auto-switching...");
-          triggerAutoFailover("Buffer timeout");
+        if (elements.videoElement.error && !state.isPlaying) {
+          console.warn("[Silent Watchdog] Stream error detected, triggering auto-failover...");
+          triggerAutoFailover("Media playback error");
         }
-      }, 3200);
+      }, 12000);
     }
 
   } else {
@@ -3425,11 +3462,14 @@ function handlePlaybackBufferStall() {
   if (!state.isPlaying || !state.autoFailoverEnabled || !state.servers || state.servers.length <= 1) return;
   if (state.stallFailoverTimeout) clearTimeout(state.stallFailoverTimeout);
   state.stallFailoverTimeout = setTimeout(() => {
-    if (elements.videoElement.readyState < 3 && state.isPlaying) {
-      console.warn("[Netflix Fast Failover] Active stream buffer drained. Performing zero-latency switch to standby...");
-      triggerAutoFailover("Buffer stall");
+    // Only failover if genuinely broken or sustained stall with explicit media error
+    if (elements.videoElement.readyState < 2 && state.isPlaying && !elements.videoElement.paused) {
+      if (elements.videoElement.error) {
+        console.warn("[Netflix Fast Failover] Active stream media error detected. Performing handover to standby...");
+        triggerAutoFailover("Buffer stall with media error");
+      }
     }
-  }, 1800);
+  }, 8500);
 }
 
 function bindVideoPlaybackEvents(vid) {
