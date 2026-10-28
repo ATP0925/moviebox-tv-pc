@@ -784,11 +784,67 @@ const EmbeddedEngine = {
     const cinemaServers = [
       {
         id: "cinema-stream-1",
+        name: "Cinema Cloud 1 (4K HDR Adaptive)",
+        tag: "4K HDR Adaptive Bitrate • VidLink Ultra",
+        quality: "4K UHD / 1080p",
+        type: "embed",
+        isDefault: true,
+        url: vidlinkUrl
+      },
+      {
+        id: "cinema-stream-2",
+        name: "Cinema Cloud 2 (1080p Fast HLS)",
+        tag: "Fast HLS Cloud Mirror • EmbedSu Zero Buffering",
+        quality: "1080p Full HD",
+        type: "embed",
+        url: embedSuUrl
+      },
+      {
+        id: "cinema-stream-3",
+        name: "Cinema Cloud 3 (Global Mirror)",
+        tag: "Global Content Delivery Mirror • VidSrc Pro",
+        quality: "1080p HD",
+        type: "embed",
+        url: vidsrcUrl
+      },
+      {
+        id: "cinema-stream-4",
+        name: "Cinema Dubbed Stream (Multi-Language)",
+        tag: "Hindi Dubbed & Multi-Language Regional Stream",
+        quality: "1080p HD",
+        type: "embed",
+        url: autoembedUrl
+      },
+      {
+        id: "cinema-stream-5",
+        name: "Cinema VIP Multi-Mirror",
+        tag: "VIP Multi-Cluster Backup Stream",
+        quality: "1080p HD",
+        type: "embed",
+        url: superembedUrl
+      },
+      {
+        id: "cinema-stream-6",
+        name: "Cinema Cloud 4 (SmashyStream)",
+        tag: "High-Availability Multi-Provider Server",
+        quality: "1080p HD",
+        type: "embed",
+        url: smashystreamUrl
+      },
+      {
+        id: "cinema-stream-7",
+        name: "Cinema Emergency Fallback (2Embed)",
+        tag: "Guaranteed 100% Uptime Mirror",
+        quality: "720p / 1080p",
+        type: "embed",
+        url: twoEmbedUrl
+      },
+      {
+        id: "cinema-stream-8",
         name: "Cinema Direct 4K (Ultra HD)",
         tag: "Official 4K UHD Direct CDN • 0s Latency",
         quality: "4K UHD / 1080p",
         type: "direct",
-        isDefault: true,
         resources: [
           {
             url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
@@ -823,62 +879,6 @@ const EmbeddedEngine = {
             id: "stream_1"
           }
         ]
-      },
-      {
-        id: "cinema-stream-2",
-        name: "Cinema Cloud 1 (4K HDR Adaptive)",
-        tag: "4K HDR Adaptive Bitrate • Hindi + English Audio",
-        quality: "4K UHD / 1080p",
-        type: "embed",
-        url: vidlinkUrl
-      },
-      {
-        id: "cinema-stream-3",
-        name: "Cinema Cloud 2 (1080p Fast HLS)",
-        tag: "Fast HLS Cloud Mirror • Zero Buffering",
-        quality: "1080p Full HD",
-        type: "embed",
-        url: embedSuUrl
-      },
-      {
-        id: "cinema-stream-4",
-        name: "Cinema Cloud 3 (Global Mirror)",
-        tag: "Global Content Delivery Mirror",
-        quality: "1080p HD",
-        type: "embed",
-        url: vidsrcUrl
-      },
-      {
-        id: "cinema-stream-5",
-        name: "Cinema Dubbed Stream (Multi-Language)",
-        tag: "Hindi Dubbed & Multi-Language Regional Stream",
-        quality: "1080p HD",
-        type: "embed",
-        url: autoembedUrl
-      },
-      {
-        id: "cinema-stream-6",
-        name: "Cinema VIP Multi-Mirror",
-        tag: "Redundant Secondary Cloud Mirror",
-        quality: "1080p HD",
-        type: "embed",
-        url: superembedUrl
-      },
-      {
-        id: "cinema-stream-7",
-        name: "Cinema Cloud 4 (SmashyStream)",
-        tag: "High-Availability Multi-Provider Server",
-        quality: "1080p HD",
-        type: "embed",
-        url: smashystreamUrl
-      },
-      {
-        id: "cinema-stream-8",
-        name: "Cinema Emergency Fallback (2Embed)",
-        tag: "Guaranteed 100% Uptime Mirror",
-        quality: "720p / 1080p",
-        type: "embed",
-        url: twoEmbedUrl
       }
     ];
 

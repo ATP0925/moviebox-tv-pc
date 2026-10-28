@@ -355,49 +355,23 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
       ],
       servers: [
         {
-          id: "server-moviebox",
-          name: "Server 1: Netflix Ultra Direct CDN",
-          tag: "Official 4K / 1080p Ultra-Fast Stream",
-          quality: "1080p / 720p / 480p",
-          type: "direct",
-          audioLanguages: ["Original Audio", "English", "Hindi"],
-          isDefault: true,
-          resources: [
-            {
-              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
-              duration: 734,
-              resolution: "1080p",
-              codec: "h264",
-              resourceId: "mock_1080p"
-            },
-            {
-              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4",
-              duration: 596,
-              resolution: "720p",
-              codec: "h264",
-              resourceId: "mock_720p"
-            }
-          ],
-          streams: [
-            {
-              streamType: 1,
-              codecName: "h264",
-              resolutions: "1080,720,480",
-              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
-              duration: 734,
-              format: "MP4",
-              id: "mock_stream_1"
-            }
-          ]
-        },
-        {
           id: "server-vidlink",
-          name: "Server 2: VidLink Ultra 4K (Hindi / Multi-Audio)",
+          name: "Server 1: VidLink Ultra 4K (Hindi / Multi-Audio)",
           tag: "4K UHD • Hindi Dubbed / Multi-Lang",
           quality: "4K UHD / 1080p",
           type: "embed",
           audioLanguages: ["Hindi", "English", "Multi-Audio"],
-          url: "https://vidlink.pro/movie/tt2285752?primaryColor=e50914&autoplay=false"
+          url: "https://vidlink.pro/movie/tt2285752?primaryColor=e50914&autoplay=false",
+          isDefault: true
+        },
+        {
+          id: "server-embedsu",
+          name: "Server 2: EmbedSu Fast HLS",
+          tag: "Zero-Buffering High-Speed Mirror",
+          quality: "1080p Full HD",
+          type: "embed",
+          audioLanguages: ["English", "Multi-Audio"],
+          url: "https://embed.su/embed/movie/tt2285752"
         },
         {
           id: "server-vidsrc",
@@ -427,17 +401,8 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
           url: "https://multiembed.mov/?video_id=tt2285752&tmdb=1"
         },
         {
-          id: "server-embedsu",
-          name: "Server 6: EmbedSu Fast HLS",
-          tag: "Zero-Buffering High-Speed Mirror",
-          quality: "1080p Full HD",
-          type: "embed",
-          audioLanguages: ["English", "Multi-Audio"],
-          url: "https://embed.su/embed/movie/tt2285752"
-        },
-        {
           id: "server-smashystream",
-          name: "Server 7: SmashyStream Ultra",
+          name: "Server 6: SmashyStream Ultra",
           tag: "Multi-Source Cloud Load Balanced",
           quality: "1080p HD",
           type: "embed",
@@ -446,12 +411,47 @@ function getMockPlayData(title = "Tears of Steel (Netflix 4K Ultra HD Test Strea
         },
         {
           id: "server-2embed",
-          name: "Server 8: 2Embed Emergency Fallback",
+          name: "Server 7: 2Embed Emergency Fallback",
           tag: "Guaranteed 100% Uptime Mirror",
           quality: "720p / 1080p",
           type: "embed",
           audioLanguages: ["English", "Multi-Audio"],
           url: "https://www.2embed.cc/embed/tt2285752"
+        },
+        {
+          id: "server-moviebox",
+          name: "Server 8: Netflix Ultra Direct CDN",
+          tag: "Official 4K / 1080p Direct Test Stream",
+          quality: "1080p / 720p / 480p",
+          type: "direct",
+          audioLanguages: ["Original Audio", "English", "Hindi"],
+          resources: [
+            {
+              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
+              duration: 734,
+              resolution: "1080p",
+              codec: "h264",
+              resourceId: "mock_1080p"
+            },
+            {
+              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4",
+              duration: 596,
+              resolution: "720p",
+              codec: "h264",
+              resourceId: "mock_720p"
+            }
+          ],
+          streams: [
+            {
+              streamType: 1,
+              codecName: "h264",
+              resolutions: "1080,720,480",
+              url: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4",
+              duration: 734,
+              format: "MP4",
+              id: "mock_stream_1"
+            }
+          ]
         }
       ],
       audioLanguages: [
