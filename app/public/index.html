@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.7.0">
+  <link rel="stylesheet" href="styles.css?v=4.8.0">
   <!-- DASH.js for Native Multi-Bitrate 1080p / 4K DASH Streaming -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dashjs/4.7.4/dash.all.min.js"></script>
 </head>
@@ -584,6 +584,15 @@
               <div class="dropdown-menu netflix-menu hidden" id="server-menu-top"></div>
             </div>
 
+            <!-- Series Next Episode Quick Action -->
+            <button class="control-btn netflix-btn btn-top-nav-ep hidden" id="btn-next-ep-top" title="Play Next Episode">
+              <span id="next-ep-top-text">Next Ep</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13" style="vertical-align: -1px; margin-left: 2px;">
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+            </button>
+
             <button class="control-btn netflix-btn btn-top-fullscreen" id="btn-top-fullscreen" title="Toggle Fullscreen">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
@@ -1039,6 +1048,6 @@
     </nav>
   </div>
 
-  <script src="app.js?v=4.7.0"></script>
+  <script src="app.js?v=4.8.0"></script>
 </body>
 </html>

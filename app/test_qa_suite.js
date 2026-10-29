@@ -578,10 +578,10 @@ runTest("Top-Bar Audio Track Selector, On-Screen Banner & DOM UI Controls: eleme
   assert(stylesCss.includes('.player-audio-notice'), "styles.css must style .player-audio-notice");
   assert(stylesCss.includes('.opt-tag.tag-unavailable'), "styles.css must style .opt-tag.tag-unavailable");
 
-  // Verify cache version v4.7.0
-  assert(swJs.includes('v4.7.0'), "sw.js must be bumped to v4.7.0");
-  assert(indexHtml.includes('app.js?v=4.7.0'), "index.html must link app.js?v=4.7.0");
-  assert(indexHtml.includes('styles.css?v=4.7.0'), "index.html must link styles.css?v=4.7.0");
+  // Verify cache version v4.8.0
+  assert(swJs.includes('v4.8.0'), "sw.js must be bumped to v4.8.0");
+  assert(indexHtml.includes('app.js?v=4.8.0'), "index.html must link app.js?v=4.8.0");
+  assert(indexHtml.includes('styles.css?v=4.8.0'), "index.html must link styles.css?v=4.8.0");
 });
 
 // ----------------------------------------------------
@@ -609,6 +609,56 @@ runTest("Audio Language Description & Modal Availability: Shows in description, 
   assert(stylesCss.includes('.audio-lang-pill.pill-hin'), "styles.css must style .audio-lang-pill.pill-hin");
   assert(stylesCss.includes('.audio-lang-pill.pill-jpn'), "styles.css must style .audio-lang-pill.pill-jpn");
   assert(stylesCss.includes('.audio-lang-pill.pill-eng'), "styles.css must style .audio-lang-pill.pill-eng");
+});
+
+// ----------------------------------------------------
+// TEST 25: Verified Seasons, Top-Bar Episode Progression, and Tab Filter Isolation
+// ----------------------------------------------------
+runTest("Verified Seasons, Top-Bar Episode Progression, and Tab Filter Isolation", () => {
+  const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(__dirname, 'public', 'styles.css'), 'utf8');
+  const serverJs = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
+
+  // 1. Verify Top-Bar Next Episode Quick Action in DOM, JS, and CSS
+  assert(indexHtml.includes('id="btn-next-ep-top"'), "index.html must have #btn-next-ep-top");
+  assert(indexHtml.includes('id="next-ep-top-text"'), "index.html must have #next-ep-top-text");
+  assert(appJs.includes("btnNextEpTop: document.getElementById('btn-next-ep-top')"), "app.js must bind btnNextEpTop");
+  assert(appJs.includes("nextEpTopText: document.getElementById('next-ep-top-text')"), "app.js must bind nextEpTopText");
+  assert(stylesCss.includes('.btn-top-nav-ep'), "styles.css must style .btn-top-nav-ep");
+
+  // 2. Verify Tab Filter Isolation in app.js
+  assert(appJs.includes("function isSubjectMatchingTab"), "app.js must implement isSubjectMatchingTab");
+  assert(appJs.includes("validSubjects"), "processFeedItems must filter validSubjects using isSubjectMatchingTab");
+
+  // 3. Verify server.js getMockSeasonData & app.js season logic
+  assert(serverJs.includes("function getMockSeasonData"), "server.js must implement getMockSeasonData");
+  
+  // Test server.js getMockSeasonData inside VM
+  const vm = require('vm');
+  const serverMockSeasonCode = serverJs.match(/function getMockSeasonData\(subjectId\) \{[\s\S]*?\n\}/)[0];
+  const serverSeasonSandbox = {};
+  vm.createContext(serverSeasonSandbox);
+  vm.runInContext(serverMockSeasonCode, serverSeasonSandbox);
+  const getMockSeasonData = serverSeasonSandbox.getMockSeasonData;
+  assert(typeof getMockSeasonData === 'function', "getMockSeasonData must be callable");
+
+  const soloRes = getMockSeasonData("solo_leveling_2024");
+  assert(soloRes.data.seasons.length === 1, "Solo Leveling must have exactly 1 season (NOT 4 seasons)");
+  assert(soloRes.data.seasons[0].maxEp === 12, "Solo Leveling Season 1 must have 12 episodes");
+
+  const frierenRes = getMockSeasonData("frieren_2023");
+  assert(frierenRes.data.seasons.length === 1, "Frieren must have exactly 1 season");
+  assert(frierenRes.data.seasons[0].maxEp === 28, "Frieren Season 1 must have 28 episodes");
+
+  const bbRes = getMockSeasonData("breaking_bad");
+  assert(bbRes.data.seasons.length === 5, "Breaking Bad must have 5 seasons");
+  assert(bbRes.data.seasons[0].maxEp === 7, "Breaking Bad Season 1 must have 7 episodes");
+  assert(bbRes.data.seasons[4].maxEp === 16, "Breaking Bad Season 5 must have 16 episodes");
+
+  // 4. Verify episode counts in season tab buttons
+  assert(appJs.includes("epLabel"), "renderSeasonTabs must display epLabel in season button");
+  assert(appJs.includes("updateEpisodeNavButtons"), "app.js must implement updateEpisodeNavButtons");
 });
 
 console.log("\n=================================================");

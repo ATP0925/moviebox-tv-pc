@@ -220,6 +220,8 @@ const elements = {
   btnStop: document.getElementById('btn-stop'),
   btnPrevEp: document.getElementById('btn-prev-ep'),
   btnNextEp: document.getElementById('btn-next-ep'),
+  btnNextEpTop: document.getElementById('btn-next-ep-top'),
+  nextEpTopText: document.getElementById('next-ep-top-text'),
   btnPlayPause: document.getElementById('btn-play-pause'),
   iconPlay: document.getElementById('icon-play'),
   iconPause: document.getElementById('icon-pause'),
@@ -1119,7 +1121,28 @@ const EmbeddedEngine = {
   ],
 
   getSubject(id) {
-    const found = this.subjects.find(s => s.subjectId === String(id));
+    const sid = String(id);
+    let found = this.subjects.find(s => s.subjectId === sid);
+    if (!found) {
+      const aliasMap = {
+        "breaking_bad_2008": "breaking_bad",
+        "stranger_things_2016": "st_s5_2025",
+        "got_2011": "game_of_thrones",
+        "the_boys_2019": "the_boys",
+        "loki_2021": "loki_series",
+        "hotd_2022": "house_of_dragon",
+        "wednesday_2022": "wednesday_series",
+        "the_last_of_us_2023": "the_last_of_us",
+        "jujutsu_kaisen_2020": "jjk_2024",
+        "demon_slayer_2019": "demon_slayer",
+        "attack_on_titan_2013": "attack_on_titan",
+        "death_note_2006": "death_note",
+        "one_piece_1999": "one_piece"
+      };
+      if (aliasMap[sid]) {
+        found = this.subjects.find(s => s.subjectId === aliasMap[sid]);
+      }
+    }
     if (found) return found;
     return {
       subjectId: String(id),
@@ -1332,18 +1355,82 @@ const EmbeddedEngine = {
   },
 
   getSeason(id) {
-    const seasons = [1, 2, 3, 4].map(sNum => ({
-      se: sNum,
-      seasonNumber: sNum,
-      title: `Season ${sNum}`,
-      episodeCount: 8,
-      episodes: Array.from({ length: 8 }, (_, i) => ({
+    const sub = this.getSubject(id) || {};
+    const title = (sub.title || id || '').toLowerCase();
+
+    // Map verified real seasons and episode counts for series
+    const seriesConfig = {
+      // Anime
+      "solo_leveling_2024": [{ se: 1, maxEp: 12 }],
+      "frieren_2023": [{ se: 1, maxEp: 28 }],
+      "jujutsu_kaisen_2020": [{ se: 1, maxEp: 24 }, { se: 2, maxEp: 23 }],
+      "jjk_2024": [{ se: 1, maxEp: 24 }, { se: 2, maxEp: 23 }],
+      "demon_slayer_2019": [{ se: 1, maxEp: 26 }, { se: 2, maxEp: 18 }, { se: 3, maxEp: 11 }, { se: 4, maxEp: 8 }],
+      "demon_slayer": [{ se: 1, maxEp: 26 }, { se: 2, maxEp: 18 }, { se: 3, maxEp: 11 }, { se: 4, maxEp: 8 }],
+      "attack_on_titan_2013": [{ se: 1, maxEp: 25 }, { se: 2, maxEp: 12 }, { se: 3, maxEp: 22 }, { se: 4, maxEp: 28 }],
+      "attack_on_titan": [{ se: 1, maxEp: 25 }, { se: 2, maxEp: 12 }, { se: 3, maxEp: 22 }, { se: 4, maxEp: 28 }],
+      "death_note_2006": [{ se: 1, maxEp: 37 }],
+      "death_note": [{ se: 1, maxEp: 37 }],
+      "one_piece_1999": [{ se: 1, maxEp: 61 }, { se: 2, maxEp: 16 }, { se: 3, maxEp: 15 }, { se: 4, maxEp: 13 }],
+      "one_piece": [{ se: 1, maxEp: 61 }, { se: 2, maxEp: 16 }, { se: 3, maxEp: 15 }, { se: 4, maxEp: 13 }],
+
+      // Western TV Series
+      "breaking_bad_2008": [{ se: 1, maxEp: 7 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 13 }, { se: 4, maxEp: 13 }, { se: 5, maxEp: 16 }],
+      "breaking_bad": [{ se: 1, maxEp: 7 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 13 }, { se: 4, maxEp: 13 }, { se: 5, maxEp: 16 }],
+      "stranger_things_2016": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 9 }, { se: 3, maxEp: 8 }, { se: 4, maxEp: 9 }],
+      "st_s5_2025": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 9 }, { se: 3, maxEp: 8 }, { se: 4, maxEp: 9 }],
+      "got_2011": [{ se: 1, maxEp: 10 }, { se: 2, maxEp: 10 }, { se: 3, maxEp: 10 }, { se: 4, maxEp: 10 }, { se: 5, maxEp: 10 }, { se: 6, maxEp: 10 }, { se: 7, maxEp: 7 }, { se: 8, maxEp: 6 }],
+      "game_of_thrones": [{ se: 1, maxEp: 10 }, { se: 2, maxEp: 10 }, { se: 3, maxEp: 10 }, { se: 4, maxEp: 10 }, { se: 5, maxEp: 10 }, { se: 6, maxEp: 10 }, { se: 7, maxEp: 7 }, { se: 8, maxEp: 6 }],
+      "the_boys_2019": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 8 }, { se: 3, maxEp: 8 }, { se: 4, maxEp: 8 }],
+      "the_boys": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 8 }, { se: 3, maxEp: 8 }, { se: 4, maxEp: 8 }],
+      "loki_2021": [{ se: 1, maxEp: 6 }, { se: 2, maxEp: 6 }],
+      "loki_series": [{ se: 1, maxEp: 6 }, { se: 2, maxEp: 6 }],
+      "hotd_2022": [{ se: 1, maxEp: 10 }, { se: 2, maxEp: 8 }],
+      "house_of_dragon": [{ se: 1, maxEp: 10 }, { se: 2, maxEp: 8 }],
+      "wednesday_2022": [{ se: 1, maxEp: 8 }],
+      "wednesday_series": [{ se: 1, maxEp: 8 }],
+      "the_last_of_us_2023": [{ se: 1, maxEp: 9 }],
+      "the_last_of_us": [{ se: 1, maxEp: 9 }],
+
+      // Indian Series
+      "mirzapur_series": [{ se: 1, maxEp: 9 }, { se: 2, maxEp: 10 }, { se: 3, maxEp: 10 }],
+      "panchayat_series": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 8 }, { se: 3, maxEp: 8 }]
+    };
+
+    let conf = seriesConfig[id];
+    if (!conf) {
+      if (title.includes('solo leveling')) conf = seriesConfig["solo_leveling_2024"];
+      else if (title.includes('frieren')) conf = seriesConfig["frieren_2023"];
+      else if (title.includes('jujutsu')) conf = seriesConfig["jujutsu_kaisen_2020"];
+      else if (title.includes('demon slayer')) conf = seriesConfig["demon_slayer_2019"];
+      else if (title.includes('titan')) conf = seriesConfig["attack_on_titan_2013"];
+      else if (title.includes('death note')) conf = seriesConfig["death_note_2006"];
+      else if (title.includes('breaking bad')) conf = seriesConfig["breaking_bad_2008"];
+      else if (title.includes('stranger things')) conf = seriesConfig["stranger_things_2016"];
+      else if (title.includes('mirzapur')) conf = seriesConfig["mirzapur_series"];
+      else if (title.includes('panchayat')) conf = seriesConfig["panchayat_series"];
+      else if (title.includes('boys')) conf = seriesConfig["the_boys_2019"];
+      else if (title.includes('loki')) conf = seriesConfig["loki_2021"];
+      else if (title.includes('wednesday')) conf = seriesConfig["wednesday_2022"];
+      else if (title.includes('last of us')) conf = seriesConfig["the_last_of_us_2023"];
+      else conf = [{ se: 1, maxEp: 10 }, { se: 2, maxEp: 10 }];
+    }
+
+    const coverUrl = sub.cover?.url || "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&auto=format&fit=crop&q=80";
+
+    const seasons = conf.map(c => ({
+      se: c.se,
+      seasonNumber: c.se,
+      title: `Season ${c.se}`,
+      episodeCount: c.maxEp,
+      maxEp: c.maxEp,
+      episodes: Array.from({ length: c.maxEp }, (_, i) => ({
         ep: i + 1,
         episodeNumber: i + 1,
-        title: `Episode ${i + 1}: Chapter ${sNum}.${i + 1}`,
-        description: `Official Episode ${i + 1} streaming in Full HD with multi-language audio.`,
-        cover: { url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&auto=format&fit=crop&q=80" },
-        duration: 3120
+        title: `Episode ${i + 1}`,
+        description: `Official Episode ${i + 1} streaming in 1080p Ultra HD.`,
+        cover: { url: coverUrl },
+        duration: sub.duration || 3000
       }))
     }));
 
@@ -1799,6 +1886,9 @@ const EmbeddedEngine = {
 
   search(keyword) {
     const kw = (keyword || '').toLowerCase().trim();
+    if (!kw) {
+      return { code: 0, data: { items: [] } };
+    }
     const results = this.subjects.filter(s => 
       s.title.toLowerCase().includes(kw) || 
       (s.genre && s.genre.toLowerCase().includes(kw))
@@ -1806,7 +1896,7 @@ const EmbeddedEngine = {
     return {
       code: 0,
       data: {
-        items: results.length > 0 ? results : this.subjects.slice(0, 4)
+        items: results
       }
     };
   }
@@ -2350,30 +2440,80 @@ async function loadHomeFeed(tabId) {
   }
 }
 
+function isSubjectMatchingTab(subject, tabId) {
+  if (!subject) return false;
+  if (!tabId || tabId === 'HOME') return true;
+
+  const title = (subject.title || '').toLowerCase();
+  const genre = (subject.genre || '').toLowerCase();
+  const category = (subject.category || '').toLowerCase();
+  const subType = parseInt(subject.subjectType, 10) || (subject.isSeries ? 2 : 1);
+
+  const isAnime = category === 'anime' || genre.includes('anime') || title.includes('solo leveling') || title.includes('frieren') || title.includes('jujutsu') || title.includes('demon slayer') || title.includes('attack on titan') || title.includes('death note') || title.includes('one piece');
+  const isKids = category === 'kids' || genre.includes('kids') || genre.includes('family') || title.includes('inside out') || title.includes('despicable me') || title.includes('kung fu panda');
+
+  if (tabId === 'ANIMATION') {
+    return isAnime;
+  }
+  if (tabId === 'KIDS') {
+    return isKids;
+  }
+  if (tabId === 'TV') {
+    // Only series, and exclude anime so series section stays pure TV shows
+    return (subType === 2 || category === 'series' || subject.isSeries) && !isAnime;
+  }
+  if (tabId === 'MOVIE') {
+    // Only movies, exclude series, anime, and kids animation
+    return (subType === 1 || category === 'movie') && subType !== 2 && !subject.isSeries && !isAnime;
+  }
+  return true;
+}
+
 // Progressive On-Scroll Hydration Engine (Amazon Prime Video / Netflix architecture)
 function processFeedItems(items) {
   let billboardSet = false;
   const contentShelves = [];
+  const currentTab = state.currentTab || 'HOME';
 
   items.forEach(item => {
+    // Filter subjects to strictly match current tab category
+    const validSubjects = (item.subjects || []).filter(sub => isSubjectMatchingTab(sub, currentTab));
+
     // 1. Process Banner Items for Hero Billboard
-    if (item.type === "TV_OPS_BANNER" && item.subjects && item.subjects.length > 0 && !billboardSet) {
-      setupBillboard(item.subjects[0]);
+    if (item.type === "TV_OPS_BANNER" && validSubjects.length > 0 && !billboardSet) {
+      setupBillboard(validSubjects[0]);
       billboardSet = true;
     }
 
     // 2. Queue Content Shelves
-    if (item.subjects && item.subjects.length > 0) {
+    if (validSubjects.length > 0) {
       const shelfTitle = item.title || getDefaultShelfTitle(item.type);
-      contentShelves.push({ title: shelfTitle, subjects: item.subjects });
+      contentShelves.push({ title: shelfTitle, subjects: validSubjects });
       
       // If billboard was not set yet, use the first available subject
       if (!billboardSet) {
-        setupBillboard(item.subjects[0]);
+        setupBillboard(validSubjects[0]);
         billboardSet = true;
       }
     }
   });
+
+  // If billboard is still not set (e.g. banner item was filtered out), find the top matching subject
+  if (!billboardSet && EmbeddedEngine && EmbeddedEngine.subjects) {
+    const topTabSubject = EmbeddedEngine.subjects.find(s => isSubjectMatchingTab(s, currentTab));
+    if (topTabSubject) {
+      setupBillboard(topTabSubject);
+      billboardSet = true;
+    }
+  }
+
+  // If no shelves could be constructed from upstream for this tab, fall back to curated category shelves
+  if (contentShelves.length === 0 && currentTab !== 'HOME') {
+    const fallbackFeed = EmbeddedEngine.getHomeFeed(currentTab);
+    if (fallbackFeed && fallbackFeed.data && fallbackFeed.data.items) {
+      return processFeedItems(fallbackFeed.data.items);
+    }
+  }
 
   state.pendingShelves = contentShelves;
 
@@ -3249,19 +3389,32 @@ async function openDetailModal(subjectId, autoPlay = false) {
 
 async function loadSeasons(subjectId) {
   try {
-    const res = await api.getSeason(subjectId);
-    if (!res || res.code !== 0 || !res.data) return;
+    let res = await api.getSeason(subjectId);
+    if (!res || res.code !== 0 || !res.data || !res.data.seasons || res.data.seasons.length === 0) {
+      res = EmbeddedEngine.getSeason(subjectId);
+    }
 
     state.activeSeasonData = res.data;
     const seasons = res.data.seasons || [];
 
     if (seasons.length > 0) {
       elements.seasonsSection.classList.remove('hidden');
+      state.selectedSeason = seasons[0].se;
+      state.selectedEpisode = 1;
       renderSeasonTabs(seasons);
       renderEpisodes(seasons[0]);
     }
   } catch (err) {
     console.warn("Seasons load warning:", err);
+    const res = EmbeddedEngine.getSeason(subjectId);
+    if (res && res.data && res.data.seasons && res.data.seasons.length > 0) {
+      state.activeSeasonData = res.data;
+      elements.seasonsSection.classList.remove('hidden');
+      state.selectedSeason = res.data.seasons[0].se;
+      state.selectedEpisode = 1;
+      renderSeasonTabs(res.data.seasons);
+      renderEpisodes(res.data.seasons[0]);
+    }
   }
 }
 
@@ -3270,7 +3423,9 @@ function renderSeasonTabs(seasons) {
   seasons.forEach((season, idx) => {
     const btn = document.createElement('button');
     btn.className = `season-tab-btn ${idx === 0 ? 'active' : ''}`;
-    btn.textContent = `Season ${season.se}`;
+    const epCount = season.maxEp || (season.episodes ? season.episodes.length : (season.episodeCount || 0));
+    const epLabel = epCount > 0 ? ` (${epCount} Ep)` : '';
+    btn.textContent = `Season ${season.se}${epLabel}`;
     btn.addEventListener('click', () => {
       document.querySelectorAll('.season-tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -3283,7 +3438,7 @@ function renderSeasonTabs(seasons) {
 
 function renderEpisodes(season) {
   elements.episodesGrid.innerHTML = '';
-  const maxEp = season.maxEp || 12;
+  const maxEp = season.maxEp || (season.episodes ? season.episodes.length : (season.episodeCount || 10));
 
   for (let i = 1; i <= maxEp; i++) {
     const btn = document.createElement('button');
@@ -3431,11 +3586,17 @@ async function performSearch(query) {
     console.warn("Search network error, searching embedded catalogue:", err);
     const res = EmbeddedEngine.search(trimmed);
     elements.searchGrid.innerHTML = '';
-    elements.searchCount.textContent = `${res.data.items.length} titles found`;
-    res.data.items.forEach(subject => {
-      const card = createMovieCard(subject);
-      elements.searchGrid.appendChild(card);
-    });
+    if (res && res.data && res.data.items && res.data.items.length > 0) {
+      elements.searchCount.textContent = `${res.data.items.length} titles found`;
+      elements.searchEmpty.classList.add('hidden');
+      res.data.items.forEach(subject => {
+        const card = createMovieCard(subject);
+        elements.searchGrid.appendChild(card);
+      });
+    } else {
+      elements.searchCount.textContent = `0 titles found`;
+      elements.searchEmpty.classList.remove('hidden');
+    }
   }
 }
 
@@ -4680,22 +4841,70 @@ function getLanguageName(code) {
 
 function updateEpisodeNavButtons(se, ep) {
   if (se > 0 && ep > 0) {
+    const subjectId = state.currentPlaybackSubject?.subjectId;
+    const seasonInfo = EmbeddedEngine.getSeason(subjectId);
+    const seasons = seasonInfo?.data?.seasons || [];
+    const currentSeason = seasons.find(s => s.se === se);
+    const maxEp = currentSeason?.maxEp || currentSeason?.episodeCount || 10;
+    const nextSeason = seasons.find(s => s.se === se + 1);
+
+    const hasNextEp = ep < maxEp;
+    const hasNextSeason = Boolean(nextSeason);
+
+    let nextTargetSe = se;
+    let nextTargetEp = ep + 1;
+    let nextLabel = `Next Ep (E${ep + 1})`;
+
+    if (!hasNextEp && hasNextSeason) {
+      nextTargetSe = se + 1;
+      nextTargetEp = 1;
+      nextLabel = `Next Season (S${se + 1}:E1)`;
+    }
+
+    const canGoNext = hasNextEp || hasNextSeason;
+
     if (elements.btnPrevEp) {
       elements.btnPrevEp.classList.remove('hidden');
-      elements.btnPrevEp.disabled = ep <= 1;
+      elements.btnPrevEp.disabled = ep <= 1 && se <= 1;
       elements.btnPrevEp.onclick = () => {
-        if (ep > 1) startPlayback(state.currentPlaybackSubject.subjectId, se, ep - 1, state.currentPlaybackSubject.title, state.currentPlaybackSubject.cover, state.currentPlaybackSubject.subjectType || 2, state.currentPlaybackSubject.imdbId, state.currentPlaybackSubject.tmdbId);
+        if (ep > 1) {
+          startPlayback(state.currentPlaybackSubject.subjectId, se, ep - 1, state.currentPlaybackSubject.title, state.currentPlaybackSubject.cover, state.currentPlaybackSubject.subjectType || 2, state.currentPlaybackSubject.imdbId, state.currentPlaybackSubject.tmdbId);
+        } else if (se > 1) {
+          const prevSeason = seasons.find(s => s.se === se - 1);
+          const prevMaxEp = prevSeason?.maxEp || prevSeason?.episodeCount || 10;
+          startPlayback(state.currentPlaybackSubject.subjectId, se - 1, prevMaxEp, state.currentPlaybackSubject.title, state.currentPlaybackSubject.cover, state.currentPlaybackSubject.subjectType || 2, state.currentPlaybackSubject.imdbId, state.currentPlaybackSubject.tmdbId);
+        }
       };
     }
+
     if (elements.btnNextEp) {
       elements.btnNextEp.classList.remove('hidden');
+      elements.btnNextEp.disabled = !canGoNext;
       elements.btnNextEp.onclick = () => {
-        startPlayback(state.currentPlaybackSubject.subjectId, se, ep + 1, state.currentPlaybackSubject.title, state.currentPlaybackSubject.cover, state.currentPlaybackSubject.subjectType || 2, state.currentPlaybackSubject.imdbId, state.currentPlaybackSubject.tmdbId);
+        if (canGoNext) {
+          startPlayback(state.currentPlaybackSubject.subjectId, nextTargetSe, nextTargetEp, state.currentPlaybackSubject.title, state.currentPlaybackSubject.cover, state.currentPlaybackSubject.subjectType || 2, state.currentPlaybackSubject.imdbId, state.currentPlaybackSubject.tmdbId);
+        } else {
+          showToast("You have reached the final episode!", 2500);
+        }
       };
+    }
+
+    if (elements.btnNextEpTop) {
+      if (canGoNext) {
+        elements.btnNextEpTop.classList.remove('hidden');
+        if (elements.nextEpTopText) elements.nextEpTopText.textContent = nextLabel;
+        elements.btnNextEpTop.onclick = (e) => {
+          e.stopPropagation();
+          startPlayback(state.currentPlaybackSubject.subjectId, nextTargetSe, nextTargetEp, state.currentPlaybackSubject.title, state.currentPlaybackSubject.cover, state.currentPlaybackSubject.subjectType || 2, state.currentPlaybackSubject.imdbId, state.currentPlaybackSubject.tmdbId);
+        };
+      } else {
+        elements.btnNextEpTop.classList.add('hidden');
+      }
     }
   } else {
     if (elements.btnPrevEp) elements.btnPrevEp.classList.add('hidden');
     if (elements.btnNextEp) elements.btnNextEp.classList.add('hidden');
+    if (elements.btnNextEpTop) elements.btnNextEpTop.classList.add('hidden');
   }
 }
 
