@@ -5359,10 +5359,18 @@ document.addEventListener('keydown', (e) => {
       if (elements.btnInspectorToggle) elements.btnInspectorToggle.click();
     } else if (e.key === 'a' || e.key === 'A') {
       e.preventDefault();
-      if (elements.btnAudioSelect) elements.btnAudioSelect.click();
+      if (elements.btnAudioSelectTop && !elements.playerIframe.classList.contains('hidden')) {
+        elements.btnAudioSelectTop.click();
+      } else if (elements.btnAudioSelect) {
+        elements.btnAudioSelect.click();
+      }
     } else if (e.key === 's' || e.key === 'S') {
       e.preventDefault();
-      if (elements.btnServerSelect) elements.btnServerSelect.click();
+      if (elements.btnServerSelectTop && !elements.playerIframe.classList.contains('hidden')) {
+        elements.btnServerSelectTop.click();
+      } else if (elements.btnServerSelect) {
+        elements.btnServerSelect.click();
+      }
     } else if (e.key === 'q' || e.key === 'Q') {
       e.preventDefault();
       if (elements.btnQualitySelect) elements.btnQualitySelect.click();
