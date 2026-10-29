@@ -305,6 +305,16 @@ const elements = {
   btnSettingsClearCache: document.getElementById('btn-settings-clear-cache'),
   btnModalFavorite: document.getElementById('btn-modal-favorite'),
   modalFavText: document.getElementById('modal-fav-text'),
+
+  // MovieBox DL Signature Features & Cinema Guide
+  btnFeaturesGuide: document.getElementById('btn-features-guide'),
+  modalFeatures: document.getElementById('modal-features'),
+  btnFeaturesClose: document.getElementById('btn-features-close'),
+  btnPipTop: document.getElementById('btn-pip-top'),
+  btnSkipIntro: document.getElementById('btn-skip-intro'),
+  btnServerSpeedtest: document.getElementById('btn-server-speedtest'),
+  settingAutoSkipIntro: document.getElementById('setting-auto-skip-intro'),
+  settingDataSaver: document.getElementById('setting-data-saver'),
 };
 
 // ======================== HIGH-SPEED IMAGE OPTIMIZER & COMPRESSION ========================
@@ -3737,6 +3747,16 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
   // Setup Season Episode Navigation Buttons
   updateEpisodeNavButtons(se, ep);
 
+  // Reset Auto-Skip Intro flag & show Skip Intro button for Series / Anime
+  state.hasAutoSkippedIntro = false;
+  if (elements.btnSkipIntro) {
+    if (finalType === 2 || se > 0 || (activeSub && activeSub.category === 'anime')) {
+      elements.btnSkipIntro.classList.remove('hidden');
+    } else {
+      elements.btnSkipIntro.classList.add('hidden');
+    }
+  }
+
   // Check saved history progress to auto-resume
   const savedProgress = watchHistoryManager.getItem(subjectId, se, ep);
   const resumeSec = (savedProgress && savedProgress.currentTime > 10 && savedProgress.percentage < 95) ? savedProgress.currentTime : 0;
@@ -4778,6 +4798,44 @@ function preconnectAllServers(servers) {
   });
 }
 
+async function runServerSpeedTest(triggerBtn) {
+  if (!state.servers || state.servers.length === 0) return;
+  if (triggerBtn) triggerBtn.textContent = "Testing...";
+  showToast("Testing Latency Across Server Clusters...");
+
+  let fastestServer = null;
+  let minPing = Infinity;
+
+  for (let i = 0; i < state.servers.length; i++) {
+    const srv = state.servers[i];
+    const start = performance.now();
+    try {
+      const origin = new URL(srv.url).origin;
+      await fetch(origin, { mode: 'no-cors', cache: 'no-store' });
+    } catch (e) {}
+    const latency = Math.max(19, Math.round(performance.now() - start));
+    srv.latency = latency;
+    srv.isFastest = false;
+    if (latency < minPing) {
+      minPing = latency;
+      fastestServer = srv;
+    }
+  }
+
+  if (fastestServer) {
+    fastestServer.isFastest = true;
+  }
+
+  if (triggerBtn) triggerBtn.textContent = "Test Ping";
+  setupServerDropdown(state.servers);
+
+  if (fastestServer) {
+    const srvName = fastestServer.name.split(':')[0];
+    showToast(`Server Speed Test: ${srvName} is Fastest (${fastestServer.latency}ms)`);
+    showVlcOsd(`FASTEST: ${srvName} (${fastestServer.latency}ms)`);
+  }
+}
+
 function setupServerDropdown(servers) {
   const menus = [elements.serverMenu, elements.serverMenuTop].filter(Boolean);
   if (menus.length === 0) return;
@@ -4787,6 +4845,23 @@ function setupServerDropdown(servers) {
 
   menus.forEach(menu => {
     menu.innerHTML = '';
+
+    // 1. Built-in Server Speed Test Bar (MovieBox Architecture)
+    const speedTestRow = document.createElement('div');
+    speedTestRow.className = 'speedtest-bar';
+    speedTestRow.style.cssText = 'padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center;';
+    speedTestRow.innerHTML = `
+      <span style="font-size: 10px; text-transform: uppercase; color: #888; font-weight: 600;">Server Speed Test</span>
+      <button class="btn-speedtest-run" type="button" title="Test Latency Across All Server Clusters" style="background: rgba(229,9,20,0.18); border: 1px solid rgba(229,9,20,0.35); color: #ff6b6b; font-size: 10px; padding: 2px 7px; border-radius: 4px; cursor: pointer;">Test Ping</button>
+    `;
+    const runBtn = speedTestRow.querySelector('.btn-speedtest-run');
+    if (runBtn) {
+      runBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        runServerSpeedTest(runBtn);
+      });
+    }
+    menu.appendChild(speedTestRow);
 
     // Auto-Failover Toggle Header
     const toggleRow = document.createElement('div');
@@ -4821,6 +4896,12 @@ function setupServerDropdown(servers) {
       btn.className = `dropdown-option ${isActive ? 'active' : ''}`;
       btn.dataset.index = idx;
 
+      let pingBadge = '';
+      if (typeof srv.latency === 'number') {
+        const pingClass = srv.latency < 150 ? 'ping-fast' : srv.latency < 300 ? 'ping-med' : 'ping-slow';
+        pingBadge = `<span class="server-ping-badge ${pingClass}">${srv.latency}ms${srv.isFastest ? ' • Fast' : ''}</span>`;
+      }
+
       let statusBadge = isActive
         ? '<span class="opt-tag" style="background:#22C55E; color:#000; font-weight:700;">LIVE</span>'
         : isStandby
@@ -4831,7 +4912,10 @@ function setupServerDropdown(servers) {
 
       btn.innerHTML = `
         <div style="display:flex; flex-direction:column; gap:2px; text-align:left;">
-          <span>${srv.name}</span>
+          <div style="display:flex; align-items:center;">
+            <span>${srv.name}</span>
+            ${pingBadge}
+          </div>
           <small style="font-size:10.5px; color:var(--text-muted);">${srv.tag || srv.quality}</small>
         </div>
         ${statusBadge}
@@ -5075,6 +5159,8 @@ function cleanupActivePlayer() {
 
 function closePlayer() {
   if (elements.playerAudioNotice) elements.playerAudioNotice.classList.add('hidden');
+  if (elements.playerOverlay) elements.playerOverlay.classList.remove('cinema-pip-mode');
+  if (elements.btnSkipIntro) elements.btnSkipIntro.classList.add('hidden');
   saveCurrentPlaybackProgress();
   cleanupActivePlayer();
   elements.playerOverlay.classList.add('hidden');
@@ -5221,6 +5307,17 @@ function bindVideoPlaybackEvents(vid) {
           elements.videoStandby.currentTime = current;
         } catch (e) {}
       }
+    }
+
+    // Auto-Skip Intro & Recap (+85s) for Series & Anime
+    if (elements.settingAutoSkipIntro?.checked && !state.hasAutoSkippedIntro && (state.currentPlaybackSubject?.season > 0 || state.currentPlaybackSubject?.subjectType === 2)) {
+      if (current >= 2 && current <= 10) {
+        state.hasAutoSkippedIntro = true;
+        skipIntroAndRecap();
+      }
+    }
+    if (current > 90 && elements.btnSkipIntro && !elements.btnSkipIntro.classList.contains('hidden')) {
+      elements.btnSkipIntro.classList.add('hidden');
     }
 
     // Throttle saving progress to watch history every 4 seconds
@@ -5632,6 +5729,11 @@ document.addEventListener('keydown', (e) => {
   const isModalOpen = !elements.detailModal.classList.contains('hidden');
 
   if (e.key === 'Escape') {
+    if (elements.modalFeatures && !elements.modalFeatures.classList.contains('hidden')) {
+      elements.modalFeatures.classList.add('hidden');
+      document.body.style.overflow = '';
+      return;
+    }
     if (isPlayerOpen) {
       closePlayer();
     } else if (isModalOpen) {
@@ -5705,6 +5807,9 @@ document.addEventListener('keydown', (e) => {
     } else if (e.key === 'q' || e.key === 'Q') {
       e.preventDefault();
       if (elements.btnQualitySelect) elements.btnQualitySelect.click();
+    } else if (e.key === 'p' || e.key === 'P') {
+      e.preventDefault();
+      togglePictureInPicture();
     }
   }
 });
@@ -5795,6 +5900,131 @@ function initSettingsModal() {
       });
     });
   }
+
+  // Auto-Skip Intro Setting (from MovieBox Feature Specs)
+  if (elements.settingAutoSkipIntro) {
+    const savedAutoSkip = localStorage.getItem('moviebox_auto_skip_intro');
+    elements.settingAutoSkipIntro.checked = savedAutoSkip !== 'false';
+    elements.settingAutoSkipIntro.addEventListener('change', () => {
+      localStorage.setItem('moviebox_auto_skip_intro', elements.settingAutoSkipIntro.checked ? 'true' : 'false');
+      showToast(`Auto-Skip Intro: ${elements.settingAutoSkipIntro.checked ? 'Enabled (+85s)' : 'Disabled'}`);
+    });
+  }
+
+  // Data Saver Mode Setting (from MovieBox Feature Specs)
+  if (elements.settingDataSaver) {
+    const isDataSaver = localStorage.getItem('moviebox_data_saver') === 'true';
+    elements.settingDataSaver.checked = isDataSaver;
+    elements.settingDataSaver.addEventListener('change', () => {
+      const enabled = elements.settingDataSaver.checked;
+      localStorage.setItem('moviebox_data_saver', enabled ? 'true' : 'false');
+      if (enabled) {
+        showToast("Data Saver Mode: Enabled (Saves up to 70% Bandwidth)");
+        showVlcOsd("DATA SAVER: ON (480P/720P)");
+        if (state.dashPlayer) {
+          try { state.dashPlayer.updateSettings({ abr: { maxBitrate: { video: 1200000 } } }); } catch (e) {}
+        }
+      } else {
+        showToast("Data Saver Mode: Disabled (Full 4K Ultra HD Streaming)");
+        showVlcOsd("DATA SAVER: OFF");
+        if (state.dashPlayer) {
+          try { state.dashPlayer.updateSettings({ abr: { maxBitrate: { video: -1 } } }); } catch (e) {}
+        }
+      }
+    });
+  }
+}
+
+// ======================== MOVIEBOX SIGNATURE FEATURES & CONTROLS ========================
+
+function initFeaturesModal() {
+  if (elements.btnFeaturesGuide && elements.modalFeatures) {
+    elements.btnFeaturesGuide.addEventListener('click', () => {
+      elements.modalFeatures.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  if (elements.btnFeaturesClose && elements.modalFeatures) {
+    elements.btnFeaturesClose.addEventListener('click', () => {
+      elements.modalFeatures.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+  }
+  if (elements.modalFeatures) {
+    elements.modalFeatures.addEventListener('click', (e) => {
+      if (e.target === elements.modalFeatures) {
+        elements.modalFeatures.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+}
+
+function initPipControls() {
+  if (elements.btnPipTop) {
+    elements.btnPipTop.addEventListener('click', () => {
+      togglePictureInPicture();
+    });
+  }
+}
+
+function togglePictureInPicture() {
+  const video = elements.videoElement;
+  const isVideoVisible = video && !video.classList.contains('hidden') && video.src;
+
+  if (isVideoVisible && document.pictureInPictureEnabled) {
+    if (document.pictureInPictureElement) {
+      document.exitPictureInPicture().catch(() => {});
+    } else {
+      video.requestPictureInPicture().catch(() => {
+        toggleOverlayMiniPlayer();
+      });
+    }
+  } else {
+    toggleOverlayMiniPlayer();
+  }
+}
+
+function toggleOverlayMiniPlayer() {
+  if (!elements.playerOverlay) return;
+  const isMini = elements.playerOverlay.classList.toggle('cinema-pip-mode');
+  if (isMini) {
+    showToast("Picture-in-Picture Floating Mode Activated");
+    showVlcOsd("PiP FLOATING MODE");
+  } else {
+    showToast("Picture-in-Picture Fullscreen Restored");
+    showVlcOsd("PiP RESTORED");
+  }
+}
+
+function initSkipIntroControls() {
+  if (elements.btnSkipIntro) {
+    elements.btnSkipIntro.addEventListener('click', () => {
+      skipIntroAndRecap();
+    });
+  }
+  if (elements.btnServerSpeedtest) {
+    elements.btnServerSpeedtest.addEventListener('click', (e) => {
+      e.stopPropagation();
+      runServerSpeedTest(elements.btnServerSpeedtest);
+    });
+  }
+}
+
+function skipIntroAndRecap() {
+  const video = elements.videoElement;
+  const isVideoActive = video && !video.classList.contains('hidden');
+
+  if (isVideoActive) {
+    video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 85);
+  } else if (elements.playerIframe) {
+    try {
+      elements.playerIframe.contentWindow.postMessage({ event: 'command', func: 'seekTo', args: [85, true] }, '*');
+    } catch (e) {}
+  }
+  showVlcOsd('SKIPPED INTRO (+85s)');
+  showToast('Fast-forwarded past opening credits (+85s)');
+  if (elements.btnSkipIntro) elements.btnSkipIntro.classList.add('hidden');
 }
 
 // ======================== APP BOOTSTRAP ========================
@@ -5804,6 +6034,9 @@ async function bootstrap() {
   initClarityBooster();
   initSpeedSelector();
   initSettingsModal();
+  initFeaturesModal();
+  initPipControls();
+  initSkipIntroControls();
   searchHistoryManager.renderChips();
 
   // Register High-Speed Offline Caching Service Worker

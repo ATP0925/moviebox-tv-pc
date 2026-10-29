@@ -4013,3 +4013,324 @@ button, a, input, select, .movie-card, .dropdown-option, .control-btn {
 }
 
 
+
+/* ==========================================================================
+   MovieBox DL Signature Architecture & Features (v5.0.0)
+   Speed Test, Skip Intro, Picture-in-Picture, Data Saver, Features Modal
+   ========================================================================== */
+
+/* 1. Header Features Guide Button */
+.btn-features-guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-right: 8px;
+}
+
+.btn-features-guide:hover {
+  background: rgba(229, 9, 20, 0.18);
+  border-color: #e50914;
+  color: #ff6b6b;
+  box-shadow: 0 0 12px rgba(229, 9, 20, 0.35);
+}
+
+@media (max-width: 768px) {
+  .btn-features-guide .features-btn-text {
+    display: none;
+  }
+  .btn-features-guide {
+    padding: 6px 8px;
+  }
+}
+
+/* 2. Auto-Skip Intro & Recap Action Button */
+.btn-skip-intro {
+  position: absolute;
+  bottom: 84px;
+  right: 28px;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(20, 20, 20, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-skip-intro:hover {
+  background: #e50914;
+  border-color: #e50914;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(229, 9, 20, 0.55);
+}
+
+/* 3. Picture-in-Picture Top Button & Floating Mini-Player Mode */
+.btn-top-pip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#player-overlay.cinema-pip-mode {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 420px !important;
+  height: 240px !important;
+  top: auto !important;
+  left: auto !important;
+  border-radius: 12px !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+  z-index: 99999 !important;
+  overflow: hidden !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#player-overlay.cinema-pip-mode .player-top-bar {
+  padding: 8px 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
+}
+
+#player-overlay.cinema-pip-mode .player-title-display {
+  display: none !important;
+}
+
+#player-overlay.cinema-pip-mode .btn-skip-intro {
+  bottom: 12px;
+  right: 12px;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+
+#player-overlay.cinema-pip-mode .player-bottom-controls {
+  padding: 4px 12px 8px;
+}
+
+@media (max-width: 640px) {
+  #player-overlay.cinema-pip-mode {
+    width: 280px !important;
+    height: 160px !important;
+    bottom: 70px !important;
+    right: 12px !important;
+  }
+}
+
+/* 4. Built-in Server Speed Test Badges */
+.server-ping-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  display: inline-block;
+}
+
+.ping-fast {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.ping-med {
+  background: rgba(234, 179, 8, 0.2);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+}
+
+.ping-slow {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.btn-speedtest-run:hover {
+  background: rgba(229, 9, 20, 0.35) !important;
+  color: #fff !important;
+}
+
+/* 5. Cinema Features & Guide Hub Modal */
+.features-modal-container {
+  max-width: 960px;
+  width: 92%;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+}
+
+.features-modal-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.features-badge {
+  display: inline-block;
+  background: rgba(229, 9, 20, 0.15);
+  border: 1px solid rgba(229, 9, 20, 0.35);
+  color: #ff6b6b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.features-modal-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.features-modal-subtitle {
+  font-size: 14px;
+  color: #999;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.features-spec-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 28px;
+}
+
+.features-spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.features-spec-item .spec-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.features-spec-item .spec-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.feature-item-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.feature-item-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(229, 9, 20, 0.4);
+  transform: translateY(-2px);
+}
+
+.feature-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.feature-icon-wrap svg {
+  width: 20px;
+  height: 20px;
+}
+
+.feature-item-text h4 {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px 0;
+}
+
+.feature-item-text p {
+  font-size: 12.5px;
+  color: #aaa;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.features-faq-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 24px;
+}
+
+.features-faq-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.faq-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+.faq-q {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.faq-a {
+  font-size: 13px;
+  color: #999;
+  line-height: 1.45;
+}

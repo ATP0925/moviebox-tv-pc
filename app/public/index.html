@@ -110,6 +110,14 @@
           </svg>
         </button>
 
+        <!-- MovieBox Features & Cinema Guide (Based on Official Feature Specs) -->
+        <button class="btn-features-guide" id="btn-features-guide" title="Explore MovieBox Cinema Features & Guide">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="15" height="15" style="margin-right: 5px;">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span class="features-btn-text">Features</span>
+        </button>
+
         <!-- Multi-Platform App Download Button (Android APK, Windows, Mac, iOS, Linux) -->
         <button class="btn-install-app" id="btn-pwa-install" title="Download MovieBox Native App (Android APK, Windows, iOS, Mac, Linux)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="install-svg">
@@ -469,6 +477,15 @@
         <span class="audio-notice-text" id="player-audio-notice-text">Hindi Dubbed Audio is currently unavailable across streaming servers for this title. Seamlessly playing in Original Master Audio.</span>
       </div>
 
+      <!-- Auto-Skip Intro & Recap Action (from MovieBox Feature Specs) -->
+      <button class="btn-skip-intro hidden" id="btn-skip-intro" title="Skip Opening Credits (+85s)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="15" height="15">
+          <polygon points="5 4 15 12 5 20 5 4"></polygon>
+          <line x1="19" y1="5" x2="19" y2="19"></line>
+        </svg>
+        <span>Skip Intro</span>
+      </button>
+
       <!-- Loading Spinner on Video (Netflix Crimson Glow) -->
       <div class="player-loader hidden" id="player-loader">
         <div class="spinner-large netflix-spinner"></div>
@@ -581,7 +598,12 @@
                 <span id="current-server-top-label">Switch Server</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </button>
-              <div class="dropdown-menu netflix-menu hidden" id="server-menu-top"></div>
+              <div class="dropdown-menu netflix-menu hidden" id="server-menu-top">
+                <div class="speedtest-bar" style="padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size: 10px; text-transform: uppercase; color: #888; font-weight: 600;">Server Speed Test</span>
+                  <button id="btn-server-speedtest" class="btn-speedtest-run" type="button" title="Test Latency Across All Server Clusters" style="background: rgba(229,9,20,0.18); border: 1px solid rgba(229,9,20,0.35); color: #ff6b6b; font-size: 10px; padding: 2px 7px; border-radius: 4px; cursor: pointer;">Test Ping</button>
+                </div>
+              </div>
             </div>
 
             <!-- Series Next Episode Quick Action -->
@@ -590,6 +612,14 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13" style="vertical-align: -1px; margin-left: 2px;">
                 <polygon points="5 4 15 12 5 20 5 4"></polygon>
                 <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+            </button>
+
+            <!-- Picture-in-Picture Floating Mode (MovieBox Feature Specs) -->
+            <button class="control-btn netflix-btn btn-top-pip" id="btn-pip-top" title="Picture-in-Picture Floating Player (P)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                <rect x="11" y="9" width="9" height="6" rx="1" fill="currentColor" fill-opacity="0.3"></rect>
               </svg>
             </button>
 
@@ -916,6 +946,134 @@
       </div>
     </div>
 
+    <!-- Cinema Features & Guide Hub Modal (Based on Official MovieBoxDL Architecture) -->
+    <div class="modal-overlay hidden" id="modal-features" role="dialog" aria-modal="true">
+      <div class="modal-container features-modal-container">
+        <button class="modal-close-btn" id="btn-features-close" title="Close (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="features-modal-header">
+          <div class="features-badge">OFFICIAL ARCHITECTURE & SPECS</div>
+          <h2 class="features-modal-title">MovieBox Cinema Capabilities & User Guide</h2>
+          <p class="features-modal-subtitle">15 Signature platform technologies, multi-server performance architecture, and user playback guides.</p>
+        </div>
+        <div class="features-modal-body">
+          <div class="features-grid">
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#e50914" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>4K Ultra HD Streaming</h4>
+                <p>Multi-bitrate adaptive HLS and DASH engine supporting 4K UHD, 1080p FHD, and 720p streams with vivid color clarity.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>Multi-Server Streaming</h4>
+                <p>18-Cluster high-speed media mesh with silent automatic failover preventing interruptions during peak traffic.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00A4EF" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>Built-in Server Speed Test</h4>
+                <p>Real-time ping latency diagnostics inside the server menu identify the fastest route for optimal buffering-free playback.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>Auto-Skip Intro & Recap</h4>
+                <p>One-click and automatic 85-second intro skip saves time during TV series binge watching.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"></rect><rect x="11" y="9" width="9" height="6" rx="1"></rect></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>Picture-in-Picture Mode</h4>
+                <p>Floating mini window allows multitasking and browsing the cinema catalogue while streaming continuously.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>Data Saver Mode</h4>
+                <p>Smart compression technology reduces mobile bandwidth usage by up to 70% without sacrificing visual clarity.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>Custom Watchlist & History</h4>
+                <p>1-Click favorites, continue watching resume progress, and watch history stored locally and in cloud storage.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>Real-Time Subtitles & Multi-Audio</h4>
+                <p>Native VTT subtitles and multi-track audio routing supporting Hindi, English, and original master languages.</p>
+              </div>
+            </div>
+
+            <div class="feature-item-card">
+              <div class="feature-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+              <div class="feature-item-text">
+                <h4>Zero-Subscription Access</h4>
+                <p>100% Free VIP access without monthly subscription fees, credit cards, or mandatory account creation.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="features-faq-section">
+            <h3 class="features-faq-title">Frequently Asked Questions (FAQ)</h3>
+            <div class="faq-accordion">
+              <div class="faq-item">
+                <div class="faq-q">Q: What should I do if a server buffers or slows down?</div>
+                <div class="faq-a">Click "Switch Server" on the top bar and click "Test Ping" to identify the lowest latency server node, or let the silent auto-failover engine switch nodes automatically.</div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-q">Q: Why do some anime titles play in Japanese original audio?</div>
+                <div class="faq-a">Japanese is the original studio master audio. Where official Hindi dubs are exclusively held by Disney+ Hotstar or Amazon MX Player, our player streams the master Japanese audio with subtitles, and offers English Dubbed mode.</div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-q">Q: How can I save mobile data while streaming?</div>
+                <div class="faq-a">Enable "Data Saver Mode" in Settings. The player will automatically optimize the bitrate and select 480p or 720p streams to save data.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Native MovieBox Settings & VIP Panel Modal (matches fragment_settings.xml) -->
     <div class="modal-overlay hidden" id="settings-modal" role="dialog" aria-modal="true">
       <div class="modal-container settings-modal-container">
@@ -983,6 +1141,26 @@
               </div>
               <label class="toggle-switch">
                 <input type="checkbox" id="setting-autoplay-next" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label-wrap">
+                <span class="setting-label">Auto-Skip Intro & Recap</span>
+                <span class="setting-desc">Fast-forward past 85s series opening credits</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-auto-skip-intro" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label-wrap">
+                <span class="setting-label">Data Saver Mode</span>
+                <span class="setting-desc">Save up to 70% data on metered/mobile networks</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-data-saver">
                 <span class="toggle-slider"></span>
               </label>
             </div>

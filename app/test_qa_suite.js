@@ -711,6 +711,50 @@ runTest("Bleach & Bleach: Thousand-Year Blood War Catalogue & Playback Integrati
   assert(bleachAudio.some(l => l.code === 'eng'), "Bleach must have English dubbed option");
 });
 
+// ----------------------------------------------------
+// TEST 27: MovieBoxDL Signature Feature Suite Integration
+// ----------------------------------------------------
+runTest("MovieBoxDL Signature Suite: Speed Test, Skip Intro, PiP Mode, Data Saver, and 15-Feature Guide Hub", () => {
+  const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(__dirname, 'public', 'styles.css'), 'utf8');
+
+  // 1. Verify DOM Elements in index.html
+  assert(indexHtml.includes('id="btn-features-guide"'), "index.html must have #btn-features-guide");
+  assert(indexHtml.includes('id="btn-skip-intro"'), "index.html must have #btn-skip-intro");
+  assert(indexHtml.includes('id="btn-server-speedtest"'), "index.html must have #btn-server-speedtest");
+  assert(indexHtml.includes('id="btn-pip-top"'), "index.html must have #btn-pip-top");
+  assert(indexHtml.includes('id="modal-features"'), "index.html must have #modal-features");
+  assert(indexHtml.includes('id="btn-features-close"'), "index.html must have #btn-features-close");
+  assert(indexHtml.includes('id="setting-auto-skip-intro"'), "index.html must have #setting-auto-skip-intro");
+  assert(indexHtml.includes('id="setting-data-saver"'), "index.html must have #setting-data-saver");
+  assert(indexHtml.includes('features-faq-section'), "index.html must contain features FAQ section");
+
+  // 2. Verify Logic & Bindings in app.js
+  assert(appJs.includes("btnFeaturesGuide: document.getElementById('btn-features-guide')"), "app.js must bind btnFeaturesGuide");
+  assert(appJs.includes("modalFeatures: document.getElementById('modal-features')"), "app.js must bind modalFeatures");
+  assert(appJs.includes("btnFeaturesClose: document.getElementById('btn-features-close')"), "app.js must bind btnFeaturesClose");
+  assert(appJs.includes("btnPipTop: document.getElementById('btn-pip-top')"), "app.js must bind btnPipTop");
+  assert(appJs.includes("btnSkipIntro: document.getElementById('btn-skip-intro')"), "app.js must bind btnSkipIntro");
+  assert(appJs.includes("btnServerSpeedtest: document.getElementById('btn-server-speedtest')"), "app.js must bind btnServerSpeedtest");
+  assert(appJs.includes("settingAutoSkipIntro: document.getElementById('setting-auto-skip-intro')"), "app.js must bind settingAutoSkipIntro");
+  assert(appJs.includes("settingDataSaver: document.getElementById('setting-data-saver')"), "app.js must bind settingDataSaver");
+  assert(appJs.includes('runServerSpeedTest'), "app.js must implement runServerSpeedTest");
+  assert(appJs.includes('skipIntroAndRecap'), "app.js must implement skipIntroAndRecap");
+  assert(appJs.includes('togglePictureInPicture'), "app.js must implement togglePictureInPicture");
+  assert(appJs.includes('toggleOverlayMiniPlayer'), "app.js must implement toggleOverlayMiniPlayer");
+  assert(appJs.includes('initFeaturesModal'), "app.js must implement initFeaturesModal");
+
+  // 3. Verify CSS in styles.css
+  assert(stylesCss.includes('.btn-features-guide'), "styles.css must style .btn-features-guide");
+  assert(stylesCss.includes('.btn-skip-intro'), "styles.css must style .btn-skip-intro");
+  assert(stylesCss.includes('.btn-top-pip'), "styles.css must style .btn-top-pip");
+  assert(stylesCss.includes('cinema-pip-mode'), "styles.css must style cinema-pip-mode");
+  assert(stylesCss.includes('.server-ping-badge'), "styles.css must style .server-ping-badge");
+  assert(stylesCss.includes('.features-modal-container'), "styles.css must style .features-modal-container");
+  assert(stylesCss.includes('.feature-item-card'), "styles.css must style .feature-item-card");
+});
+
 console.log("\n=================================================");
 console.log(`🎯 RESULTS: ${passedCount} / ${totalCount} TESTS PASSED (100%)`);
 console.log("=================================================");
