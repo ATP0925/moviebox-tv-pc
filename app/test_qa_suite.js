@@ -113,18 +113,16 @@ runTest("Poster Optimization: Replaces 2MB UX1000 with lightweight UX340 thumbna
 });
 
 // ----------------------------------------------------
-// TEST 5: Audio Language Availability & Fallback
+// TEST 5: Audio Language Availability & Master Track Resolution
 // ----------------------------------------------------
-runTest("Audio Languages: Hindi only on Hindi content, smooth English fallback elsewhere", () => {
+runTest("Audio Languages: LanguagePreferenceManager defaults to native master audio, offers Hindi option", () => {
   const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
 
   // Verify LanguagePreferenceManager exists
   assert(appJs.includes("const LanguagePreferenceManager = {"), "Must define LanguagePreferenceManager");
-  assert(appJs.includes("getBestLanguage(availableLangs)"), "Must implement getBestLanguage");
+  assert(appJs.includes("getBestLanguage(availableLangs, subject)"), "Must implement getBestLanguage with subject");
 
-  // Verify non-Hindi titles don't include Hindi
-  assert(appJs.includes('title: "The Dog Stars"'), "Contains The Dog Stars");
-  assert(appJs.includes('audioLangs: ["eng"]'), "The Dog Stars must be eng-only");
+  // Verify Indian titles have Hindi
   assert(appJs.includes('title: "Animal"'), "Contains Animal");
   assert(appJs.includes('audioLangs: ["hin", "tel", "tam"]'), "Animal has Hindi, Telugu, Tamil");
 });
@@ -473,9 +471,9 @@ runTest("Strict Tab Feed Isolation: TV feed has 0 movies/anime, Movie feed has 0
 });
 
 // ----------------------------------------------------
-// TEST 22: Truthful Audio Language Tracks (No Fake Hindi Dubs)
+// TEST 22: Multi-Language Audio Tracks & On-Screen Diagnostics
 // ----------------------------------------------------
-runTest("Truthful Audio Language Tracks: Anime = Japanese/English (NO Hindi), Hollywood = English (NO Hindi), Indian = Hindi/Regional", () => {
+runTest("Multi-Language Audio Tracks & On-Screen Diagnostics: Anime/Hollywood offer Hindi dub option, master defaults, server probe", () => {
   const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
   const serverJs = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
 
@@ -495,20 +493,23 @@ runTest("Truthful Audio Language Tracks: Anime = Japanese/English (NO Hindi), Ho
   const soloData = EmbeddedEngine.getPlayData('solo_leveling_2024', 1, 1, 'Solo Leveling', 2);
   const soloAudioCodes = soloData.data.audioLanguages.map(a => a.code);
   assert(soloAudioCodes.includes('jpn'), "Solo Leveling must include Japanese audio");
+  assert(soloAudioCodes.includes('hin'), "Solo Leveling must offer Hindi Dubbed option");
   assert(soloAudioCodes.includes('eng'), "Solo Leveling must include English audio");
-  assert(!soloAudioCodes.includes('hin'), "Solo Leveling must NEVER offer fake Hindi audio option");
+  assert.strictEqual(soloAudioCodes[0], 'jpn', "Solo Leveling master track must be Japanese");
 
   // Breaking Bad audio verification
   const bbData = EmbeddedEngine.getPlayData('breaking_bad_2008', 1, 1, 'Breaking Bad', 2);
   const bbAudioCodes = bbData.data.audioLanguages.map(a => a.code);
   assert(bbAudioCodes.includes('eng'), "Breaking Bad must include English audio");
-  assert(!bbAudioCodes.includes('hin'), "Breaking Bad must NEVER offer fake Hindi audio option");
+  assert(bbAudioCodes.includes('hin'), "Breaking Bad must offer Hindi Dubbed option");
+  assert.strictEqual(bbAudioCodes[0], 'eng', "Breaking Bad master track must be English");
 
   // Oppenheimer audio verification
   const oppenData = EmbeddedEngine.getPlayData('oppenheimer_2023', 0, 0, 'Oppenheimer', 1);
   const oppenAudioCodes = oppenData.data.audioLanguages.map(a => a.code);
   assert(oppenAudioCodes.includes('eng'), "Oppenheimer must include English audio");
-  assert(!oppenAudioCodes.includes('hin'), "Oppenheimer must NEVER offer fake Hindi audio option");
+  assert(oppenAudioCodes.includes('hin'), "Oppenheimer must offer Hindi Dubbed option");
+  assert.strictEqual(oppenAudioCodes[0], 'eng', "Oppenheimer master track must be English");
 
   // Mirzapur audio verification
   const mirzapurData = EmbeddedEngine.getPlayData('mirzapur_series', 1, 1, 'Mirzapur', 2);
@@ -531,20 +532,21 @@ runTest("Truthful Audio Language Tracks: Anime = Japanese/English (NO Hindi), Ho
 
   const animeLangs = getAudio('Solo Leveling', 'tt21209876');
   assert(animeLangs.some(l => l.code === 'jpn'), "server.js getAudioLanguagesForTitle: Solo Leveling must have jpn");
-  assert(!animeLangs.some(l => l.code === 'hin'), "server.js getAudioLanguagesForTitle: Solo Leveling must NOT have hin");
+  assert(animeLangs.some(l => l.code === 'hin'), "server.js getAudioLanguagesForTitle: Solo Leveling must have hin");
+  assert(animeLangs.some(l => l.code === 'eng'), "server.js getAudioLanguagesForTitle: Solo Leveling must have eng");
 
   const westernLangs = getAudio('Oppenheimer', 'tt15398776');
   assert(westernLangs.some(l => l.code === 'eng'), "server.js getAudioLanguagesForTitle: Oppenheimer must have eng");
-  assert(!westernLangs.some(l => l.code === 'hin'), "server.js getAudioLanguagesForTitle: Oppenheimer must NOT have hin");
+  assert(westernLangs.some(l => l.code === 'hin'), "server.js getAudioLanguagesForTitle: Oppenheimer must have hin");
 
   const indianLangs = getAudio('Animal', 'tt13751694');
   assert(indianLangs.some(l => l.code === 'hin'), "server.js getAudioLanguagesForTitle: Animal must have hin");
 });
 
 // ----------------------------------------------------
-// TEST 23: Top-Bar Audio Track Selector & DOM UI Controls
+// TEST 23: Top-Bar Audio Track Selector, On-Screen Banner & DOM UI Controls
 // ----------------------------------------------------
-runTest("Top-Bar Audio Track Selector & DOM UI Controls: elements, styles, and cache bump", () => {
+runTest("Top-Bar Audio Track Selector, On-Screen Banner & DOM UI Controls: elements, styles, and cache bump", () => {
   const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
   const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
   const stylesCss = fs.readFileSync(path.join(__dirname, 'public', 'styles.css'), 'utf8');
@@ -555,6 +557,8 @@ runTest("Top-Bar Audio Track Selector & DOM UI Controls: elements, styles, and c
   assert(indexHtml.includes('id="btn-audio-select-top"'), "index.html must have #btn-audio-select-top");
   assert(indexHtml.includes('id="current-audio-top-label"'), "index.html must have #current-audio-top-label");
   assert(indexHtml.includes('id="audio-menu-top"'), "index.html must have #audio-menu-top");
+  assert(indexHtml.includes('id="player-audio-notice"'), "index.html must have #player-audio-notice");
+  assert(indexHtml.includes('id="player-audio-notice-text"'), "index.html must have #player-audio-notice-text");
   assert(!indexHtml.includes('>Audio: Hindi</span>'), "index.html must NEVER have hardcoded 'Audio: Hindi'");
   assert(indexHtml.includes('>Audio: Auto</span>'), "index.html must default badge to 'Audio: Auto'");
 
@@ -562,16 +566,49 @@ runTest("Top-Bar Audio Track Selector & DOM UI Controls: elements, styles, and c
   assert(appJs.includes("btnAudioSelectTop: document.getElementById('btn-audio-select-top')"), "app.js must bind btnAudioSelectTop");
   assert(appJs.includes("audioMenuTop: document.getElementById('audio-menu-top')"), "app.js must bind audioMenuTop");
   assert(appJs.includes("currentAudioTopLabel: document.getElementById('current-audio-top-label')"), "app.js must bind currentAudioTopLabel");
+  assert(appJs.includes("playerAudioNotice: document.getElementById('player-audio-notice')"), "app.js must bind playerAudioNotice");
+  assert(appJs.includes("playerAudioNoticeText: document.getElementById('player-audio-notice-text')"), "app.js must bind playerAudioNoticeText");
   assert(appJs.includes("setupAudioDropdown"), "app.js must have setupAudioDropdown");
   assert(appJs.includes("applyAudioLanguage"), "app.js must have applyAudioLanguage");
+  assert(appJs.includes("showAudioNotice"), "app.js must have showAudioNotice");
 
   // Verify styling in styles.css
   assert(stylesCss.includes('.audio-btn-top'), "styles.css must style .audio-btn-top");
   assert(stylesCss.includes('.audio-active-pill:hover'), "styles.css must style .audio-active-pill hover");
+  assert(stylesCss.includes('.player-audio-notice'), "styles.css must style .player-audio-notice");
+  assert(stylesCss.includes('.opt-tag.tag-unavailable'), "styles.css must style .opt-tag.tag-unavailable");
 
-  // Verify cache version v4.5.0
-  assert(swJs.includes('v4.5.0'), "sw.js must be bumped to v4.5.0");
-  assert(indexHtml.includes('app.js?v=4.5.0'), "index.html must link app.js?v=4.5.0");
+  // Verify cache version v4.7.0
+  assert(swJs.includes('v4.7.0'), "sw.js must be bumped to v4.7.0");
+  assert(indexHtml.includes('app.js?v=4.7.0'), "index.html must link app.js?v=4.7.0");
+  assert(indexHtml.includes('styles.css?v=4.7.0'), "index.html must link styles.css?v=4.7.0");
+});
+
+// ----------------------------------------------------
+// TEST 24: Audio Language Description & Modal Availability Display
+// ----------------------------------------------------
+runTest("Audio Language Description & Modal Availability: Shows in description, pills, and details grid", () => {
+  const indexHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(__dirname, 'public', 'styles.css'), 'utf8');
+
+  // Verify DOM elements in index.html
+  assert(indexHtml.includes('id="modal-audio-box"'), "index.html must have #modal-audio-box");
+  assert(indexHtml.includes('id="modal-audio-pills"'), "index.html must have #modal-audio-pills");
+  assert(indexHtml.includes('id="modal-audio-grid"'), "index.html must have #modal-audio-grid");
+  assert(indexHtml.includes('id="modal-audio-meta"'), "index.html must have #modal-audio-meta");
+
+  // Verify functions in app.js
+  assert(appJs.includes("function getAudioLanguagesDisplayText"), "app.js must implement getAudioLanguagesDisplayText");
+  assert(appJs.includes("function renderAudioLanguagePills"), "app.js must implement renderAudioLanguagePills");
+  assert(appJs.includes("Available Audio:"), "app.js must write Available Audio in modal description");
+  assert(appJs.includes("modalAudioPills: document.getElementById('modal-audio-pills')"), "app.js must bind modalAudioPills");
+
+  // Verify styles in styles.css
+  assert(stylesCss.includes('.modal-audio-box'), "styles.css must style .modal-audio-box");
+  assert(stylesCss.includes('.audio-lang-pill.pill-hin'), "styles.css must style .audio-lang-pill.pill-hin");
+  assert(stylesCss.includes('.audio-lang-pill.pill-jpn'), "styles.css must style .audio-lang-pill.pill-jpn");
+  assert(stylesCss.includes('.audio-lang-pill.pill-eng'), "styles.css must style .audio-lang-pill.pill-eng");
 });
 
 console.log("\n=================================================");

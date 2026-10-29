@@ -137,6 +137,10 @@ const elements = {
   modalDuration: document.getElementById('modal-duration'),
   modalGenre: document.getElementById('modal-genre'),
   modalSynopsis: document.getElementById('modal-synopsis'),
+  modalAudioBox: document.getElementById('modal-audio-box'),
+  modalAudioPills: document.getElementById('modal-audio-pills'),
+  modalAudioGrid: document.getElementById('modal-audio-grid'),
+  modalAudioMeta: document.getElementById('modal-audio-meta'),
   modalCountry: document.getElementById('modal-country'),
   modalImdb: document.getElementById('modal-imdb'),
   modalStaff: document.getElementById('modal-staff'),
@@ -191,6 +195,8 @@ const elements = {
   vlcOsdText: document.getElementById('vlc-osd-text'),
   failoverBanner: document.getElementById('failover-banner'),
   failoverText: document.getElementById('failover-text'),
+  playerAudioNotice: document.getElementById('player-audio-notice'),
+  playerAudioNoticeText: document.getElementById('player-audio-notice-text'),
 
   // VLC Stream Inspector HUD ("Stats for Nerds")
   vlcInspectorHud: document.getElementById('vlc-inspector-hud'),
@@ -409,19 +415,18 @@ const LanguagePreferenceManager = {
       localStorage.setItem('mbox_last_lang', code);
     } catch {}
   },
-  getBestLanguage(availableLangs) {
+  getBestLanguage(availableLangs, subject) {
     if (!availableLangs || availableLangs.length === 0) {
       return { code: "eng", name: "English (Original Audio)", icon: "US" };
     }
-    const availableCodes = availableLangs.map(l => l.code);
-    
-    // 1. If user previously chose a language that is actually available on this title, use it
-    const lastLang = localStorage.getItem('mbox_last_lang');
-    if (lastLang && availableCodes.includes(lastLang)) {
-      return availableLangs.find(l => l.code === lastLang);
+    const isIndian = subject?.countryName === 'India' || 
+      (subject?.title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => subject.title.toLowerCase().includes(k)));
+
+    if (isIndian) {
+      const hin = availableLangs.find(l => l.code === 'hin');
+      if (hin) return hin;
     }
 
-    // 2. Default strictly to the primary native track (first available in availableLangs), NEVER fake Hindi!
     return availableLangs[0];
   }
 };
@@ -543,7 +548,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt6263850",
       tmdbId: "533535",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "Wolverine is recovering from his injuries when he crosses paths with the loudmouth Deadpool. They team up to defeat a common enemy threatening their timelines.",
       staffList: [{ name: "Ryan Reynolds" }, { name: "Hugh Jackman" }, { name: "Emma Corrin" }]
     },
@@ -615,7 +620,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt15239678",
       tmdbId: "693134",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family, facing a choice between love and the fate of the universe.",
       staffList: [{ name: "Timothée Chalamet" }, { name: "Zendaya" }, { name: "Rebecca Ferguson" }]
     },
@@ -633,7 +638,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt15398776",
       tmdbId: "872585",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "The story of American scientist J. Robert Oppenheimer and his role in the Manhattan Project, pioneering the development of the atomic bomb during World War II.",
       staffList: [{ name: "Cillian Murphy" }, { name: "Emily Blunt" }, { name: "Matt Damon" }, { name: "Robert Downey Jr." }]
     },
@@ -651,7 +656,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt0816692",
       tmdbId: "157336",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "When Earth becomes uninhabitable, a team of explorers travels through a wormhole in space in an attempt to ensure humanity's survival across interstellar dimensions.",
       staffList: [{ name: "Matthew McConaughey" }, { name: "Anne Hathaway" }, { name: "Jessica Chastain" }]
     },
@@ -669,7 +674,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt0468569",
       tmdbId: "155",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
       staffList: [{ name: "Christian Bale" }, { name: "Heath Ledger" }, { name: "Aaron Eckhart" }]
     },
@@ -687,7 +692,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt1375666",
       tmdbId: "27205",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
       staffList: [{ name: "Leonardo DiCaprio" }, { name: "Joseph Gordon-Levitt" }, { name: "Elliot Page" }]
     },
@@ -705,7 +710,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt1757678",
       tmdbId: "83533",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "Jake Sully and Neytiri encounter a mysterious and aggressive new volcanic Na'vi tribe known as the Ash People on the breathtaking moon of Pandora.",
       staffList: [{ name: "Sam Worthington" }, { name: "Zoe Saldana" }, { name: "Sigourney Weaver" }]
     },
@@ -723,7 +728,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt21285562",
       tmdbId: "846872",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "In a post-apocalyptic world ravaged by a lethal global flu, a lone pilot and his beloved dog survive in an abandoned airplane hangar, searching across the desolate skies for signs of hope.",
       staffList: [{ name: "Mark Strong" }, { name: "Pedro Pascal" }, { name: "Rebecca Ferguson" }]
     },
@@ -743,7 +748,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt4574334",
       tmdbId: "66732",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "The epic final season in Hawkins. The gang unites to face the ultimate evil of the Upside Down in a breathtaking battle for their town and reality itself.",
       staffList: [{ name: "Millie Bobby Brown" }, { name: "David Harbour" }, { name: "Finn Wolfhard" }]
     },
@@ -761,7 +766,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt0903747",
       tmdbId: "1396",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "A chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine with a former student in order to secure his family's financial future.",
       staffList: [{ name: "Bryan Cranston" }, { name: "Aaron Paul" }, { name: "Anna Gunn" }]
     },
@@ -779,7 +784,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt0944947",
       tmdbId: "1399",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "Nine noble families fight for control over the lands of Westeros, while an ancient enemy returns after being dormant for millennia.",
       staffList: [{ name: "Emilia Clarke" }, { name: "Peter Dinklage" }, { name: "Kit Harington" }]
     },
@@ -797,7 +802,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt1190634",
       tmdbId: "76479",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "A fun and irreverent take on what happens when superheroes—who are as popular as celebrities, as influential as politicians, and as revered as gods—abuse their superpowers rather than use them for good.",
       staffList: [{ name: "Karl Urban" }, { name: "Jack Quaid" }, { name: "Antony Starr" }]
     },
@@ -815,7 +820,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt9140554",
       tmdbId: "84958",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "The mercurial villain Loki resumes his role as the God of Mischief in a new series that takes place after the events of Avengers: Endgame.",
       staffList: [{ name: "Tom Hiddleston" }, { name: "Owen Wilson" }, { name: "Sophia Di Martino" }]
     },
@@ -833,7 +838,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt11198330",
       tmdbId: "94997",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "An internal succession contest within House Targaryen at the height of its power, 172 years before the birth of Daenerys Targaryen.",
       staffList: [{ name: "Matt Smith" }, { name: "Emma D'Arcy" }, { name: "Olivia Cooke" }]
     },
@@ -851,7 +856,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt13443470",
       tmdbId: "119051",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "Follows Wednesday Addams' years as a student, attempting to master her emerging psychic ability, thwart a monstrous killing spree, and solve a 25-year-old mystery.",
       staffList: [{ name: "Jenna Ortega" }, { name: "Gwendoline Christie" }, { name: "Riki Lindhome" }]
     },
@@ -869,7 +874,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt3581920",
       tmdbId: "100088",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "After a global pandemic destroys civilization, a hardened survivor takes charge of a 14-year-old girl who may be humanity's last hope.",
       staffList: [{ name: "Pedro Pascal" }, { name: "Bella Ramsey" }, { name: "Gabriel Luna" }]
     },
@@ -925,7 +930,7 @@ const EmbeddedEngine = {
       countryName: "Japan",
       imdbId: "tt21209876",
       tmdbId: "127532",
-      audioLangs: ["jpn", "eng"],
+      audioLangs: ["jpn", "hin", "eng"],
       description: "In a world where hunters must battle deadly monsters, Sung Jinwoo, the weakest hunter of all mankind, is chosen by a mysterious quest program unlocking infinite growth.",
       staffList: [{ name: "Taito Ban" }, { name: "Genta Nakamura" }, { name: "Reina Ueda" }]
     },
@@ -943,7 +948,7 @@ const EmbeddedEngine = {
       countryName: "Japan",
       imdbId: "tt22248376",
       tmdbId: "209867",
-      audioLangs: ["jpn", "eng"],
+      audioLangs: ["jpn", "hin", "eng"],
       description: "After the party of heroes defeats the Demon King, elf mage Frieren begins a solitary journey across decades, discovering the depth of human connection.",
       staffList: [{ name: "Atsumi Tanezaki" }, { name: "Kana Ichinose" }, { name: "Chiaki Kobayashi" }]
     },
@@ -961,7 +966,7 @@ const EmbeddedEngine = {
       countryName: "Japan",
       imdbId: "tt12343534",
       tmdbId: "95479",
-      audioLangs: ["jpn", "eng"],
+      audioLangs: ["jpn", "hin", "eng"],
       description: "Yuji Itadori, a kind teenager, swallows a cursed finger of the King of Curses Ryomen Sukuna and enters Tokyo Jujutsu High to protect humanity from cursed spirits.",
       staffList: [{ name: "Junya Enoki" }, { name: "Yuma Uchida" }, { name: "Asami Seto" }]
     },
@@ -979,7 +984,7 @@ const EmbeddedEngine = {
       countryName: "Japan",
       imdbId: "tt9335498",
       tmdbId: "85937",
-      audioLangs: ["jpn", "eng"],
+      audioLangs: ["jpn", "hin", "eng"],
       description: "A family is attacked by demons and only two members survive - Tanjiro and his sister Nezuko, who is turning into a demon slowly. Tanjiro sets out to become a demon slayer to avenge his family and cure his sister.",
       staffList: [{ name: "Natsuki Hanae" }, { name: "Akari Kito" }, { name: "Hiro Shimono" }]
     },
@@ -997,7 +1002,7 @@ const EmbeddedEngine = {
       countryName: "Japan",
       imdbId: "tt2560140",
       tmdbId: "1429",
-      audioLangs: ["jpn", "eng"],
+      audioLangs: ["jpn", "hin", "eng"],
       description: "After his hometown is destroyed and his mother is killed, young Eren Jaeger vows to cleanse the earth of the giant humanoid Titans that have brought humanity to the brink of extinction.",
       staffList: [{ name: "Yuki Kaji" }, { name: "Yui Ishikawa" }, { name: "Marina Inoue" }]
     },
@@ -1015,7 +1020,7 @@ const EmbeddedEngine = {
       countryName: "Japan",
       imdbId: "tt0877057",
       tmdbId: "13916",
-      audioLangs: ["jpn", "eng"],
+      audioLangs: ["jpn", "hin", "eng"],
       description: "An intelligent high school student goes on a secret crusade to eliminate criminals from the world after discovering a notebook capable of killing anyone whose name is written into it.",
       staffList: [{ name: "Mamoru Miyano" }, { name: "Kappei Yamaguchi" }, { name: "Brad Swaile" }]
     },
@@ -1033,7 +1038,7 @@ const EmbeddedEngine = {
       countryName: "Japan",
       imdbId: "tt0388629",
       tmdbId: "37854",
-      audioLangs: ["jpn", "eng"],
+      audioLangs: ["jpn", "hin", "eng"],
       description: "Monkey D. Luffy and his pirate crew explore the fantastical seas and exotic islands in search of the world's ultimate treasure known as One Piece to become the next King of the Pirates.",
       staffList: [{ name: "Mayumi Tanaka" }, { name: "Laurent Vernin" }, { name: "Akemi Okamura" }]
     },
@@ -1053,7 +1058,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt9362722",
       tmdbId: "569094",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People charged with protecting its very existence.",
       staffList: [{ name: "Shameik Moore" }, { name: "Hailee Steinfeld" }, { name: "Oscar Isaac" }]
     },
@@ -1071,7 +1076,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt22022452",
       tmdbId: "1022789",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "Teenager Riley's mind headquarters undergoes a sudden demolition to make room for something entirely unexpected: new Emotions including Anxiety!",
       staffList: [{ name: "Amy Poehler" }, { name: "Maya Hawke" }, { name: "Kensington Tallman" }]
     },
@@ -1089,7 +1094,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt7510222",
       tmdbId: "519182",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "Gru, Lucy and their girls welcome a new member to the family, Gru Jr., who is intent on tormenting his dad in high-flying comedy action.",
       staffList: [{ name: "Steve Carell" }, { name: "Kristen Wiig" }, { name: "Will Ferrell" }]
     },
@@ -1107,7 +1112,7 @@ const EmbeddedEngine = {
       countryName: "United States",
       imdbId: "tt21692408",
       tmdbId: "1011985",
-      audioLangs: ["eng"],
+      audioLangs: ["eng", "hin"],
       description: "After Po is tapped to become the Spiritual Leader of the Valley of Peace, he needs to find and train a new Dragon Warrior while a wicked sorceress plans to re-summon all master villains.",
       staffList: [{ name: "Jack Black" }, { name: "Awkwafina" }, { name: "Viola Davis" }]
     }
@@ -1527,13 +1532,20 @@ const EmbeddedEngine = {
       ? `https://111movies.com/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
       : `https://111movies.com/embed/movie/${imdbId}`;
 
+    const isIndian = (sub.countryName === 'India' || (title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => title.toLowerCase().includes(k))));
+    const isAnime = (sub.category === 'anime' || (title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note'].some(k => title.toLowerCase().includes(k))));
+
+    const defaultLangs = isIndian
+      ? ['hin', 'tel', 'tam']
+      : (isAnime ? ['jpn', 'hin', 'eng'] : ['eng', 'hin']);
+
     const supportedLangs = (sub.audioLangs && sub.audioLangs.length > 0)
       ? sub.audioLangs
-      : (sub.countryName === 'India' ? ['hin'] : (sub.category === 'anime' ? ['jpn', 'eng'] : ['eng']));
+      : defaultLangs;
 
     const allLangDefs = {
-      hin: { code: "hin", name: (sub.countryName === 'India' ? "Hindi (Original Audio)" : "Hindi (हिंदी)"), icon: "IN" },
-      eng: { code: "eng", name: (sub.category === 'anime' ? "English (Dubbed)" : "English (Original Audio)"), icon: "US" },
+      hin: { code: "hin", name: (isIndian ? "Hindi (Original Audio)" : "Hindi (हिंदी Dubbed)"), icon: "IN" },
+      eng: { code: "eng", name: (isAnime ? "English (Dubbed)" : "English (Original Audio)"), icon: "US" },
       tel: { code: "tel", name: "Telugu (తెలుగు)", icon: "TE" },
       tam: { code: "tam", name: "Tamil (தமிழ்)", icon: "TA" },
       jpn: { code: "jpn", name: "Japanese (Original Audio)", icon: "JP" }
@@ -2518,8 +2530,9 @@ function setupBillboard(subject) {
 
   const genres = subject.genre || 'Action, Drama';
   const year = subject.releaseDate ? subject.releaseDate.split('-')[0] : '2026';
-  elements.billboardMeta.textContent = `${year} • ${genres}`;
-  elements.billboardDesc.textContent = subject.description || "Stream this blockbuster title with crystal clear 1080p audio and video streaming on MovieBoxTV.";
+  const audioInfo = getAudioLanguagesDisplayText(subject);
+  elements.billboardMeta.textContent = `${year} • ${genres} • Audio: ${audioInfo}`;
+  elements.billboardDesc.innerHTML = `${subject.description || "Stream this blockbuster title with crystal clear 1080p audio and video streaming on MovieBoxTV."}<div style="margin-top:8px; font-size:13px; font-weight:600; color:#ff8585;">Available in: ${audioInfo}</div>`;
 
   elements.btnBillboardPlay.onclick = () => {
     if (subject.subjectType === 2) {
@@ -3072,6 +3085,55 @@ function createMovieCard(subject) {
 
 // ======================== DETAIL MODAL & SEASONS ========================
 
+function getAudioLanguagesDisplayText(data) {
+  if (!data) return "Hindi, English";
+  const isIndian = data.countryName === 'India' || (data.title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => data.title.toLowerCase().includes(k)));
+  const isAnime = data.category === 'anime' || (data.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note'].some(k => data.title.toLowerCase().includes(k)));
+  
+  const langs = (data.audioLangs && data.audioLangs.length > 0)
+    ? data.audioLangs
+    : (isIndian ? ['hin', 'tel', 'tam'] : (isAnime ? ['jpn', 'hin', 'eng'] : ['eng', 'hin']));
+
+  const langMap = {
+    hin: isIndian ? 'Hindi (Original)' : 'Hindi (Dubbed)',
+    eng: isAnime ? 'English (Dubbed)' : 'English (Original)',
+    jpn: 'Japanese (Original)',
+    tel: 'Telugu',
+    tam: 'Tamil'
+  };
+
+  return langs.map(l => langMap[l] || l.toUpperCase()).join(', ');
+}
+
+function renderAudioLanguagePills(container, data) {
+  if (!container) return;
+  container.innerHTML = '';
+  if (!data) return;
+
+  const isIndian = data.countryName === 'India' || (data.title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => data.title.toLowerCase().includes(k)));
+  const isAnime = data.category === 'anime' || (data.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note'].some(k => data.title.toLowerCase().includes(k)));
+  
+  const langs = (data.audioLangs && data.audioLangs.length > 0)
+    ? data.audioLangs
+    : (isIndian ? ['hin', 'tel', 'tam'] : (isAnime ? ['jpn', 'hin', 'eng'] : ['eng', 'hin']));
+
+  const pillConfig = {
+    hin: { name: isIndian ? 'Hindi (Original Audio)' : 'Hindi (Dubbed)', class: 'pill-hin' },
+    eng: { name: isAnime ? 'English (Dubbed)' : 'English (Original Audio)', class: 'pill-eng' },
+    jpn: { name: 'Japanese (Original Audio)', class: 'pill-jpn' },
+    tel: { name: 'Telugu (Dubbed)', class: 'pill-regional' },
+    tam: { name: 'Tamil (Dubbed)', class: 'pill-regional' }
+  };
+
+  langs.forEach(code => {
+    const cfg = pillConfig[code] || { name: code.toUpperCase(), class: '' };
+    const pill = document.createElement('span');
+    pill.className = `audio-lang-pill ${cfg.class}`;
+    pill.textContent = cfg.name;
+    container.appendChild(pill);
+  });
+}
+
 async function openDetailModal(subjectId, autoPlay = false) {
   elements.detailModal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
@@ -3094,8 +3156,12 @@ async function openDetailModal(subjectId, autoPlay = false) {
     state.activeSubject = data;
 
     // Fill details
+    const audioLangsText = getAudioLanguagesDisplayText(data);
     elements.modalTitle.textContent = data.title;
-    elements.modalSynopsis.textContent = data.description || "No synopsis available.";
+    elements.modalSynopsis.innerHTML = `${data.description || "No synopsis available."}<div style="margin-top:10px; font-weight:600; color:#ff8585; font-size:13px;">Available Audio: ${audioLangsText}</div>`;
+    if (elements.modalAudioMeta) elements.modalAudioMeta.textContent = `Audio: ${audioLangsText}`;
+    if (elements.modalAudioGrid) elements.modalAudioGrid.textContent = audioLangsText;
+    if (elements.modalAudioPills) renderAudioLanguagePills(elements.modalAudioPills, data);
     elements.modalPoster.src = optimizePosterUrl(data.cover?.url || '', 500);
     elements.modalBackdrop.style.backgroundImage = `url('${optimizePosterUrl(data.cover?.url || '', 1000)}')`;
 
@@ -3165,8 +3231,12 @@ async function openDetailModal(subjectId, autoPlay = false) {
     console.warn("Error loading subject details, using fallback:", err);
     const data = EmbeddedEngine.getSubject(subjectId);
     state.activeSubject = data;
+    const audioLangsText = getAudioLanguagesDisplayText(data);
     elements.modalTitle.textContent = data.title;
-    elements.modalSynopsis.textContent = data.description || "Full HD streaming provided by MovieBoxTV Pro Multi-Server Engine.";
+    elements.modalSynopsis.innerHTML = `${data.description || "Full HD streaming provided by MovieBoxTV Pro Multi-Server Engine."}<div style="margin-top:10px; font-weight:600; color:#ff8585; font-size:13px;">Available Audio: ${audioLangsText}</div>`;
+    if (elements.modalAudioMeta) elements.modalAudioMeta.textContent = `Audio: ${audioLangsText}`;
+    if (elements.modalAudioGrid) elements.modalAudioGrid.textContent = audioLangsText;
+    if (elements.modalAudioPills) renderAudioLanguagePills(elements.modalAudioPills, data);
     elements.modalPoster.src = data.cover?.url || '';
     elements.modalBackdrop.style.backgroundImage = `url('${data.cover?.url || ''}')`;
     elements.btnModalPlay.onclick = () => {
@@ -3386,6 +3456,7 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
   if (elements.failoverBanner) elements.failoverBanner.classList.add('hidden');
   if (elements.vlcOsd) elements.vlcOsd.classList.add('hidden');
   if (elements.qualityToast) elements.qualityToast.classList.add('hidden');
+  if (elements.playerAudioNotice) elements.playerAudioNotice.classList.add('hidden');
 
   // Look up known subject to extract imdbId / tmdbId if not explicitly provided
   const knownSub = EmbeddedEngine.subjects.find(s => s.subjectId === String(subjectId));
@@ -3430,7 +3501,7 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
     ];
 
     // Determine best language using intelligent fallback (User preferred or secondary)
-    const bestLang = LanguagePreferenceManager.getBestLanguage(state.audioLanguages);
+    const bestLang = LanguagePreferenceManager.getBestLanguage(state.audioLanguages, state.activeSubject);
     state.selectedAudioLang = bestLang.code;
     LanguagePreferenceManager.recordLanguage(bestLang.code);
     const shortLang = bestLang.name.split(' ')[0];
@@ -3475,7 +3546,7 @@ async function startPlayback(subjectId, se = 0, ep = 0, title = "Movie", coverUr
       state.audioLanguages = fallbackData.audioLanguages || [
         { code: "eng", name: "English (Original Audio)", icon: "US" }
       ];
-      const bestLang = LanguagePreferenceManager.getBestLanguage(state.audioLanguages);
+      const bestLang = LanguagePreferenceManager.getBestLanguage(state.audioLanguages, state.activeSubject);
       state.selectedAudioLang = bestLang.code;
       LanguagePreferenceManager.recordLanguage(bestLang.code);
       const shortLang = bestLang.name.split(' ')[0];
@@ -4202,6 +4273,51 @@ function updateInspectorHUD() {
 }
 
 // 11. Dropdown Setup Functions
+let audioNoticeTimer = null;
+function showAudioNotice(message, duration = 4500, type = "info") {
+  if (!elements.playerAudioNotice || !elements.playerAudioNoticeText) return;
+  if (audioNoticeTimer) clearTimeout(audioNoticeTimer);
+
+  elements.playerAudioNoticeText.textContent = message;
+  elements.playerAudioNotice.className = `player-audio-notice notice-${type}`;
+  elements.playerAudioNotice.classList.remove('hidden');
+
+  audioNoticeTimer = setTimeout(() => {
+    if (elements.playerAudioNotice) {
+      elements.playerAudioNotice.classList.add('hidden');
+    }
+  }, duration);
+}
+
+function markAudioDropdownOption(code, tagText, tagClass = 'tag-unavailable') {
+  [elements.audioMenu, elements.audioMenuTop].filter(Boolean).forEach(menu => {
+    const btn = menu.querySelector(`button[data-code="${code}"]`);
+    if (btn) {
+      const tag = btn.querySelector('.opt-tag');
+      if (tag) {
+        tag.textContent = tagText;
+        tag.className = `opt-tag ${tagClass}`;
+      }
+    }
+  });
+}
+
+function updateAudioUI(shortName, fullName, badgeText, tooltipText = '') {
+  if (elements.currentAudioLabel) elements.currentAudioLabel.textContent = shortName;
+  if (elements.currentAudioTopLabel) elements.currentAudioTopLabel.textContent = shortName;
+  if (elements.activeAudioBadge) {
+    if (elements.activeAudioText) {
+      elements.activeAudioText.textContent = badgeText;
+    } else {
+      elements.activeAudioBadge.textContent = badgeText;
+    }
+    if (tooltipText) elements.activeAudioBadge.title = tooltipText;
+  }
+  if (elements.btnAudioSelectTop) {
+    elements.btnAudioSelectTop.title = tooltipText || `Audio Track: ${fullName}`;
+  }
+}
+
 function setupAudioDropdown(languages) {
   const menus = [elements.audioMenu, elements.audioMenuTop].filter(Boolean);
   if (menus.length === 0) return;
@@ -4213,7 +4329,8 @@ function setupAudioDropdown(languages) {
       const btn = document.createElement('button');
       btn.className = `dropdown-option ${lang.code === state.selectedAudioLang ? 'active' : ''}`;
       btn.dataset.code = lang.code;
-      btn.innerHTML = `<span style="display:flex; align-items:center; gap:8px;">${lang.name}</span><span class="opt-tag">${lang.code.toUpperCase()}</span>`;
+      const optTag = lang.statusTag || lang.code.toUpperCase();
+      btn.innerHTML = `<span style="display:flex; align-items:center; gap:8px;">${lang.name}</span><span class="opt-tag ${lang.statusClass || ''}">${optTag}</span>`;
       btn.addEventListener('click', () => {
         applyAudioLanguage(lang);
       });
@@ -4230,42 +4347,124 @@ function setupAudioDropdown(languages) {
   }
 }
 
-function applyAudioLanguage(lang) {
-  state.selectedAudioLang = lang.code;
-  LanguagePreferenceManager.recordLanguage(lang.code);
-
+async function applyAudioLanguage(lang) {
   closeAllPlayerMenus();
 
-  const shortName = lang.name.split(' ')[0];
-  if (elements.currentAudioLabel) elements.currentAudioLabel.textContent = shortName;
-  if (elements.currentAudioTopLabel) elements.currentAudioTopLabel.textContent = shortName;
-  if (elements.activeAudioBadge) {
-    if (elements.activeAudioText) {
-      elements.activeAudioText.textContent = `Audio: ${shortName}`;
-    } else {
-      elements.activeAudioBadge.textContent = `Audio: ${shortName}`;
+  const titleName = state.activeSubject?.title || 'This Title';
+  const isIndianTitle = (
+    state.activeSubject?.countryName === 'India' ||
+    (state.activeSubject?.title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => state.activeSubject.title.toLowerCase().includes(k)))
+  );
+  const isAnime = (
+    state.activeSubject?.category === 'anime' ||
+    (state.activeSubject?.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note'].some(k => state.activeSubject.title.toLowerCase().includes(k)))
+  );
+
+  // 1. Indian Title (Hindi is native master original audio on Server 1)
+  if (lang.code === 'hin' && isIndianTitle) {
+    state.selectedAudioLang = 'hin';
+    LanguagePreferenceManager.recordLanguage('hin');
+    updateAudioUI('Hindi', 'Hindi (Original Audio)', 'Audio: Hindi', 'Playing Native Hindi Original Audio');
+    [elements.audioMenu, elements.audioMenuTop].filter(Boolean).forEach(menu => {
+      menu.querySelectorAll('.dropdown-option').forEach(b => {
+        b.classList.toggle('active', b.dataset.code === 'hin');
+      });
+    });
+    if (elements.playerAudioNotice) elements.playerAudioNotice.classList.add('hidden');
+    showVlcOsd('AUDIO', 'Audio: Hindi (Original)');
+    showToast('Audio Track: Hindi (Original Audio)');
+    return;
+  }
+
+  // 2. Original Audio Selected (English, Japanese, or Regional)
+  if (lang.code !== 'hin') {
+    state.selectedAudioLang = lang.code;
+    LanguagePreferenceManager.recordLanguage(lang.code);
+    const shortName = lang.name.split(' ')[0];
+    updateAudioUI(shortName, lang.name, `Audio: ${shortName}`, `Active Audio Track: ${lang.name}`);
+    [elements.audioMenu, elements.audioMenuTop].filter(Boolean).forEach(menu => {
+      menu.querySelectorAll('.dropdown-option').forEach(b => {
+        b.classList.toggle('active', b.dataset.code === lang.code);
+      });
+    });
+    if (elements.playerAudioNotice) elements.playerAudioNotice.classList.add('hidden');
+    showVlcOsd('AUDIO', `Audio: ${lang.name}`);
+    showToast(`Audio Track: ${lang.name}`);
+    return;
+  }
+
+  // 3. User requested Hindi Dubbed on Non-Indian Content (Anime / Hollywood)
+  // Step A: Provide immediate user feedback that system is actively probing servers
+  showAudioNotice("Scanning Stream Nodes for Hindi Audio Track...", 2200, "info");
+  showVlcOsd('SCAN', 'Probing Multi-Audio Servers...');
+
+  // Step B: Actively probe state.servers for Hindi capability
+  let foundHindiServerIdx = -1;
+  const servers = state.servers || [];
+
+  for (let i = 0; i < servers.length; i++) {
+    const s = servers[i];
+    if (!s) continue;
+    const hasExplicitHindi = (
+      s.id === 'cinema-stream-hindi' ||
+      (s.name && (s.name.toLowerCase().includes('hindi') || s.name.toLowerCase().includes('dubbed'))) ||
+      (s.tag && (s.tag.toLowerCase().includes('hindi') || s.tag.toLowerCase().includes('multi-audio'))) ||
+      (Array.isArray(s.audioLanguages) && s.audioLanguages.some(a => String(a).toLowerCase().includes('hin')))
+    );
+
+    if (hasExplicitHindi) {
+      foundHindiServerIdx = i;
+      break;
     }
   }
 
-  // Update active highlight across both menus
+  // Step C: If Hindi server was found, switch to it!
+  if (foundHindiServerIdx !== -1) {
+    state.selectedAudioLang = 'hin';
+    LanguagePreferenceManager.recordLanguage('hin');
+    updateAudioUI('Hindi', 'Hindi (Dubbed)', 'Audio: Hindi (Dubbed)', 'Playing Hindi Dubbed Stream');
+    [elements.audioMenu, elements.audioMenuTop].filter(Boolean).forEach(menu => {
+      menu.querySelectorAll('.dropdown-option').forEach(b => {
+        b.classList.toggle('active', b.dataset.code === 'hin');
+      });
+    });
+    showVlcOsd('AUDIO', 'Audio: Hindi Dubbed Active');
+    showAudioNotice(`Connected to Hindi Dubbed Stream on ${servers[foundHindiServerIdx].name}`, 3500, "success");
+    if (foundHindiServerIdx !== state.activeServerIndex) {
+      executeZeroLatencySwitch(foundHindiServerIdx, "Multi-Audio Route: Hindi Dubbed");
+    }
+    return;
+  }
+
+  // Step D: Hindi Dub is NOT available on any stream server for this title
+  // Smoothly fall back to Master Original Audio (Japanese for anime, English for western)
+  const fallbackLang = isAnime 
+    ? { code: 'jpn', name: 'Japanese (Original Audio)', short: 'Japanese' }
+    : { code: 'eng', name: 'English (Original Audio)', short: 'English' };
+
+  state.selectedAudioLang = fallbackLang.code;
+  updateAudioUI(
+    fallbackLang.short, 
+    fallbackLang.name, 
+    `Audio: ${fallbackLang.short} (Hindi Dub Unavailable)`,
+    `Hindi Dubbed Audio is currently unavailable across streaming servers for ${titleName}. Playing in ${fallbackLang.name}.`
+  );
+
+  // Keep original audio active in dropdown highlights
   [elements.audioMenu, elements.audioMenuTop].filter(Boolean).forEach(menu => {
     menu.querySelectorAll('.dropdown-option').forEach(b => {
-      b.classList.toggle('active', b.dataset.code === lang.code);
+      b.classList.toggle('active', b.dataset.code === fallbackLang.code);
     });
   });
 
-  showVlcOsd('AUDIO', `Audio: ${lang.name}`);
+  // Mark Hindi option in dropdown as UNAVAILABLE
+  markAudioDropdownOption('hin', 'UNAVAILABLE', 'tag-unavailable');
 
-  // Auto-Route to Hindi Server if user selected Hindi
-  if (lang.code === 'hin' && state.servers.length > 1) {
-    const hindiServerIdx = state.servers.findIndex(s => s.id === 'cinema-stream-hindi' || (s.name && s.name.toLowerCase().includes('dubbed')));
-    if (hindiServerIdx !== -1 && hindiServerIdx !== state.activeServerIndex) {
-      executeZeroLatencySwitch(hindiServerIdx, "Language Route to Hindi");
-      return;
-    }
-  }
-
-  showToast(`Audio Track: ${lang.name}`);
+  // Enhanced English On-Screen Display Notice as requested by user
+  const enhancedEnglishMsg = `Hindi Dubbed Audio is currently unavailable across streaming servers for ${titleName}. Seamlessly playing in ${fallbackLang.name}.`;
+  showAudioNotice(enhancedEnglishMsg, 6000, "warning");
+  showVlcOsd('AUDIO', 'Hindi Dub Unavailable Across Stream Nodes');
+  showToast(`Hindi Audio Unavailable across nodes • Switched to ${fallbackLang.short}`, 4500);
 }
 
 function preconnectAllServers(servers) {
@@ -4544,6 +4743,7 @@ function cleanupActivePlayer() {
 }
 
 function closePlayer() {
+  if (elements.playerAudioNotice) elements.playerAudioNotice.classList.add('hidden');
   saveCurrentPlaybackProgress();
   cleanupActivePlayer();
   elements.playerOverlay.classList.add('hidden');

@@ -482,12 +482,14 @@ function getAudioLanguagesForTitle(title = '', imdbId = '') {
   if (animeImdbs.includes(imdbId) || t.includes('solo leveling') || t.includes('frieren') || t.includes('jujutsu') || t.includes('demon slayer') || t.includes('titan') || t.includes('death note') || t.includes('piece')) {
     return [
       { code: "jpn", name: "Japanese (Original Audio)", icon: "JP" },
+      { code: "hin", name: "Hindi (हिंदी Dubbed)", icon: "IN" },
       { code: "eng", name: "English (Dubbed)", icon: "US" }
     ];
   }
 
   return [
-    { code: "eng", name: "English (Original Audio)", icon: "US" }
+    { code: "eng", name: "English (Original Audio)", icon: "US" },
+    { code: "hin", name: "Hindi (हिंदी Dubbed)", icon: "IN" }
   ];
 }
 
