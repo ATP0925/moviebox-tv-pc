@@ -1002,9 +1002,38 @@ app.get('/api/play/:id', async (req, res) => {
 
     if (resolvedImdbId) {
       const tmdbId = resolvedTmdbId || IMDB_TO_TMDB_MAP[resolvedImdbId] || "";
+      const isAnime = (queryTitle && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note', 'bleach'].some(k => queryTitle.toLowerCase().includes(k))) || (["tt21209876", "tt22248376", "tt12343534", "tt9335498", "tt2560140", "tt0877057", "tt0388629", "tt0434665", "tt14986406"].includes(resolvedImdbId));
+
+      const malMap = {
+        "tt0434665": "269",     // Bleach (2004)
+        "tt14986406": "41467",  // Bleach: Thousand-Year Blood War (2022)
+        "tt21209876": "52299",  // Solo Leveling
+        "tt22248376": "52991",  // Frieren
+        "tt12343534": "40748",  // Jujutsu Kaisen
+        "tt9335498": "38000",   // Demon Slayer
+        "tt0877057": "1535",    // Death Note
+        "tt0388629": "21",      // One Piece
+        "tt2560140": "16498"    // Attack on Titan
+      };
+      const malId = malMap[resolvedImdbId] || "";
+      const animeDubUrl = (isAnime && malId)
+        ? `https://vidlink.pro/anime/${malId}/${episodeNum}/dub?fallback=true&primaryColor=e50914&autoplay=false`
+        : "";
+
       const vidlinkUrl = isSeries
         ? (tmdbId ? `https://vidlink.pro/tv/${tmdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://nontongo.win/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}`)
         : `https://vidlink.pro/movie/${tmdbId || resolvedImdbId}?primaryColor=e50914&autoplay=false`;
+
+      // Server Hindi: Cinema Cloud Hindi Dubbed & Multi-Audio Node
+      servers.push({
+        id: "cinema-stream-hindi",
+        name: "Server Hindi: Cinema Cloud Hindi Dubbed",
+        tag: "Dedicated Multi-Audio Track • Hindi Dubbed Stream",
+        quality: "1080p Full HD",
+        type: "embed",
+        audioLanguages: ["Hindi", "Japanese", "English", "Multi-Audio"],
+        url: animeDubUrl || `https://autoembed.co/tv/imdb/${resolvedImdbId}-${seasonNum}-${episodeNum}` || vidlinkUrl
+      });
 
       // Server 2: VidLink Ultra 4K
       servers.push({

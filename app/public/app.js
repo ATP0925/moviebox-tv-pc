@@ -1607,6 +1607,24 @@ const EmbeddedEngine = {
     };
     const tmdbId = overrideTmdbId || sub.tmdbId || tmdbMap[imdbId] || "";
     const isSeries = (subjectType === 2 || se > 0);
+    const isIndian = (sub.countryName === 'India' || (title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => title.toLowerCase().includes(k))));
+    const isAnime = (sub.category === 'anime' || (title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note', 'bleach'].some(k => title.toLowerCase().includes(k))));
+
+    const malMap = {
+      "tt0434665": "269",     // Bleach (2004)
+      "tt14986406": "41467",  // Bleach: Thousand-Year Blood War (2022)
+      "tt21209876": "52299",  // Solo Leveling
+      "tt22248376": "52991",  // Frieren: Beyond Journey's End
+      "tt12343534": "40748",  // Jujutsu Kaisen
+      "tt9335498": "38000",   // Demon Slayer
+      "tt0877057": "1535",    // Death Note
+      "tt0388629": "21",      // One Piece
+      "tt2560140": "16498"    // Attack on Titan
+    };
+    const malId = malMap[imdbId] || "";
+    const animeDubUrl = (isAnime && malId)
+      ? `https://vidlink.pro/anime/${malId}/${ep || 1}/dub?fallback=true&primaryColor=e50914&autoplay=false`
+      : "";
 
     // VidLink requires numeric TMDB ID for TV series; if not available, fallback to Nontongo (which natively supports IMDb ID)
     const vidlinkUrl = isSeries
@@ -1683,9 +1701,6 @@ const EmbeddedEngine = {
       ? `https://111movies.com/embed/tv/${imdbId}/${se || 1}/${ep || 1}`
       : `https://111movies.com/embed/movie/${imdbId}`;
 
-    const isIndian = (sub.countryName === 'India' || (title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => title.toLowerCase().includes(k))));
-    const isAnime = (sub.category === 'anime' || (title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note', 'bleach'].some(k => title.toLowerCase().includes(k))));
-
     const defaultLangs = isIndian
       ? ['hin', 'tel', 'tam']
       : (isAnime ? ['jpn', 'hin', 'eng'] : ['eng', 'hin']);
@@ -1708,11 +1723,21 @@ const EmbeddedEngine = {
       {
         id: "cinema-stream-1",
         name: "Cinema Cloud 1 (4K HDR Adaptive)",
-        tag: "4K HDR Adaptive Bitrate • Ultra Premium",
+        tag: "4K HDR Adaptive Bitrate • Multi-Audio",
         quality: "4K UHD / 1080p",
         type: "embed",
+        audioLanguages: ["Hindi", "English", "Multi-Audio"],
         isDefault: true,
         url: vidlinkUrl
+      },
+      {
+        id: "cinema-stream-hindi",
+        name: "Cinema Cloud Hindi / Multi-Audio",
+        tag: "Dedicated Multi-Audio Track • Hindi Dubbed Stream",
+        quality: "1080p FHD",
+        type: "embed",
+        audioLanguages: ["Hindi", "Japanese", "English", "Multi-Audio"],
+        url: animeDubUrl || autoembedUrl || vidlinkUrl
       },
       {
         id: "cinema-stream-2",
@@ -1808,6 +1833,7 @@ const EmbeddedEngine = {
         tag: "Auto-Source Multi-Provider",
         quality: "1080p HD",
         type: "embed",
+        audioLanguages: ["Hindi", "English", "Multi-Audio"],
         url: autoembedUrl
       },
       {
