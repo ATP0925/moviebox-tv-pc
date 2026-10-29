@@ -578,10 +578,10 @@ runTest("Top-Bar Audio Track Selector, On-Screen Banner & DOM UI Controls: eleme
   assert(stylesCss.includes('.player-audio-notice'), "styles.css must style .player-audio-notice");
   assert(stylesCss.includes('.opt-tag.tag-unavailable'), "styles.css must style .opt-tag.tag-unavailable");
 
-  // Verify cache version v4.8.0
-  assert(swJs.includes('v4.8.0'), "sw.js must be bumped to v4.8.0");
-  assert(indexHtml.includes('app.js?v=4.8.0'), "index.html must link app.js?v=4.8.0");
-  assert(indexHtml.includes('styles.css?v=4.8.0'), "index.html must link styles.css?v=4.8.0");
+  // Verify cache version v4.9.0
+  assert(swJs.includes('v4.9.0'), "sw.js must be bumped to v4.9.0");
+  assert(indexHtml.includes('app.js?v=4.9.0'), "index.html must link app.js?v=4.9.0");
+  assert(indexHtml.includes('styles.css?v=4.9.0'), "index.html must link styles.css?v=4.9.0");
 });
 
 // ----------------------------------------------------
@@ -659,6 +659,56 @@ runTest("Verified Seasons, Top-Bar Episode Progression, and Tab Filter Isolation
   // 4. Verify episode counts in season tab buttons
   assert(appJs.includes("epLabel"), "renderSeasonTabs must display epLabel in season button");
   assert(appJs.includes("updateEpisodeNavButtons"), "app.js must implement updateEpisodeNavButtons");
+});
+
+// ----------------------------------------------------
+// TEST 26: Bleach & Bleach: Thousand-Year Blood War Catalogue & Playback Integration
+// ----------------------------------------------------
+runTest("Bleach & Bleach: Thousand-Year Blood War Catalogue & Playback Integration", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+  const serverJs = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
+
+  // 1. Verify Bleach in app.js
+  assert(appJs.includes('subjectId: "bleach_2004"'), "app.js must contain bleach_2004");
+  assert(appJs.includes('subjectId: "bleach_tybw_2022"'), "app.js must contain bleach_tybw_2022");
+  assert(appJs.includes('tt0434665'), "app.js must have Bleach IMDb tt0434665");
+  assert(appJs.includes('30984'), "app.js must have Bleach TMDB 30984");
+  assert(appJs.includes('tt14986406'), "app.js must have Bleach TYBW IMDb tt14986406");
+  assert(appJs.includes('212624'), "app.js must have Bleach TYBW TMDB 212624");
+
+  // 2. Verify Bleach in server.js
+  assert(serverJs.includes('"tt0434665": "30984"'), "server.js IMDB_TO_TMDB_MAP must map Bleach to 30984");
+  assert(serverJs.includes('"tt14986406": "212624"'), "server.js IMDB_TO_TMDB_MAP must map Bleach TYBW to 212624");
+  assert(serverJs.includes('"bleach": { imdbId: "tt0434665"'), "server.js SUBJECT_ID_MAP must include bleach");
+  assert(serverJs.includes('"bleach_tybw": { imdbId: "tt14986406"'), "server.js SUBJECT_ID_MAP must include bleach_tybw");
+
+  // 3. Verify Bleach season counts in server.js getMockSeasonData inside VM
+  const vm = require('vm');
+  const serverMockSeasonCode = serverJs.match(/function getMockSeasonData\(subjectId\) \{[\s\S]*?\n\}/)[0];
+  const sandbox = {};
+  vm.createContext(sandbox);
+  vm.runInContext(serverMockSeasonCode, sandbox);
+  const getMock = sandbox.getMockSeasonData;
+
+  const bleachRes = getMock("bleach_2004");
+  assert(bleachRes.data.seasons.length === 16, "Bleach must have 16 seasons");
+  assert(bleachRes.data.seasons[0].maxEp === 20, "Bleach Season 1 must have 20 episodes");
+
+  const tybwRes = getMock("bleach_tybw_2022");
+  assert(tybwRes.data.seasons.length === 3, "Bleach TYBW must have 3 seasons");
+  assert(tybwRes.data.seasons[0].maxEp === 13, "Bleach TYBW Season 1 must have 13 episodes");
+
+  // 4. Verify Audio Languages for Bleach
+  const audioSandbox = {};
+  const serverAudioMatch = serverJs.match(/function getAudioLanguagesForTitle[\s\S]*?\n\}/);
+  assert(serverAudioMatch, "getAudioLanguagesForTitle must match in server.js");
+  vm.createContext(audioSandbox);
+  vm.runInContext(serverAudioMatch[0] + "; this.getAudioLanguagesForTitle = getAudioLanguagesForTitle;", audioSandbox);
+  const getAudio = audioSandbox.getAudioLanguagesForTitle;
+  const bleachAudio = getAudio("Bleach", "tt0434665");
+  assert(bleachAudio.some(l => l.code === 'jpn'), "Bleach must have Japanese audio");
+  assert(bleachAudio.some(l => l.code === 'hin'), "Bleach must have Hindi dubbed option");
+  assert(bleachAudio.some(l => l.code === 'eng'), "Bleach must have English dubbed option");
 });
 
 console.log("\n=================================================");

@@ -1044,6 +1044,42 @@ const EmbeddedEngine = {
       description: "Monkey D. Luffy and his pirate crew explore the fantastical seas and exotic islands in search of the world's ultimate treasure known as One Piece to become the next King of the Pirates.",
       staffList: [{ name: "Mayumi Tanaka" }, { name: "Laurent Vernin" }, { name: "Akemi Okamura" }]
     },
+    {
+      subjectId: "bleach_2004",
+      title: "Bleach",
+      cover: { url: "https://image.tmdb.org/t/p/w500/tEUE489V8OGlPAbY0VkNbkXbXMv.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2004-10-05",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Action / Supernatural / Shonen / Dark Fantasy",
+      countryName: "Japan",
+      imdbId: "tt0434665",
+      tmdbId: "30984",
+      audioLangs: ["jpn", "hin", "eng"],
+      description: "High school student Ichigo Kurosaki, who has the ability to see ghosts, gains the powers of a Soul Reaper and is forced to take on the duty of defending humans from evil spirits and guiding departed souls to the afterlife.",
+      staffList: [{ name: "Masakazu Morita" }, { name: "Johnny Yong Bosch" }, { name: "Fumiko Orikasa" }]
+    },
+    {
+      subjectId: "bleach_tybw_2022",
+      title: "Bleach: Thousand-Year Blood War",
+      cover: { url: "https://static.tvmaze.com/uploads/images/original_untouched/630/1575962.jpg" },
+      imdbRatingValue: "9.0",
+      score: "9.0",
+      releaseDate: "2022-10-11",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Anime / Action / Supernatural / Shonen / Dark Fantasy",
+      countryName: "Japan",
+      imdbId: "tt14986406",
+      tmdbId: "212624",
+      audioLangs: ["jpn", "hin", "eng"],
+      description: "The peace is suddenly broken when warning sirens blare through the Soul Society. Residents are disappearing without a trace, and a dark shadow looms closer toward Ichigo and his friends in Karakura Town.",
+      staffList: [{ name: "Masakazu Morita" }, { name: "Takayuki Sugo" }, { name: "Noriaki Sugiyama" }]
+    },
 
     // ==================== KIDS & FAMILY (category: 'kids', subjectType: 1) ====================
     {
@@ -1137,7 +1173,9 @@ const EmbeddedEngine = {
         "demon_slayer_2019": "demon_slayer",
         "attack_on_titan_2013": "attack_on_titan",
         "death_note_2006": "death_note",
-        "one_piece_1999": "one_piece"
+        "one_piece_1999": "one_piece",
+        "bleach": "bleach_2004",
+        "bleach_tybw": "bleach_tybw_2022"
       };
       if (aliasMap[sid]) {
         found = this.subjects.find(s => s.subjectId === aliasMap[sid]);
@@ -1373,6 +1411,24 @@ const EmbeddedEngine = {
       "death_note": [{ se: 1, maxEp: 37 }],
       "one_piece_1999": [{ se: 1, maxEp: 61 }, { se: 2, maxEp: 16 }, { se: 3, maxEp: 15 }, { se: 4, maxEp: 13 }],
       "one_piece": [{ se: 1, maxEp: 61 }, { se: 2, maxEp: 16 }, { se: 3, maxEp: 15 }, { se: 4, maxEp: 13 }],
+      "bleach_2004": [
+        { se: 1, maxEp: 20 }, { se: 2, maxEp: 21 }, { se: 3, maxEp: 22 }, { se: 4, maxEp: 28 },
+        { se: 5, maxEp: 18 }, { se: 6, maxEp: 22 }, { se: 7, maxEp: 20 }, { se: 8, maxEp: 16 },
+        { se: 9, maxEp: 22 }, { se: 10, maxEp: 16 }, { se: 11, maxEp: 7 }, { se: 12, maxEp: 17 },
+        { se: 13, maxEp: 36 }, { se: 14, maxEp: 51 }, { se: 15, maxEp: 26 }, { se: 16, maxEp: 24 }
+      ],
+      "bleach": [
+        { se: 1, maxEp: 20 }, { se: 2, maxEp: 21 }, { se: 3, maxEp: 22 }, { se: 4, maxEp: 28 },
+        { se: 5, maxEp: 18 }, { se: 6, maxEp: 22 }, { se: 7, maxEp: 20 }, { se: 8, maxEp: 16 },
+        { se: 9, maxEp: 22 }, { se: 10, maxEp: 16 }, { se: 11, maxEp: 7 }, { se: 12, maxEp: 17 },
+        { se: 13, maxEp: 36 }, { se: 14, maxEp: 51 }, { se: 15, maxEp: 26 }, { se: 16, maxEp: 24 }
+      ],
+      "bleach_tybw_2022": [
+        { se: 1, maxEp: 13 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 13 }
+      ],
+      "bleach_tybw": [
+        { se: 1, maxEp: 13 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 13 }
+      ],
 
       // Western TV Series
       "breaking_bad_2008": [{ se: 1, maxEp: 7 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 13 }, { se: 4, maxEp: 13 }, { se: 5, maxEp: 16 }],
@@ -1413,6 +1469,8 @@ const EmbeddedEngine = {
       else if (title.includes('loki')) conf = seriesConfig["loki_2021"];
       else if (title.includes('wednesday')) conf = seriesConfig["wednesday_2022"];
       else if (title.includes('last of us')) conf = seriesConfig["the_last_of_us_2023"];
+      else if (title.includes('thousand-year') || title.includes('tybw')) conf = seriesConfig["bleach_tybw_2022"];
+      else if (title.includes('bleach')) conf = seriesConfig["bleach_2004"];
       else conf = [{ se: 1, maxEp: 10 }, { se: 2, maxEp: 10 }];
     }
 
@@ -1494,7 +1552,11 @@ const EmbeddedEngine = {
         "demon slayer: kimetsu no yaiba": "tt9335498",
         "attack on titan": "tt2560140",
         "death note": "tt0877057",
-        "one piece": "tt0388629"
+        "one piece": "tt0388629",
+        "bleach": "tt0434665",
+        "bleach: thousand-year blood war": "tt14986406",
+        "bleach thousand year blood war": "tt14986406",
+        "bleach tybw": "tt14986406"
       }[clean];
       if (byTitle) imdbId = byTitle;
     }
@@ -1539,7 +1601,9 @@ const EmbeddedEngine = {
       "tt9335498": "85937",   // Demon Slayer
       "tt2560140": "1429",    // Attack on Titan
       "tt0877057": "13916",   // Death Note
-      "tt0388629": "37854"    // One Piece
+      "tt0388629": "37854",   // One Piece
+      "tt0434665": "30984",   // Bleach
+      "tt14986406": "212624"  // Bleach: Thousand-Year Blood War
     };
     const tmdbId = overrideTmdbId || sub.tmdbId || tmdbMap[imdbId] || "";
     const isSeries = (subjectType === 2 || se > 0);
@@ -1620,7 +1684,7 @@ const EmbeddedEngine = {
       : `https://111movies.com/embed/movie/${imdbId}`;
 
     const isIndian = (sub.countryName === 'India' || (title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => title.toLowerCase().includes(k))));
-    const isAnime = (sub.category === 'anime' || (title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note'].some(k => title.toLowerCase().includes(k))));
+    const isAnime = (sub.category === 'anime' || (title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note', 'bleach'].some(k => title.toLowerCase().includes(k))));
 
     const defaultLangs = isIndian
       ? ['hin', 'tel', 'tam']
@@ -2449,7 +2513,7 @@ function isSubjectMatchingTab(subject, tabId) {
   const category = (subject.category || '').toLowerCase();
   const subType = parseInt(subject.subjectType, 10) || (subject.isSeries ? 2 : 1);
 
-  const isAnime = category === 'anime' || genre.includes('anime') || title.includes('solo leveling') || title.includes('frieren') || title.includes('jujutsu') || title.includes('demon slayer') || title.includes('attack on titan') || title.includes('death note') || title.includes('one piece');
+  const isAnime = category === 'anime' || genre.includes('anime') || title.includes('solo leveling') || title.includes('frieren') || title.includes('jujutsu') || title.includes('demon slayer') || title.includes('attack on titan') || title.includes('death note') || title.includes('one piece') || title.includes('bleach');
   const isKids = category === 'kids' || genre.includes('kids') || genre.includes('family') || title.includes('inside out') || title.includes('despicable me') || title.includes('kung fu panda');
 
   if (tabId === 'ANIMATION') {
@@ -3228,7 +3292,7 @@ function createMovieCard(subject) {
 function getAudioLanguagesDisplayText(data) {
   if (!data) return "Hindi, English";
   const isIndian = data.countryName === 'India' || (data.title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => data.title.toLowerCase().includes(k)));
-  const isAnime = data.category === 'anime' || (data.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note'].some(k => data.title.toLowerCase().includes(k)));
+  const isAnime = data.category === 'anime' || (data.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note', 'bleach'].some(k => data.title.toLowerCase().includes(k)));
   
   const langs = (data.audioLangs && data.audioLangs.length > 0)
     ? data.audioLangs
@@ -3251,7 +3315,7 @@ function renderAudioLanguagePills(container, data) {
   if (!data) return;
 
   const isIndian = data.countryName === 'India' || (data.title && ['animal', 'jawan', 'pushpa', 'mirzapur', 'panchayat'].some(k => data.title.toLowerCase().includes(k)));
-  const isAnime = data.category === 'anime' || (data.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note'].some(k => data.title.toLowerCase().includes(k)));
+  const isAnime = data.category === 'anime' || (data.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note', 'bleach'].some(k => data.title.toLowerCase().includes(k)));
   
   const langs = (data.audioLangs && data.audioLangs.length > 0)
     ? data.audioLangs
@@ -4518,7 +4582,7 @@ async function applyAudioLanguage(lang) {
   );
   const isAnime = (
     state.activeSubject?.category === 'anime' ||
-    (state.activeSubject?.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note'].some(k => state.activeSubject.title.toLowerCase().includes(k)))
+    (state.activeSubject?.title && ['solo leveling', 'frieren', 'jujutsu', 'demon slayer', 'titan', 'naruto', 'one piece', 'death note', 'bleach'].some(k => state.activeSubject.title.toLowerCase().includes(k)))
   );
 
   // 1. Indian Title (Hindi is native master original audio on Server 1)

@@ -73,7 +73,9 @@ const IMDB_TO_TMDB_MAP = {
   "tt9335498": "85937",      // Demon Slayer: Kimetsu no Yaiba
   "tt2560140": "1429",       // Attack on Titan
   "tt0877057": "13916",      // Death Note
-  "tt0388629": "37854"       // One Piece
+  "tt0388629": "37854",      // One Piece
+  "tt0434665": "30984",      // Bleach
+  "tt14986406": "212624"     // Bleach: Thousand-Year Blood War
 };
 
 const SUBJECT_ID_MAP = {
@@ -126,7 +128,11 @@ const SUBJECT_ID_MAP = {
   "death_note": { imdbId: "tt0877057", tmdbId: "13916", title: "Death Note", isSeries: true, subjectType: 2 },
   "death_note_2006": { imdbId: "tt0877057", tmdbId: "13916", title: "Death Note", isSeries: true, subjectType: 2 },
   "one_piece": { imdbId: "tt0388629", tmdbId: "37854", title: "One Piece", isSeries: true, subjectType: 2 },
-  "one_piece_1999": { imdbId: "tt0388629", tmdbId: "37854", title: "One Piece", isSeries: true, subjectType: 2 }
+  "one_piece_1999": { imdbId: "tt0388629", tmdbId: "37854", title: "One Piece", isSeries: true, subjectType: 2 },
+  "bleach_2004": { imdbId: "tt0434665", tmdbId: "30984", title: "Bleach", isSeries: true, subjectType: 2 },
+  "bleach": { imdbId: "tt0434665", tmdbId: "30984", title: "Bleach", isSeries: true, subjectType: 2 },
+  "bleach_tybw_2022": { imdbId: "tt14986406", tmdbId: "212624", title: "Bleach: Thousand-Year Blood War", isSeries: true, subjectType: 2 },
+  "bleach_tybw": { imdbId: "tt14986406", tmdbId: "212624", title: "Bleach: Thousand-Year Blood War", isSeries: true, subjectType: 2 }
 };
 
 const TITLE_TO_IMDB_MAP = {
@@ -175,7 +181,11 @@ const TITLE_TO_IMDB_MAP = {
   "demon slayer: kimetsu no yaiba": { imdbId: "tt9335498", tmdbId: "85937", isSeries: true },
   "attack on titan": { imdbId: "tt2560140", tmdbId: "1429", isSeries: true },
   "death note": { imdbId: "tt0877057", tmdbId: "13916", isSeries: true },
-  "one piece": { imdbId: "tt0388629", tmdbId: "37854", isSeries: true }
+  "one piece": { imdbId: "tt0388629", tmdbId: "37854", isSeries: true },
+  "bleach": { imdbId: "tt0434665", tmdbId: "30984", isSeries: true },
+  "bleach: thousand-year blood war": { imdbId: "tt14986406", tmdbId: "212624", isSeries: true },
+  "bleach thousand year blood war": { imdbId: "tt14986406", tmdbId: "212624", isSeries: true },
+  "bleach tybw": { imdbId: "tt14986406", tmdbId: "212624", isSeries: true }
 };
 
 // MovieBoxTV Gateway Signing Config
@@ -430,6 +440,24 @@ function getMockSeasonData(subjectId) {
     "death_note": [{ se: 1, maxEp: 37 }],
     "one_piece_1999": [{ se: 1, maxEp: 61 }, { se: 2, maxEp: 16 }, { se: 3, maxEp: 15 }, { se: 4, maxEp: 13 }],
     "one_piece": [{ se: 1, maxEp: 61 }, { se: 2, maxEp: 16 }, { se: 3, maxEp: 15 }, { se: 4, maxEp: 13 }],
+    "bleach_2004": [
+      { se: 1, maxEp: 20 }, { se: 2, maxEp: 21 }, { se: 3, maxEp: 22 }, { se: 4, maxEp: 28 },
+      { se: 5, maxEp: 18 }, { se: 6, maxEp: 22 }, { se: 7, maxEp: 20 }, { se: 8, maxEp: 16 },
+      { se: 9, maxEp: 22 }, { se: 10, maxEp: 16 }, { se: 11, maxEp: 7 }, { se: 12, maxEp: 17 },
+      { se: 13, maxEp: 36 }, { se: 14, maxEp: 51 }, { se: 15, maxEp: 26 }, { se: 16, maxEp: 24 }
+    ],
+    "bleach": [
+      { se: 1, maxEp: 20 }, { se: 2, maxEp: 21 }, { se: 3, maxEp: 22 }, { se: 4, maxEp: 28 },
+      { se: 5, maxEp: 18 }, { se: 6, maxEp: 22 }, { se: 7, maxEp: 20 }, { se: 8, maxEp: 16 },
+      { se: 9, maxEp: 22 }, { se: 10, maxEp: 16 }, { se: 11, maxEp: 7 }, { se: 12, maxEp: 17 },
+      { se: 13, maxEp: 36 }, { se: 14, maxEp: 51 }, { se: 15, maxEp: 26 }, { se: 16, maxEp: 24 }
+    ],
+    "bleach_tybw_2022": [
+      { se: 1, maxEp: 13 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 13 }
+    ],
+    "bleach_tybw": [
+      { se: 1, maxEp: 13 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 13 }
+    ],
 
     // Western TV Series
     "breaking_bad_2008": [{ se: 1, maxEp: 7 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 13 }, { se: 4, maxEp: 13 }, { se: 5, maxEp: 16 }],
@@ -472,6 +500,8 @@ function getMockSeasonData(subjectId) {
     else if (sid.includes('loki')) conf = seriesConfig["loki_2021"];
     else if (sid.includes('wednesday')) conf = seriesConfig["wednesday_2022"];
     else if (sid.includes('last_of_us') || sid.includes('tlou')) conf = seriesConfig["the_last_of_us_2023"];
+    else if (sid.includes('thousand-year') || sid.includes('tybw')) conf = seriesConfig["bleach_tybw_2022"];
+    else if (sid.includes('bleach')) conf = seriesConfig["bleach_2004"];
     else conf = [{ se: 1, maxEp: 10 }, { se: 2, maxEp: 10 }];
   }
 
@@ -564,7 +594,7 @@ async function resolveImdbId(title, subjectType = 1) {
 function getAudioLanguagesForTitle(title = '', imdbId = '') {
   const t = (title || '').toLowerCase();
   const indianImdbs = ["tt13751694", "tt15428448", "tt15354916", "tt6473300", "tt12004706"];
-  const animeImdbs = ["tt21209876", "tt22248376", "tt12343534", "tt9335498", "tt2560140", "tt0877057", "tt0388629"];
+  const animeImdbs = ["tt21209876", "tt22248376", "tt12343534", "tt9335498", "tt2560140", "tt0877057", "tt0388629", "tt0434665", "tt14986406"];
 
   if (indianImdbs.includes(imdbId) || t.includes('animal') || t.includes('pushpa') || t.includes('jawan') || t.includes('mirzapur') || t.includes('panchayat')) {
     if (t.includes('animal') || t.includes('jawan')) {
@@ -583,7 +613,7 @@ function getAudioLanguagesForTitle(title = '', imdbId = '') {
     return [{ code: "hin", name: "Hindi (Original Audio)", icon: "IN" }];
   }
 
-  if (animeImdbs.includes(imdbId) || t.includes('solo leveling') || t.includes('frieren') || t.includes('jujutsu') || t.includes('demon slayer') || t.includes('titan') || t.includes('death note') || t.includes('piece')) {
+  if (animeImdbs.includes(imdbId) || t.includes('solo leveling') || t.includes('frieren') || t.includes('jujutsu') || t.includes('demon slayer') || t.includes('titan') || t.includes('death note') || t.includes('piece') || t.includes('bleach')) {
     return [
       { code: "jpn", name: "Japanese (Original Audio)", icon: "JP" },
       { code: "hin", name: "Hindi (हिंदी Dubbed)", icon: "IN" },
@@ -1283,8 +1313,8 @@ module.exports = app;
 if (require.main === module || !process.env.VERCEL) {
   app.listen(PORT, async () => {
     console.log(`\n======================================================`);
-    console.log(`🎬 MovieBoxTV Cinema Engine is running!`);
-    console.log(`📡 URL: http://localhost:${PORT}`);
+    console.log(`[CINEMA ENGINE] MovieBoxTV Cinema Engine is running`);
+    console.log(`[SERVER] URL: http://localhost:${PORT}`);
     console.log(`======================================================\n`);
     try {
       await getAuthToken();
