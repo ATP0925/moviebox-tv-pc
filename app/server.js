@@ -1024,16 +1024,18 @@ app.get('/api/play/:id', async (req, res) => {
         ? (tmdbId ? `https://vidlink.pro/tv/${tmdbId}/${seasonNum}/${episodeNum}?primaryColor=e50914&autoplay=false` : `https://nontongo.win/embed/tv/${resolvedImdbId}/${seasonNum}/${episodeNum}`)
         : `https://vidlink.pro/movie/${tmdbId || resolvedImdbId}?primaryColor=e50914&autoplay=false`;
 
-      // Server Hindi: Cinema Cloud Hindi Dubbed & Multi-Audio Node
-      servers.push({
-        id: "cinema-stream-hindi",
-        name: "Server Hindi: Cinema Cloud Hindi Dubbed",
-        tag: "Dedicated Multi-Audio Track • Hindi Dubbed Stream",
-        quality: "1080p Full HD",
-        type: "embed",
-        audioLanguages: ["Hindi", "Japanese", "English", "Multi-Audio"],
-        url: animeDubUrl || `https://autoembed.co/tv/imdb/${resolvedImdbId}-${seasonNum}-${episodeNum}` || vidlinkUrl
-      });
+      // Server Dubbed: Cinema Cloud English Dubbed Node (For Anime)
+      if (isAnime && animeDubUrl) {
+        servers.push({
+          id: "cinema-stream-dubbed",
+          name: "Server Dubbed: Cinema Cloud English Dubbed",
+          tag: "English Dubbed Stream • Dual-Audio Mirror",
+          quality: "1080p Full HD",
+          type: "embed",
+          audioLanguages: ["English", "Japanese"],
+          url: animeDubUrl
+        });
+      }
 
       // Server 2: VidLink Ultra 4K
       servers.push({

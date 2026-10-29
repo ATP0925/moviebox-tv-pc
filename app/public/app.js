@@ -1723,22 +1723,28 @@ const EmbeddedEngine = {
       {
         id: "cinema-stream-1",
         name: "Cinema Cloud 1 (4K HDR Adaptive)",
-        tag: "4K HDR Adaptive Bitrate • Multi-Audio",
+        tag: isAnime ? "4K HDR Adaptive Bitrate • Japanese Master" : "4K HDR Adaptive Bitrate • Multi-Audio",
         quality: "4K UHD / 1080p",
         type: "embed",
-        audioLanguages: ["Hindi", "English", "Multi-Audio"],
+        audioLanguages: isAnime ? ["Japanese", "English"] : (isIndian ? ["Hindi", "Telugu", "Tamil"] : ["English", "Hindi"]),
         isDefault: true,
         url: vidlinkUrl
-      },
-      {
-        id: "cinema-stream-hindi",
-        name: "Cinema Cloud Hindi / Multi-Audio",
-        tag: "Dedicated Multi-Audio Track • Hindi Dubbed Stream",
+      }
+    ];
+
+    if (isAnime && animeDubUrl) {
+      cinemaServers.push({
+        id: "cinema-stream-dubbed",
+        name: "Cinema Cloud Dubbed (English Audio)",
+        tag: "English Dubbed Stream • Dual-Audio Mirror",
         quality: "1080p FHD",
         type: "embed",
-        audioLanguages: ["Hindi", "Japanese", "English", "Multi-Audio"],
-        url: animeDubUrl || autoembedUrl || vidlinkUrl
-      },
+        audioLanguages: ["English", "Japanese"],
+        url: animeDubUrl
+      });
+    }
+
+    cinemaServers.push(
       {
         id: "cinema-stream-2",
         name: "Cinema Cloud 2 (1080p Fast HLS)",
@@ -1917,7 +1923,7 @@ const EmbeddedEngine = {
           }
         ]
       }
-    ];
+    );
 
     return {
       code: 0,
@@ -4641,6 +4647,19 @@ async function applyAudioLanguage(lang) {
     if (elements.playerAudioNotice) elements.playerAudioNotice.classList.add('hidden');
     showVlcOsd('AUDIO', `Audio: ${lang.name}`);
     showToast(`Audio Track: ${lang.name}`);
+
+    // If Anime and user selected English Dub, switch to dubbed server node
+    if (isAnime && lang.code === 'eng') {
+      const dubbedIdx = (state.servers || []).findIndex(s => s.id === 'cinema-stream-dubbed' || s.url?.includes('/dub'));
+      if (dubbedIdx !== -1 && dubbedIdx !== state.activeServerIndex) {
+        executeZeroLatencySwitch(dubbedIdx, "Switch to English Dubbed Node");
+      }
+    } else if (isAnime && lang.code === 'jpn') {
+      // Switch back to Master Japanese Subbed Node
+      if (state.activeServerIndex !== 0) {
+        executeZeroLatencySwitch(0, "Switch to Japanese Master Node");
+      }
+    }
     return;
   }
 
@@ -4653,19 +4672,20 @@ async function applyAudioLanguage(lang) {
   let foundHindiServerIdx = -1;
   const servers = state.servers || [];
 
-  for (let i = 0; i < servers.length; i++) {
-    const s = servers[i];
-    if (!s) continue;
-    const hasExplicitHindi = (
-      s.id === 'cinema-stream-hindi' ||
-      (s.name && (s.name.toLowerCase().includes('hindi') || s.name.toLowerCase().includes('dubbed'))) ||
-      (s.tag && (s.tag.toLowerCase().includes('hindi') || s.tag.toLowerCase().includes('multi-audio'))) ||
-      (Array.isArray(s.audioLanguages) && s.audioLanguages.some(a => String(a).toLowerCase().includes('hin')))
-    );
+  // For anime, third-party cloud embed scrapers do not host official Hindi dub
+  if (!isAnime) {
+    for (let i = 0; i < servers.length; i++) {
+      const s = servers[i];
+      if (!s) continue;
+      const hasExplicitHindi = (
+        (s.name && s.name.toLowerCase().includes('hindi')) ||
+        (Array.isArray(s.audioLanguages) && s.audioLanguages.some(a => String(a).toLowerCase().includes('hin')))
+      );
 
-    if (hasExplicitHindi) {
-      foundHindiServerIdx = i;
-      break;
+      if (hasExplicitHindi) {
+        foundHindiServerIdx = i;
+        break;
+      }
     }
   }
 
@@ -4707,6 +4727,18 @@ async function applyAudioLanguage(lang) {
       b.classList.toggle('active', b.dataset.code === fallbackLang.code);
     });
   });
+
+  showVlcOsd('AUDIO', `Audio: ${fallbackLang.short} (Hindi Dub Unavailable)`);
+  showAudioNotice(
+    `Notice: Hindi Dubbed stream is not hosted on cloud server nodes for ${titleName}. Defaulting to ${fallbackLang.name}.`,
+    6000,
+    "warning"
+  );
+
+  // If currently on dubbed server, restore master track
+  if (state.activeServerIndex !== 0) {
+    executeZeroLatencySwitch(0, "Restore Master Original Audio");
+  }
 
   // Mark Hindi option in dropdown as UNAVAILABLE
   markAudioDropdownOption('hin', 'UNAVAILABLE', 'tag-unavailable');
