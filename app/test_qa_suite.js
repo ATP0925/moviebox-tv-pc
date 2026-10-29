@@ -755,6 +755,65 @@ runTest("MovieBoxDL Signature Suite: Speed Test, Skip Intro, PiP Mode, Data Save
   assert(stylesCss.includes('.feature-item-card'), "styles.css must style .feature-item-card");
 });
 
+// ----------------------------------------------------
+// TEST 28: MovieBox Expanded Catalogue & Multi-Category Search Index
+// ----------------------------------------------------
+runTest("Expanded Catalogue: 90+ Blockbusters, Bollywood, K-Drama, Anime, Hollywood & Multi-Field Search", () => {
+  const appJs = fs.readFileSync(path.join(__dirname, 'public', 'app.js'), 'utf8');
+  const serverJs = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
+
+  // 1. Verify EmbeddedEngine has at least 90 curated titles
+  const startIdx = appJs.indexOf("const EmbeddedEngine = {");
+  const endMarker = "// Resilient Fetch with Candidate Cycling & Embedded Engine Fallback";
+  const endIdx = appJs.indexOf(endMarker);
+  assert(startIdx !== -1 && endIdx !== -1, "Could not find EmbeddedEngine boundaries in app.js");
+  const embeddedCode = appJs.slice(startIdx, endIdx);
+
+  const vm = require('vm');
+  const sandbox = { window: {}, localStorage: { getItem: () => null } };
+  vm.createContext(sandbox);
+  vm.runInContext("var isCloud = true;\n" + embeddedCode.replace("const EmbeddedEngine =", "EmbeddedEngine ="), sandbox);
+  const engine = sandbox.EmbeddedEngine;
+  assert(engine && engine.subjects, "EmbeddedEngine.subjects must exist");
+  assert(engine.subjects.length >= 90, `Subjects count must be >= 90, found ${engine.subjects.length}`);
+
+  // 2. Verify Key Signatures across Bollywood, K-Drama, Horror, Romance, Anime
+  const bollywood = engine.subjects.filter(s => s.countryName === 'India');
+  const kdrama = engine.subjects.filter(s => s.countryName === 'South Korea');
+  const anime = engine.subjects.filter(s => s.category === 'anime');
+  const romance = engine.subjects.filter(s => s.genre && s.genre.includes('Romance'));
+  const horror = engine.subjects.filter(s => s.genre && s.genre.includes('Horror'));
+
+  assert(bollywood.length >= 20, `Bollywood count must be >= 20, found ${bollywood.length}`);
+  assert(kdrama.length >= 4, `K-Drama count must be >= 4, found ${kdrama.length}`);
+  assert(anime.length >= 15, `Anime count must be >= 15, found ${anime.length}`);
+  assert(romance.length >= 5, `Romance count must be >= 5, found ${romance.length}`);
+  assert(horror.length >= 5, `Horror count must be >= 5, found ${horror.length}`);
+
+  // 3. Verify Multi-Field Search
+  const searchBw = engine.search('bollywood');
+  assert(searchBw.code === 0 && searchBw.data.items.length >= 20, "search('bollywood') must return >= 20 items");
+
+  const searchAnime = engine.search('anime');
+  assert(searchAnime.code === 0 && searchAnime.data.items.length >= 15, "search('anime') must return >= 15 items");
+
+  const searchKdrama = engine.search('kdrama');
+  assert(searchKdrama.code === 0 && searchKdrama.data.items.length >= 4, "search('kdrama') must return >= 4 items");
+
+  const searchKalki = engine.search('Kalki 2898 AD');
+  assert(searchKalki.code === 0 && searchKalki.data.items.length >= 1, "search('Kalki 2898 AD') must find Kalki");
+
+  const searchSquid = engine.search('Squid Game');
+  assert(searchSquid.code === 0 && searchSquid.data.items.length >= 1, "search('Squid Game') must find Squid Game");
+
+  // 4. Verify server.js mapping covers expanded subjects
+  assert(serverJs.includes('Kalki 2898 AD'), "server.js must contain Kalki 2898 AD mapping");
+  assert(serverJs.includes('Stree 2'), "server.js must contain Stree 2 mapping");
+  assert(serverJs.includes('Squid Game'), "server.js must contain Squid Game mapping");
+  assert(serverJs.includes('Crash Landing on You'), "server.js must contain Crash Landing on You mapping");
+  assert(serverJs.includes('Chainsaw Man'), "server.js must contain Chainsaw Man mapping");
+});
+
 console.log("\n=================================================");
 console.log(`🎯 RESULTS: ${passedCount} / ${totalCount} TESTS PASSED (100%)`);
 console.log("=================================================");

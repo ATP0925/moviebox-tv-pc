@@ -1164,6 +1164,1033 @@ const EmbeddedEngine = {
       description: "After Po is tapped to become the Spiritual Leader of the Valley of Peace, he needs to find and train a new Dragon Warrior while a wicked sorceress plans to re-summon all master villains.",
       staffList: [{ name: "Jack Black" }, { name: "Awkwafina" }, { name: "Viola Davis" }]
     }
+,
+    {
+      subjectId: "kalki_2898_ad_2024",
+      title: "Kalki 2898 AD",
+      cover: { url: "https://image.tmdb.org/t/p/w500/94ZfaPTJkVL5HhNZyG26vX53pA6.jpg" },
+      imdbRatingValue: "7.6",
+      score: "7.6",
+      releaseDate: "2024-06-27",
+      duration: 10860,
+      subjectType: 1,
+      category: "movie",
+      genre: "Sci-Fi / Action / Mythology",
+      countryName: "India",
+      imdbId: "tt12735488",
+      tmdbId: "799883",
+      audioLangs: ["hin","tel","tam"],
+      description: "In the post-apocalyptic city of Kasi in the year 2898 AD, a modern-day avatar of Vishnu descends to protect the world from evil forces in a futuristic mythological epic.",
+      staffList: [{"name":"Prabhas"},{"name":"Amitabh Bachchan"},{"name":"Kamal Haasan"},{"name":"Deepika Padukone"}]
+    },
+    {
+      subjectId: "stree_2_2024",
+      title: "Stree 2: Sarkate Ka Aatank",
+      cover: { url: "https://image.tmdb.org/t/p/w500/m9EtvM3m2eI31K8G0Cg3dM7N40O.jpg" },
+      imdbRatingValue: "7.3",
+      score: "7.3",
+      releaseDate: "2024-08-15",
+      duration: 8820,
+      subjectType: 1,
+      category: "movie",
+      genre: "Horror / Comedy",
+      countryName: "India",
+      imdbId: "tt28424564",
+      tmdbId: "1150495",
+      audioLangs: ["hin"],
+      description: "The town of Chanderi faces a terrifying new menace as a headless ghost named Sarkata begins abducting women, forcing Vicky and his gang to summon Stree for help.",
+      staffList: [{"name":"Rajkummar Rao"},{"name":"Shraddha Kapoor"},{"name":"Pankaj Tripathi"},{"name":"Abhishek Banerjee"}]
+    },
+    {
+      subjectId: "rrr_2022",
+      title: "RRR",
+      cover: { url: "https://image.tmdb.org/t/p/w500/kdP196hKFsvIRbtEs29nhQaqwa5.jpg" },
+      imdbRatingValue: "7.8",
+      score: "7.8",
+      releaseDate: "2022-03-25",
+      duration: 11220,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Drama",
+      countryName: "India",
+      imdbId: "tt8178634",
+      tmdbId: "579974",
+      audioLangs: ["hin","tel","tam","eng"],
+      description: "A fearless revolutionary and an officer in the British force become charismatic friends before joining together in an explosive war of national liberation.",
+      staffList: [{"name":"N.T. Rama Rao Jr."},{"name":"Ram Charan"},{"name":"Ajay Devgn"},{"name":"Alia Bhatt"}]
+    },
+    {
+      subjectId: "kgf_chapter_2_2022",
+      title: "K.G.F: Chapter 2",
+      cover: { url: "https://image.tmdb.org/t/p/w500/kh2b01H8K4vXfDslx7Q0q2M2kR2.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2022-04-14",
+      duration: 10080,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Crime / Drama",
+      countryName: "India",
+      imdbId: "tt10698680",
+      tmdbId: "675353",
+      audioLangs: ["hin","kan","tel","tam"],
+      description: "In the blood-soaked Kolar Gold Fields, Rocky establishes his undisputed rule while clashing against adversaries Adheera, Inayath Khalil, and the Indian government.",
+      staffList: [{"name":"Yash"},{"name":"Sanjay Dutt"},{"name":"Raveena Tandon"},{"name":"Srinidhi Shetty"}]
+    },
+    {
+      subjectId: "pathaan_2023",
+      title: "Pathaan",
+      cover: { url: "https://image.tmdb.org/t/p/w500/m1b9ToAbegqezhKxFwtKjN43H4y.jpg" },
+      imdbRatingValue: "5.9",
+      score: "5.9",
+      releaseDate: "2023-01-25",
+      duration: 8760,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Thriller",
+      countryName: "India",
+      imdbId: "tt12844910",
+      tmdbId: "840326",
+      audioLangs: ["hin","tel","tam"],
+      description: "An Indian RAW field agent Pathaan comes out of exile to take down Jim, the rogue leader of a private terrorist syndicate plotting a deadly biological attack on India.",
+      staffList: [{"name":"Shah Rukh Khan"},{"name":"Deepika Padukone"},{"name":"John Abraham"}]
+    },
+    {
+      subjectId: "salaar_2023",
+      title: "Salaar: Part 1 - Ceasefire",
+      cover: { url: "https://image.tmdb.org/t/p/w500/5mG7JqT4vV1aPqK1eB0P2r8A0L4.jpg" },
+      imdbRatingValue: "6.5",
+      score: "6.5",
+      releaseDate: "2023-12-22",
+      duration: 10500,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Crime / Thriller",
+      countryName: "India",
+      imdbId: "tt13623126",
+      tmdbId: "822119",
+      audioLangs: ["hin","tel","tam"],
+      description: "In the dystopian city-state of Khansaar, a prince relies on his estranged childhood friend Deva to claim his throne amid cutthroat tribal power struggles.",
+      staffList: [{"name":"Prabhas"},{"name":"Prithviraj Sukumaran"},{"name":"Shruti Haasan"}]
+    },
+    {
+      subjectId: "dunki_2023",
+      title: "Dunki",
+      cover: { url: "https://image.tmdb.org/t/p/w500/4cDOvNvhUv8jHk8K9eX3j0L8kM7.jpg" },
+      imdbRatingValue: "6.7",
+      score: "6.7",
+      releaseDate: "2023-12-21",
+      duration: 9660,
+      subjectType: 1,
+      category: "movie",
+      genre: "Comedy / Drama",
+      countryName: "India",
+      imdbId: "tt15428134",
+      tmdbId: "965620",
+      audioLangs: ["hin"],
+      description: "Four friends from a quaint Punjab village dream of going to England. Having neither visa nor ticket, a soldier pledges to take them there through the risky 'donkey route'.",
+      staffList: [{"name":"Shah Rukh Khan"},{"name":"Taapsee Pannu"},{"name":"Boman Irani"},{"name":"Vicky Kaushal"}]
+    },
+    {
+      subjectId: "fighter_2024",
+      title: "Fighter",
+      cover: { url: "https://image.tmdb.org/t/p/w500/z1p34vh7dEOnLDmyCrlUVLuoDzd.jpg" },
+      imdbRatingValue: "6.1",
+      score: "6.1",
+      releaseDate: "2024-01-25",
+      duration: 9960,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / War / Thriller",
+      countryName: "India",
+      imdbId: "tt13818368",
+      tmdbId: "805320",
+      audioLangs: ["hin"],
+      description: "Top Air Force aviators come together to form the elite Air Dragons squadron, executing daring surgical air strikes in the wake of terrorist attacks.",
+      staffList: [{"name":"Hrithik Roshan"},{"name":"Deepika Padukone"},{"name":"Anil Kapoor"}]
+    },
+    {
+      subjectId: "shaitaan_2024",
+      title: "Shaitaan",
+      cover: { url: "https://image.tmdb.org/t/p/w500/b1c4V0L6tN3aH7w7B1J7N4L5K2.jpg" },
+      imdbRatingValue: "6.7",
+      score: "6.7",
+      releaseDate: "2024-03-08",
+      duration: 7920,
+      subjectType: 1,
+      category: "movie",
+      genre: "Horror / Thriller",
+      countryName: "India",
+      imdbId: "tt27708573",
+      tmdbId: "1127166",
+      audioLangs: ["hin"],
+      description: "A family's idyllic farmhouse getaway descends into terrifying chaos when a mysterious guest hypnotizes their daughter, placing her under his dark psychic control.",
+      staffList: [{"name":"Ajay Devgn"},{"name":"R. Madhavan"},{"name":"Jyothika"}]
+    },
+    {
+      subjectId: "twelfth_fail_2023",
+      title: "12th Fail",
+      cover: { url: "https://image.tmdb.org/t/p/w500/xELX2K0iJ3G7L8p5c4J6X4W3K7.jpg" },
+      imdbRatingValue: "8.9",
+      score: "8.9",
+      releaseDate: "2023-10-27",
+      duration: 8820,
+      subjectType: 1,
+      category: "movie",
+      genre: "Biography / Drama",
+      countryName: "India",
+      imdbId: "tt23849204",
+      tmdbId: "1181548",
+      audioLangs: ["hin"],
+      description: "The inspiring real-life journey of Manoj Kumar Sharma, who overcomes extreme poverty, corruption, and failures to crack the nation's toughest civil services exam.",
+      staffList: [{"name":"Vikrant Massey"},{"name":"Medha Shankr"},{"name":"Anant V Joshi"}]
+    },
+    {
+      subjectId: "maharaja_2024",
+      title: "Maharaja",
+      cover: { url: "https://image.tmdb.org/t/p/w500/j7u7M6K1wV0xL9p5c4J6X4W3K7.jpg" },
+      imdbRatingValue: "8.5",
+      score: "8.5",
+      releaseDate: "2024-06-14",
+      duration: 8520,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Crime / Thriller",
+      countryName: "India",
+      imdbId: "tt26548265",
+      tmdbId: "1115396",
+      audioLangs: ["hin","tam","tel"],
+      description: "A humble barber visits a police station reporting his dustbin has been stolen. But beneath his bizarre plea lies an intricate, mind-bending hunt for justice and vengeance.",
+      staffList: [{"name":"Vijay Sethupathi"},{"name":"Anurag Kashyap"},{"name":"Mamta Mohandas"}]
+    },
+    {
+      subjectId: "tumbbad_2018",
+      title: "Tumbbad",
+      cover: { url: "https://image.tmdb.org/t/p/w500/6vV8XJ1K3p0L8kM7N4b9c1d2e3f.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2018-10-12",
+      duration: 6240,
+      subjectType: 1,
+      category: "movie",
+      genre: "Horror / Fantasy / Drama",
+      countryName: "India",
+      imdbId: "tt8239946",
+      tmdbId: "538858",
+      audioLangs: ["hin"],
+      description: "A mythological horror masterpiece exploring human greed across three generations as a man unlocks the forbidden gold of the demonic god Hastar.",
+      staffList: [{"name":"Sohum Shah"},{"name":"Jyoti Malshe"},{"name":"Anita Date"}]
+    },
+    {
+      subjectId: "kantara_2022",
+      title: "Kantara",
+      cover: { url: "https://image.tmdb.org/t/p/w500/5A6rKkE7vM3m2eI31K8G0Cg3dM7.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2022-09-30",
+      duration: 8880,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Adventure / Drama",
+      countryName: "India",
+      imdbId: "tt21136696",
+      tmdbId: "1024535",
+      audioLangs: ["hin","kan","tel"],
+      description: "In a coastal village of Karnataka, human-nature conflict and ancestral forest traditions trigger divine intervention through sacred folklore and demigod Daiva worship.",
+      staffList: [{"name":"Rishab Shetty"},{"name":"Kishore"},{"name":"Achyuth Kumar"}]
+    },
+    {
+      subjectId: "three_idiots_2009",
+      title: "3 Idiots",
+      cover: { url: "https://image.tmdb.org/t/p/w500/66A9MqXGECi0X47w5yB6I31K8G0.jpg" },
+      imdbRatingValue: "8.4",
+      score: "8.4",
+      releaseDate: "2009-12-25",
+      duration: 10200,
+      subjectType: 1,
+      category: "movie",
+      genre: "Comedy / Drama",
+      countryName: "India",
+      imdbId: "tt1187043",
+      tmdbId: "20453",
+      audioLangs: ["hin"],
+      description: "Two friends search for their long-lost college companion who inspired them to pursue their real passions while challenging an oppressive educational system.",
+      staffList: [{"name":"Aamir Khan"},{"name":"R. Madhavan"},{"name":"Sharman Joshi"},{"name":"Kareena Kapoor"}]
+    },
+    {
+      subjectId: "dangal_2016",
+      title: "Dangal",
+      cover: { url: "https://image.tmdb.org/t/p/w500/8tPnW9W3c4J6X4W3K7N4b9c1d2e.jpg" },
+      imdbRatingValue: "8.3",
+      score: "8.3",
+      releaseDate: "2016-12-23",
+      duration: 9660,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Biography / Drama",
+      countryName: "India",
+      imdbId: "tt5074352",
+      tmdbId: "360814",
+      audioLangs: ["hin","tam","tel"],
+      description: "Former wrestler Mahavir Singh Phogat trains his daughters Geeta and Babita to become international wrestling champions against overwhelming societal odds.",
+      staffList: [{"name":"Aamir Khan"},{"name":"Fatima Sana Shaikh"},{"name":"Sanya Malhotra"}]
+    },
+    {
+      subjectId: "gladiator_2_2024",
+      title: "Gladiator II",
+      cover: { url: "https://image.tmdb.org/t/p/w500/2cxhvwyEwRlysAmRH4iodkvo0z5.jpg" },
+      imdbRatingValue: "6.8",
+      score: "6.8",
+      releaseDate: "2024-11-22",
+      duration: 8880,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Drama / Adventure",
+      countryName: "United States",
+      imdbId: "tt9218128",
+      tmdbId: "558449",
+      audioLangs: ["eng","hin"],
+      description: "Years after witnessing the death of Maximus at the hands of his uncle, Lucius must enter the Colosseum after his home is conquered by the tyrannical Emperors who lead Rome.",
+      staffList: [{"name":"Paul Mescal"},{"name":"Pedro Pascal"},{"name":"Denzel Washington"},{"name":"Connie Nielsen"}]
+    },
+    {
+      subjectId: "avatar_twow_2022",
+      title: "Avatar: The Way of Water",
+      cover: { url: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
+      imdbRatingValue: "7.6",
+      score: "7.6",
+      releaseDate: "2022-12-16",
+      duration: 11520,
+      subjectType: 1,
+      category: "movie",
+      genre: "Sci-Fi / Action / Adventure",
+      countryName: "United States",
+      imdbId: "tt1630029",
+      tmdbId: "76600",
+      audioLangs: ["eng","hin"],
+      description: "Jake Sully lives with his newfound family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na'vi race.",
+      staffList: [{"name":"Sam Worthington"},{"name":"Zoe Saldana"},{"name":"Sigourney Weaver"}]
+    },
+    {
+      subjectId: "top_gun_maverick_2022",
+      title: "Top Gun: Maverick",
+      cover: { url: "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2022-05-27",
+      duration: 7860,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Drama",
+      countryName: "United States",
+      imdbId: "tt1745960",
+      tmdbId: "361743",
+      audioLangs: ["eng","hin"],
+      description: "After thirty years, Maverick is still pushing the envelope as a top naval aviator, but must confront ghosts of his past when he leads TOP GUN's elite graduates on an impossible mission.",
+      staffList: [{"name":"Tom Cruise"},{"name":"Miles Teller"},{"name":"Jennifer Connelly"}]
+    },
+    {
+      subjectId: "the_batman_2022",
+      title: "The Batman",
+      cover: { url: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg" },
+      imdbRatingValue: "7.8",
+      score: "7.8",
+      releaseDate: "2022-03-04",
+      duration: 10560,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Crime / Drama",
+      countryName: "United States",
+      imdbId: "tt1877830",
+      tmdbId: "414906",
+      audioLangs: ["eng","hin"],
+      description: "When a sadistic serial killer begins murdering key political figures in Gotham, the Batman is forced to investigate the city's hidden corruption and question his family's involvement.",
+      staffList: [{"name":"Robert Pattinson"},{"name":"Zoë Kravitz"},{"name":"Paul Dano"},{"name":"Colin Farrell"}]
+    },
+    {
+      subjectId: "spiderman_nwh_2021",
+      title: "Spider-Man: No Way Home",
+      cover: { url: "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2021-12-17",
+      duration: 8880,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Adventure / Sci-Fi",
+      countryName: "United States",
+      imdbId: "tt10872600",
+      tmdbId: "634649",
+      audioLangs: ["eng","hin"],
+      description: "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.",
+      staffList: [{"name":"Tom Holland"},{"name":"Zendaya"},{"name":"Benedict Cumberbatch"},{"name":"Tobey Maguire"},{"name":"Andrew Garfield"}]
+    },
+    {
+      subjectId: "john_wick_4_2023",
+      title: "John Wick: Chapter 4",
+      cover: { url: "https://image.tmdb.org/t/p/w500/vZloFAK7NKnMGKEQJVEZahCcPqm.jpg" },
+      imdbRatingValue: "7.7",
+      score: "7.7",
+      releaseDate: "2023-03-24",
+      duration: 10140,
+      subjectType: 1,
+      category: "movie",
+      genre: "Action / Crime / Thriller",
+      countryName: "United States",
+      imdbId: "tt10366206",
+      tmdbId: "603692",
+      audioLangs: ["eng","hin"],
+      description: "John Wick uncovers a path to defeating The High Table. But before he can earn his freedom, Wick must face off against a new enemy with powerful alliances across the globe and forces that turn old friends into foes.",
+      staffList: [{"name":"Keanu Reeves"},{"name":"Donnie Yen"},{"name":"Bill Skarsgård"}]
+    },
+    {
+      subjectId: "alien_romulus_2024",
+      title: "Alien: Romulus",
+      cover: { url: "https://image.tmdb.org/t/p/w500/b33nnKl12vf94Ky7JJIMV09F09.jpg" },
+      imdbRatingValue: "7.2",
+      score: "7.2",
+      releaseDate: "2024-08-16",
+      duration: 7140,
+      subjectType: 1,
+      category: "movie",
+      genre: "Horror / Sci-Fi / Thriller",
+      countryName: "United States",
+      imdbId: "tt18412256",
+      tmdbId: "945961",
+      audioLangs: ["eng","hin"],
+      description: "While scavenging the deep ends of a derelict space station, a group of young space colonizers come face to face with the most terrifying life form in the universe.",
+      staffList: [{"name":"Cailee Spaeny"},{"name":"David Jonsson"},{"name":"Archie Renaux"}]
+    },
+    {
+      subjectId: "the_notebook_2004",
+      title: "The Notebook",
+      cover: { url: "https://image.tmdb.org/t/p/w500/rNzQyW4ZZqcAcKqsybYWhCSrf9m.jpg" },
+      imdbRatingValue: "7.8",
+      score: "7.8",
+      releaseDate: "2004-06-25",
+      duration: 7380,
+      subjectType: 1,
+      category: "movie",
+      genre: "Drama / Romance",
+      countryName: "United States",
+      imdbId: "tt0332280",
+      tmdbId: "11036",
+      audioLangs: ["eng","hin"],
+      description: "An elderly man reads to a fellow nursing home patient from a notebook recounting the passionate 1940s romance between Noah Calhoun, a mill worker, and heiress Allie Hamilton.",
+      staffList: [{"name":"Ryan Gosling"},{"name":"Rachel McAdams"},{"name":"James Garner"}]
+    },
+    {
+      subjectId: "la_la_land_2016",
+      title: "La La Land",
+      cover: { url: "https://image.tmdb.org/t/p/w500/uDO8zWDhfWwoFdKS4fzkVJt0Rf0.jpg" },
+      imdbRatingValue: "8.0",
+      score: "8.0",
+      releaseDate: "2016-12-09",
+      duration: 7680,
+      subjectType: 1,
+      category: "movie",
+      genre: "Comedy / Drama / Music / Romance",
+      countryName: "United States",
+      imdbId: "tt3783958",
+      tmdbId: "313369",
+      audioLangs: ["eng"],
+      description: "While navigating their careers in Los Angeles, a pianist and an actress fall in love while attempting to reconcile their aspirations for the future.",
+      staffList: [{"name":"Ryan Gosling"},{"name":"Emma Stone"},{"name":"John Legend"}]
+    },
+    {
+      subjectId: "titanic_1997",
+      title: "Titanic",
+      cover: { url: "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg" },
+      imdbRatingValue: "7.9",
+      score: "7.9",
+      releaseDate: "1997-12-19",
+      duration: 11640,
+      subjectType: 1,
+      category: "movie",
+      genre: "Drama / Romance",
+      countryName: "United States",
+      imdbId: "tt0120338",
+      tmdbId: "597",
+      audioLangs: ["eng","hin"],
+      description: "A seventeen-year-old aristocrat falls in love with a kind but poor artist aboard the luxurious, ill-fated R.M.S. Titanic.",
+      staffList: [{"name":"Leonardo DiCaprio"},{"name":"Kate Winslet"},{"name":"Billy Zane"}]
+    },
+    {
+      subjectId: "past_lives_2023",
+      title: "Past Lives",
+      cover: { url: "https://image.tmdb.org/t/p/w500/k3waqVXSnvCZWfJYNtdamTgTtTA.jpg" },
+      imdbRatingValue: "7.9",
+      score: "7.9",
+      releaseDate: "2023-06-02",
+      duration: 6360,
+      subjectType: 1,
+      category: "movie",
+      genre: "Drama / Romance",
+      countryName: "United States",
+      imdbId: "tt13238346",
+      tmdbId: "666277",
+      audioLangs: ["eng","kor"],
+      description: "Nora and Hae Sung, two deeply connected childhood friends, are wrest apart after Nora's family emigrates from South Korea. Decades later, they are reunited in New York for one fateful week.",
+      staffList: [{"name":"Greta Lee"},{"name":"Teo Yoo"},{"name":"John Magaro"}]
+    },
+    {
+      subjectId: "the_conjuring_2013",
+      title: "The Conjuring",
+      cover: { url: "https://image.tmdb.org/t/p/w500/wVYREutTvI2tmxr6ujrHT704wGF.jpg" },
+      imdbRatingValue: "7.5",
+      score: "7.5",
+      releaseDate: "2013-07-19",
+      duration: 6720,
+      subjectType: 1,
+      category: "movie",
+      genre: "Horror / Mystery / Thriller",
+      countryName: "United States",
+      imdbId: "tt1457767",
+      tmdbId: "138843",
+      audioLangs: ["eng","hin"],
+      description: "Paranormal investigators Ed and Lorraine Warren work to help a family terrorized by a dark presence in their farmhouse.",
+      staffList: [{"name":"Patrick Wilson"},{"name":"Vera Farmiga"},{"name":"Ron Livingston"}]
+    },
+    {
+      subjectId: "a_quiet_place_day_one_2024",
+      title: "A Quiet Place: Day One",
+      cover: { url: "https://image.tmdb.org/t/p/w500/yrpPYK2qm969CuEN79pBg395Ut.jpg" },
+      imdbRatingValue: "6.3",
+      score: "6.3",
+      releaseDate: "2024-06-28",
+      duration: 5940,
+      subjectType: 1,
+      category: "movie",
+      genre: "Horror / Sci-Fi / Thriller",
+      countryName: "United States",
+      imdbId: "tt13433802",
+      tmdbId: "762441",
+      audioLangs: ["eng","hin"],
+      description: "Experience the day the world went quiet in New York City as blind alien creatures with ultrasonic hearing descend upon Earth in this terrifying apocalyptic survival thriller.",
+      staffList: [{"name":"Lupita Nyong'o"},{"name":"Joseph Quinn"},{"name":"Alex Wolff"}]
+    },
+    {
+      subjectId: "smile_2022",
+      title: "Smile",
+      cover: { url: "https://image.tmdb.org/t/p/w500/aPqcQwu4VGEewPhagWNncDbJ9Xp.jpg" },
+      imdbRatingValue: "6.5",
+      score: "6.5",
+      releaseDate: "2022-09-30",
+      duration: 6900,
+      subjectType: 1,
+      category: "movie",
+      genre: "Horror / Mystery / Thriller",
+      countryName: "United States",
+      imdbId: "tt15474916",
+      tmdbId: "882598",
+      audioLangs: ["eng","hin"],
+      description: "After witnessing a bizarre, traumatic incident involving a patient, a psychiatrist starts experiencing terrifying occurrences that she can't explain.",
+      staffList: [{"name":"Sosie Bacon"},{"name":"Jessie T. Usher"},{"name":"Kyle Gallner"}]
+    },
+    {
+      subjectId: "squid_game_2021",
+      title: "Squid Game",
+      cover: { url: "https://image.tmdb.org/t/p/w500/dDlG1v7o8zVqA3q5l0r4mXqX0.jpg" },
+      imdbRatingValue: "8.0",
+      score: "8.0",
+      releaseDate: "2021-09-17",
+      duration: 3600,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Drama / Mystery / Thriller",
+      countryName: "South Korea",
+      imdbId: "tt10919420",
+      tmdbId: "93405",
+      audioLangs: ["kor","hin","eng"],
+      description: "Hundreds of cash-strapped players accept a strange invitation to compete in children's games. Inside, a tempting prize awaits with deadly high stakes.",
+      staffList: [{"name":"Lee Jung-jae"},{"name":"Park Hae-soo"},{"name":"Wi Ha-joon"}]
+    },
+    {
+      subjectId: "money_heist_2017",
+      title: "Money Heist (La Casa de Papel)",
+      cover: { url: "https://image.tmdb.org/t/p/w500/reEMJA1uzscCbk5rSXGno05GLix.jpg" },
+      imdbRatingValue: "8.2",
+      score: "8.2",
+      releaseDate: "2017-05-02",
+      duration: 3000,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Crime / Drama",
+      countryName: "Spain",
+      imdbId: "tt6468322",
+      tmdbId: "71446",
+      audioLangs: ["spa","hin","eng"],
+      description: "An unusual group of robbers attempt to carry out the most perfect robbery in Spanish history - stealing 2.4 billion euros from the Royal Mint of Spain under the mastermind Professor.",
+      staffList: [{"name":"Álvaro Morte"},{"name":"Úrsula Corberó"},{"name":"Pedro Alonso"}]
+    },
+    {
+      subjectId: "shogun_2024",
+      title: "Shōgun",
+      cover: { url: "https://image.tmdb.org/t/p/w500/7O4iVfOMQmdCSxhOg1WNzG1AgYT.jpg" },
+      imdbRatingValue: "8.7",
+      score: "8.7",
+      releaseDate: "2024-02-27",
+      duration: 3600,
+      subjectType: 2,
+      category: "series",
+      genre: "Adventure / Drama / History",
+      countryName: "United States",
+      imdbId: "tt2788316",
+      tmdbId: "126308",
+      audioLangs: ["jpn","eng","hin"],
+      description: "When a mysterious European ship is found marooned in a nearby fishing village in feudal Japan, Lord Yoshii Toranaga discovers secrets that could tip the scales of power.",
+      staffList: [{"name":"Hiroyuki Sanada"},{"name":"Cosmo Jarvis"},{"name":"Anna Sawai"}]
+    },
+    {
+      subjectId: "fallout_2024",
+      title: "Fallout",
+      cover: { url: "https://image.tmdb.org/t/p/w500/AnsZu4h0qW2f5tYlF3M6E3g3N6.jpg" },
+      imdbRatingValue: "8.4",
+      score: "8.4",
+      releaseDate: "2024-04-10",
+      duration: 3600,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Adventure / Sci-Fi",
+      countryName: "United States",
+      imdbId: "tt12637874",
+      tmdbId: "106379",
+      audioLangs: ["eng","hin"],
+      description: "In a future, post-apocalyptic Los Angeles brought about by nuclear decimation, citizens must live in underground bunkers to protect themselves from radiation, mutants and bandits.",
+      staffList: [{"name":"Ella Purnell"},{"name":"Walton Goggins"},{"name":"Aaron Moten"}]
+    },
+    {
+      subjectId: "peaky_blinders_2013",
+      title: "Peaky Blinders",
+      cover: { url: "https://image.tmdb.org/t/p/w500/vUUqzWa2LnHIVqkaKVlVGkVcZIW.jpg" },
+      imdbRatingValue: "8.8",
+      score: "8.8",
+      releaseDate: "2013-09-12",
+      duration: 3600,
+      subjectType: 2,
+      category: "series",
+      genre: "Crime / Drama",
+      countryName: "United Kingdom",
+      imdbId: "tt2442560",
+      tmdbId: "60574",
+      audioLangs: ["eng","hin"],
+      description: "A gangster family epic set in 1900s England, centering on a gang who sew razor blades in the peaks of their caps, and their fierce boss Tommy Shelby.",
+      staffList: [{"name":"Cillian Murphy"},{"name":"Paul Anderson"},{"name":"Helen McCrory"},{"name":"Tom Hardy"}]
+    },
+    {
+      subjectId: "chernobyl_2019",
+      title: "Chernobyl",
+      cover: { url: "https://image.tmdb.org/t/p/w500/hlLXt2tOPT6RRnjiUmoxyG1LTFi.jpg" },
+      imdbRatingValue: "9.3",
+      score: "9.3",
+      releaseDate: "2019-05-06",
+      duration: 3600,
+      subjectType: 2,
+      category: "series",
+      genre: "Drama / History / Thriller",
+      countryName: "United States",
+      imdbId: "tt8462636",
+      tmdbId: "87108",
+      audioLangs: ["eng","hin"],
+      description: "In April 1986, an explosion at the Chernobyl nuclear power plant in the Soviet Union becomes one of the world's worst man-made catastrophes, chronicling the brave souls who fought to contain it.",
+      staffList: [{"name":"Jared Harris"},{"name":"Stellan Skarsgård"},{"name":"Emily Watson"}]
+    },
+    {
+      subjectId: "sacred_games_2018",
+      title: "Sacred Games",
+      cover: { url: "https://image.tmdb.org/t/p/w500/c5XUe6wU0Z3k4L5M6N7O8P9Q0R.jpg" },
+      imdbRatingValue: "8.5",
+      score: "8.5",
+      releaseDate: "2018-07-06",
+      duration: 3000,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Crime / Drama / Mystery",
+      countryName: "India",
+      imdbId: "tt6077448",
+      tmdbId: "79352",
+      audioLangs: ["hin"],
+      description: "A link in their pasts leads an honest Mumbai cop Sartaj Singh to a fugitive gang boss Ganesh Gaitonde, whose cryptic warning spurs a quest to save the city from cataclysm.",
+      staffList: [{"name":"Saif Ali Khan"},{"name":"Nawazuddin Siddiqui"},{"name":"Radhika Apte"}]
+    },
+    {
+      subjectId: "the_family_man_2019",
+      title: "The Family Man",
+      cover: { url: "https://image.tmdb.org/t/p/w500/tL0f3kL5M6N7O8P9Q0R1S2T3U4.jpg" },
+      imdbRatingValue: "8.7",
+      score: "8.7",
+      releaseDate: "2019-09-20",
+      duration: 2700,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Comedy / Drama / Thriller",
+      countryName: "India",
+      imdbId: "tt9544034",
+      tmdbId: "92749",
+      audioLangs: ["hin","tam","tel"],
+      description: "A working-class man works for a secretive special cell of the National Investigation Agency, while desperately trying to protect his family from the secrecy of his dangerous job.",
+      staffList: [{"name":"Manoj Bajpayee"},{"name":"Samantha Ruth Prabhu"},{"name":"Priyamani"}]
+    },
+    {
+      subjectId: "farzi_2023",
+      title: "Farzi",
+      cover: { url: "https://image.tmdb.org/t/p/w500/eK1wV0xL9p5c4J6X4W3K7N4b9c.jpg" },
+      imdbRatingValue: "8.4",
+      score: "8.4",
+      releaseDate: "2023-02-10",
+      duration: 3300,
+      subjectType: 2,
+      category: "series",
+      genre: "Crime / Drama / Thriller",
+      countryName: "India",
+      imdbId: "tt15482390",
+      tmdbId: "218230",
+      audioLangs: ["hin","tam","tel"],
+      description: "Sunny, a brilliant small-time artist, is catapulted into the high-stakes world of counterfeiting when he creates the perfect fake currency note, pursued by an unorthodox task force officer.",
+      staffList: [{"name":"Shahid Kapoor"},{"name":"Vijay Sethupathi"},{"name":"Kay Kay Menon"}]
+    },
+    {
+      subjectId: "scam_1992",
+      title: "Scam 1992: The Harshad Mehta Story",
+      cover: { url: "https://image.tmdb.org/t/p/w500/m9EtvM3m2eI31K8G0Cg3dM7N40O.jpg" },
+      imdbRatingValue: "9.3",
+      score: "9.3",
+      releaseDate: "2020-10-09",
+      duration: 3300,
+      subjectType: 2,
+      category: "series",
+      genre: "Biography / Crime / Drama",
+      countryName: "India",
+      imdbId: "tt12392504",
+      tmdbId: "111803",
+      audioLangs: ["hin"],
+      description: "Set in 1980s and 90s Bombay, follows the meteoric rise and catastrophic fall of stockbroker Harshad Mehta, who took the Indian stock market to dizzying heights.",
+      staffList: [{"name":"Pratik Gandhi"},{"name":"Shreya Dhanwanthary"},{"name":"Hemant Kher"}]
+    },
+    {
+      subjectId: "paatal_lok_2020",
+      title: "Paatal Lok",
+      cover: { url: "https://image.tmdb.org/t/p/w500/b33nnKl12vf94Ky7JJIMV09F09.jpg" },
+      imdbRatingValue: "8.1",
+      score: "8.1",
+      releaseDate: "2020-05-15",
+      duration: 2700,
+      subjectType: 2,
+      category: "series",
+      genre: "Crime / Drama / Mystery / Thriller",
+      countryName: "India",
+      imdbId: "tt12080246",
+      tmdbId: "102146",
+      audioLangs: ["hin"],
+      description: "A cynical inspector gets assigned to investigate a botched assassination attempt, which leads him deep into the dark underbelly of crime, politics and religious extremism.",
+      staffList: [{"name":"Jaideep Ahlawat"},{"name":"Ishwak Singh"},{"name":"Abhishek Banerjee"}]
+    },
+    {
+      subjectId: "asur_2020",
+      title: "Asur: Welcome to Your Dark Side",
+      cover: { url: "https://image.tmdb.org/t/p/w500/3c0bE7p1gN8hL6eX3j0L8kM7N4.jpg" },
+      imdbRatingValue: "8.5",
+      score: "8.5",
+      releaseDate: "2020-03-02",
+      duration: 2700,
+      subjectType: 2,
+      category: "series",
+      genre: "Crime / Drama / Mystery / Thriller",
+      countryName: "India",
+      imdbId: "tt11911128",
+      tmdbId: "100146",
+      audioLangs: ["hin"],
+      description: "A unique psychological thriller that pits two opposing worlds against each other: forensic science against ancient Indian mythology and dark demonic cults.",
+      staffList: [{"name":"Arshad Warsi"},{"name":"Barun Sobti"},{"name":"Anupriya Goenka"}]
+    },
+    {
+      subjectId: "kota_factory_2019",
+      title: "Kota Factory",
+      cover: { url: "https://image.tmdb.org/t/p/w500/6vV8XJ1K3p0L8kM7N4b9c1d2e3f.jpg" },
+      imdbRatingValue: "9.0",
+      score: "9.0",
+      releaseDate: "2019-04-16",
+      duration: 2400,
+      subjectType: 2,
+      category: "series",
+      genre: "Comedy / Drama",
+      countryName: "India",
+      imdbId: "tt9432978",
+      tmdbId: "87739",
+      audioLangs: ["hin"],
+      description: "Dedicated to student life in Kota, the coaching hub of India. Follows Vaibhav and his friends through intense IIT-JEE preparation and life lessons guided by Jeetu Bhaiya.",
+      staffList: [{"name":"Mayur More"},{"name":"Jitendra Kumar"},{"name":"Ranjan Raj"}]
+    },
+    {
+      subjectId: "crash_landing_on_you_2019",
+      title: "Crash Landing on You",
+      cover: { url: "https://image.tmdb.org/t/p/w500/tL0f3kL5M6N7O8P9Q0R1S2T3U4.jpg" },
+      imdbRatingValue: "8.7",
+      score: "8.7",
+      releaseDate: "2019-12-14",
+      duration: 4500,
+      subjectType: 2,
+      category: "series",
+      genre: "Comedy / Drama / Romance",
+      countryName: "South Korea",
+      imdbId: "tt10850932",
+      tmdbId: "94796",
+      audioLangs: ["kor","hin","eng"],
+      description: "A paragliding mishap drops a South Korean heiress into North Korea - and into the life of an army officer, who decides he will help her hide and return home safely.",
+      staffList: [{"name":"Hyun Bin"},{"name":"Son Ye-jin"},{"name":"Seo Ji-hye"}]
+    },
+    {
+      subjectId: "all_of_us_are_dead_2022",
+      title: "All of Us Are Dead",
+      cover: { url: "https://image.tmdb.org/t/p/w500/8j1PvN4vV1aPqK1eB0P2r8A0L4.jpg" },
+      imdbRatingValue: "7.5",
+      score: "7.5",
+      releaseDate: "2022-01-28",
+      duration: 3600,
+      subjectType: 2,
+      category: "series",
+      genre: "Action / Drama / Horror / Sci-Fi",
+      countryName: "South Korea",
+      imdbId: "tt12451016",
+      tmdbId: "99966",
+      audioLangs: ["kor","hin","eng"],
+      description: "A high school becomes ground zero for a zombie virus outbreak. Trapped students must fight their way out or turn into one of the rabid infected.",
+      staffList: [{"name":"Park Ji-hu"},{"name":"Yoon Chan-young"},{"name":"Cho Yi-hyun"}]
+    },
+    {
+      subjectId: "the_glory_2022",
+      title: "The Glory",
+      cover: { url: "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg" },
+      imdbRatingValue: "8.1",
+      score: "8.1",
+      releaseDate: "2022-12-30",
+      duration: 3300,
+      subjectType: 2,
+      category: "series",
+      genre: "Drama / Mystery / Thriller",
+      countryName: "South Korea",
+      imdbId: "tt21344706",
+      tmdbId: "152604",
+      audioLangs: ["kor","hin","eng"],
+      description: "Years after surviving horrific abuse in high school, a woman puts an elaborate revenge scheme into motion to make the perpetrators pay for their crimes.",
+      staffList: [{"name":"Song Hye-kyo"},{"name":"Lee Do-hyun"},{"name":"Lim Ji-yeon"}]
+    },
+    {
+      subjectId: "queen_of_tears_2024",
+      title: "Queen of Tears",
+      cover: { url: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg" },
+      imdbRatingValue: "8.3",
+      score: "8.3",
+      releaseDate: "2024-03-09",
+      duration: 4800,
+      subjectType: 2,
+      category: "series",
+      genre: "Comedy / Drama / Romance",
+      countryName: "South Korea",
+      imdbId: "tt29294241",
+      tmdbId: "216390",
+      audioLangs: ["kor","hin","eng"],
+      description: "The queen of department stores and her small-town husband weather a marital crisis - until love miraculously begins to bloom again amidst corporate rivalry.",
+      staffList: [{"name":"Kim Soo-hyun"},{"name":"Kim Ji-won"},{"name":"Park Sung-hoon"}]
+    },
+    {
+      subjectId: "naruto_shippuden_2007",
+      title: "Naruto: Shippuden",
+      cover: { url: "https://image.tmdb.org/t/p/w500/zAYRe2bJxpWTVrwwmBc006Um8xJ.jpg" },
+      imdbRatingValue: "8.7",
+      score: "8.7",
+      releaseDate: "2007-02-15",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Action / Adventure / Fantasy",
+      countryName: "Japan",
+      imdbId: "tt0988824",
+      tmdbId: "31911",
+      audioLangs: ["jpn","hin","eng"],
+      description: "Naruto Uzumaki returns to the Hidden Leaf Village after years of intense training with Jiraiya, ready to face the ominous Akatsuki organization and bring Sasuke back.",
+      staffList: [{"name":"Junko Takeuchi"},{"name":"Noriaki Sugiyama"},{"name":"Chie Nakamura"}]
+    },
+    {
+      subjectId: "naruto_2002",
+      title: "Naruto",
+      cover: { url: "https://image.tmdb.org/t/p/w500/x26rEljZfcs9k63TWevH75k6rKk.jpg" },
+      imdbRatingValue: "8.4",
+      score: "8.4",
+      releaseDate: "2002-10-03",
+      duration: 1380,
+      subjectType: 2,
+      category: "anime",
+      genre: "Action / Adventure / Fantasy",
+      countryName: "Japan",
+      imdbId: "tt0409591",
+      tmdbId: "46260",
+      audioLangs: ["jpn","hin","eng"],
+      description: "Naruto Uzumaki, a mischievous adolescent ninja who struggles as the host of the Nine-Tailed Fox, dreams of becoming the village leader, the Hokage.",
+      staffList: [{"name":"Junko Takeuchi"},{"name":"Noriaki Sugiyama"},{"name":"Kazuhiko Inoue"}]
+    },
+    {
+      subjectId: "chainsaw_man_2022",
+      title: "Chainsaw Man",
+      cover: { url: "https://image.tmdb.org/t/p/w500/npdB6eFz4qwNtSdoxnnpUmZwIRL.jpg" },
+      imdbRatingValue: "8.4",
+      score: "8.4",
+      releaseDate: "2022-10-12",
+      duration: 1500,
+      subjectType: 2,
+      category: "anime",
+      genre: "Action / Dark Fantasy / Comedy",
+      countryName: "Japan",
+      imdbId: "tt13616990",
+      tmdbId: "114410",
+      audioLangs: ["jpn","hin","eng"],
+      description: "Denji is a teenage boy living with a Chainsaw Devil named Pochita. When he is betrayed and killed, Pochita fuses with his heart, transforming him into Chainsaw Man.",
+      staffList: [{"name":"Kikunosuke Toya"},{"name":"Tomori Kusunoki"},{"name":"Shogo Sakata"}]
+    },
+    {
+      subjectId: "spy_x_family_2022",
+      title: "Spy x Family",
+      cover: { url: "https://image.tmdb.org/t/p/w500/3r2q5G6kFsvIRbtEs29nhQaqwa5.jpg" },
+      imdbRatingValue: "8.3",
+      score: "8.3",
+      releaseDate: "2022-04-09",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Action / Comedy / Slice of Life",
+      countryName: "Japan",
+      imdbId: "tt13706018",
+      tmdbId: "120089",
+      audioLangs: ["jpn","hin","eng"],
+      description: "A spy on an undercover mission marries an assassin and adopts a telepathic daughter, but none of them know each other's secret identities.",
+      staffList: [{"name":"Takuya Eguchi"},{"name":"Atsumi Tanezaki"},{"name":"Saori Hayami"}]
+    },
+    {
+      subjectId: "dragon_ball_super_2015",
+      title: "Dragon Ball Super",
+      cover: { url: "https://image.tmdb.org/t/p/w500/qetEF5e2W3c4J6X4W3K7N4b9c1d.jpg" },
+      imdbRatingValue: "8.3",
+      score: "8.3",
+      releaseDate: "2015-07-05",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Action / Adventure / Sci-Fi",
+      countryName: "Japan",
+      imdbId: "tt4644488",
+      tmdbId: "62715",
+      audioLangs: ["jpn","hin","eng"],
+      description: "Goku and his friends encounter the God of Destruction Beerus and participate in the Tournament of Power to decide the fate of entire universes.",
+      staffList: [{"name":"Masako Nozawa"},{"name":"Ryo Horikawa"},{"name":"Hiromi Tsuru"}]
+    },
+    {
+      subjectId: "hunter_x_hunter_2011",
+      title: "Hunter x Hunter",
+      cover: { url: "https://image.tmdb.org/t/p/w500/ucmpDbQC8C82L8p5c4J6X4W3K7.jpg" },
+      imdbRatingValue: "9.0",
+      score: "9.0",
+      releaseDate: "2011-10-02",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Action / Adventure / Fantasy",
+      countryName: "Japan",
+      imdbId: "tt2098220",
+      tmdbId: "46298",
+      audioLangs: ["jpn","hin","eng"],
+      description: "Gon Freecss aspires to become a Hunter, an exceptional being capable of greatness. With his friends Killua, Kurapika and Leorio, he embarks on an epic quest to find his father.",
+      staffList: [{"name":"Megumi Han"},{"name":"Mariya Ise"},{"name":"Miyuki Sawashiro"}]
+    },
+    {
+      subjectId: "vinland_saga_2019",
+      title: "Vinland Saga",
+      cover: { url: "https://image.tmdb.org/t/p/w500/vQ9U1PqK1eB0P2r8A0L4N4b9c1.jpg" },
+      imdbRatingValue: "8.8",
+      score: "8.8",
+      releaseDate: "2019-07-07",
+      duration: 1500,
+      subjectType: 2,
+      category: "anime",
+      genre: "Action / Adventure / Drama",
+      countryName: "Japan",
+      imdbId: "tt10233444",
+      tmdbId: "86423",
+      audioLangs: ["jpn","hin","eng"],
+      description: "Thorfinn pursues a journey with his father's killer in order to take revenge and end his life in a duel of honor, paying tribute to his warrior Viking lineage.",
+      staffList: [{"name":"Yuto Uemura"},{"name":"Naoya Uchida"},{"name":"Kenichiro Matsuda"}]
+    },
+    {
+      subjectId: "fullmetal_alchemist_brotherhood",
+      title: "Fullmetal Alchemist: Brotherhood",
+      cover: { url: "https://image.tmdb.org/t/p/w500/5ZFUEOULaVml7p19N8hL6eX3j0.jpg" },
+      imdbRatingValue: "9.1",
+      score: "9.1",
+      releaseDate: "2009-04-05",
+      duration: 1440,
+      subjectType: 2,
+      category: "anime",
+      genre: "Action / Adventure / Dark Fantasy",
+      countryName: "Japan",
+      imdbId: "tt1387602",
+      tmdbId: "31910",
+      audioLangs: ["jpn","hin","eng"],
+      description: "Two brothers search for a Philosopher's Stone after an attempt to revive their deceased mother goes horribly wrong and leaves them in damaged physical forms.",
+      staffList: [{"name":"Romi Park"},{"name":"Rie Kugimiya"},{"name":"Megumi Takamoto"}]
+    },
+    {
+      subjectId: "moana_2_2024",
+      title: "Moana 2",
+      cover: { url: "https://image.tmdb.org/t/p/w500/v9acaWVvvygSssU6u09t3e5aQf5.jpg" },
+      imdbRatingValue: "6.9",
+      score: "6.9",
+      releaseDate: "2024-11-27",
+      duration: 6000,
+      subjectType: 1,
+      category: "kids",
+      genre: "Animation / Adventure / Comedy / Family",
+      countryName: "United States",
+      imdbId: "tt31187970",
+      tmdbId: "1241982",
+      audioLangs: ["eng","hin"],
+      description: "After receiving an unexpected call from her wayfinding ancestors, Moana must journey to the far seas of Oceania and into dangerous, long-lost waters for an adventure unlike anything she's ever faced.",
+      staffList: [{"name":"Auli'i Cravalho"},{"name":"Dwayne Johnson"},{"name":"Rachel House"}]
+    },
+    {
+      subjectId: "coco_2017",
+      title: "Coco",
+      cover: { url: "https://image.tmdb.org/t/p/w500/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg" },
+      imdbRatingValue: "8.4",
+      score: "8.4",
+      releaseDate: "2017-10-27",
+      duration: 6300,
+      subjectType: 1,
+      category: "kids",
+      genre: "Animation / Adventure / Comedy / Family",
+      countryName: "United States",
+      imdbId: "tt2380307",
+      tmdbId: "354912",
+      audioLangs: ["eng","hin"],
+      description: "Aspiring musician Miguel, confronted with his family's ancestral ban on music, enters the Land of the Dead to find his great-great-grandfather, a legendary singer.",
+      staffList: [{"name":"Anthony Gonzalez"},{"name":"Gael García Bernal"},{"name":"Benjamin Bratt"}]
+    },
+    {
+      subjectId: "the_lion_king_2019",
+      title: "The Lion King",
+      cover: { url: "https://image.tmdb.org/t/p/w500/dzBtHHys3WiTRRww6b4r8GlAQ84.jpg" },
+      imdbRatingValue: "6.8",
+      score: "6.8",
+      releaseDate: "2019-07-19",
+      duration: 7080,
+      subjectType: 1,
+      category: "kids",
+      genre: "Animation / Adventure / Drama / Family",
+      countryName: "United States",
+      imdbId: "tt6105098",
+      tmdbId: "420818",
+      audioLangs: ["eng","hin"],
+      description: "After the murder of his father, a young lion prince flees his kingdom only to learn the true meaning of responsibility, bravery and destiny.",
+      staffList: [{"name":"Donald Glover"},{"name":"Beyoncé"},{"name":"Seth Rogen"},{"name":"Chiwetel Ejiofor"}]
+    }
   ],
 
   getSubject(id) {
@@ -1216,6 +2243,7 @@ const EmbeddedEngine = {
       const dramaCrime = series.filter(s => s.genre && (s.genre.includes('Drama') || s.genre.includes('Crime')));
       const sciFiFantasy = series.filter(s => s.genre && (s.genre.includes('Sci-Fi') || s.genre.includes('Fantasy') || s.genre.includes('Action')));
       const hindiIndian = series.filter(s => s.countryName === 'India' || (s.audioLangs && s.audioLangs.includes('hin')));
+      const koreanAsian = series.filter(s => s.countryName === 'South Korea' || s.countryName === 'Spain' || s.countryName === 'United Kingdom');
 
       return {
         code: 0,
@@ -1229,22 +2257,27 @@ const EmbeddedEngine = {
             {
               type: "TV_OPS_SUBJECTS",
               title: "Trending TV Series (Top 10 Global)",
-              subjects: series.slice(0, 6)
-            },
-            {
-              type: "TV_OPS_SUBJECTS",
-              title: "Critically Acclaimed Drama & Crime Series",
-              subjects: (dramaCrime.length >= 3 ? dramaCrime : series).slice(0, 6)
-            },
-            {
-              type: "TV_OPS_SUBJECTS",
-              title: "Sci-Fi, Fantasy & Thriller Series",
-              subjects: (sciFiFantasy.length >= 3 ? sciFiFantasy : series).slice(0, 6)
+              subjects: series.slice(0, 12)
             },
             {
               type: "TV_OPS_SUBJECTS",
               title: "Top Hindi & Indian Original Web Series",
-              subjects: (hindiIndian.length >= 2 ? hindiIndian : series).slice(0, 6)
+              subjects: (hindiIndian.length >= 2 ? hindiIndian : series).slice(0, 12)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Critically Acclaimed Drama & Crime Series",
+              subjects: (dramaCrime.length >= 3 ? dramaCrime : series).slice(0, 12)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Sci-Fi, Fantasy & Thriller Series",
+              subjects: (sciFiFantasy.length >= 3 ? sciFiFantasy : series).slice(0, 12)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Korean & International Sensation Series",
+              subjects: (koreanAsian.length >= 2 ? koreanAsian : series).slice(0, 10)
             }
           ]
         }
@@ -1253,9 +2286,11 @@ const EmbeddedEngine = {
 
     if (tabId === 'MOVIE') {
       const movies = this.subjects.filter(s => s.subjectType === 1 && s.category === 'movie');
-      const actionThriller = movies.filter(s => s.genre && (s.genre.includes('Action') || s.genre.includes('Thriller')));
-      const sciFiCinematic = movies.filter(s => s.genre && (s.genre.includes('Sci-Fi') || s.genre.includes('Drama')));
+      const actionThriller = movies.filter(s => s.genre && (s.genre.includes('Action') || s.genre.includes('Thriller') || s.genre.includes('Sci-Fi')));
+      const sciFiCinematic = movies.filter(s => s.genre && (s.genre.includes('Sci-Fi') || s.genre.includes('Drama') || s.genre.includes('Adventure')));
       const indianBlockbusters = movies.filter(s => s.countryName === 'India' || (s.audioLangs && s.audioLangs.includes('hin')));
+      const romanticFilms = movies.filter(s => s.genre && s.genre.includes('Romance'));
+      const horrorThrillers = movies.filter(s => s.genre && s.genre.includes('Horror'));
 
       return {
         code: 0,
@@ -1269,22 +2304,32 @@ const EmbeddedEngine = {
             {
               type: "TV_OPS_SUBJECTS",
               title: "Trending Blockbuster Movies (1080p / 4K)",
-              subjects: movies.slice(0, 6)
-            },
-            {
-              type: "TV_OPS_SUBJECTS",
-              title: "High-Octane Action & Thriller Hits",
-              subjects: (actionThriller.length >= 3 ? actionThriller : movies).slice(0, 6)
-            },
-            {
-              type: "TV_OPS_SUBJECTS",
-              title: "Sci-Fi & Cinematic Masterpieces",
-              subjects: (sciFiCinematic.length >= 3 ? sciFiCinematic : movies).slice(0, 6)
+              subjects: movies.slice(0, 14)
             },
             {
               type: "TV_OPS_SUBJECTS",
               title: "Bollywood & Indian Cinema Hits",
-              subjects: (indianBlockbusters.length >= 2 ? indianBlockbusters : movies).slice(0, 6)
+              subjects: (indianBlockbusters.length >= 2 ? indianBlockbusters : movies).slice(0, 14)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "High-Octane Action & Sci-Fi Hits",
+              subjects: (actionThriller.length >= 3 ? actionThriller : movies).slice(0, 14)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Romantic Films & Emotional Journeys",
+              subjects: (romanticFilms.length >= 2 ? romanticFilms : movies).slice(0, 10)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Horror & Spine-Chilling Thrillers",
+              subjects: (horrorThrillers.length >= 2 ? horrorThrillers : movies).slice(0, 10)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Sci-Fi & Cinematic Masterpieces",
+              subjects: (sciFiCinematic.length >= 3 ? sciFiCinematic : movies).slice(0, 12)
             }
           ]
         }
@@ -1295,6 +2340,7 @@ const EmbeddedEngine = {
       const anime = this.subjects.filter(s => s.category === 'anime');
       const shonenAction = anime.filter(s => s.genre && (s.genre.includes('Action') || s.genre.includes('Dark Fantasy')));
       const masterpieces = anime.filter(s => parseFloat(s.score || s.imdbRatingValue || 0) >= 8.5);
+      const adventureFantasy = anime.filter(s => s.genre && (s.genre.includes('Adventure') || s.genre.includes('Fantasy')));
 
       return {
         code: 0,
@@ -1308,17 +2354,22 @@ const EmbeddedEngine = {
             {
               type: "TV_OPS_SUBJECTS",
               title: "Trending Anime Series (English & Hindi Dub)",
-              subjects: anime.slice(0, 6)
+              subjects: anime.slice(0, 14)
             },
             {
               type: "TV_OPS_SUBJECTS",
               title: "Top Shonen Action & Dark Fantasy",
-              subjects: (shonenAction.length >= 3 ? shonenAction : anime).slice(0, 6)
+              subjects: (shonenAction.length >= 3 ? shonenAction : anime).slice(0, 14)
             },
             {
               type: "TV_OPS_SUBJECTS",
               title: "IMDb 8.5+ Anime Masterpieces",
-              subjects: (masterpieces.length >= 3 ? masterpieces : anime).slice(0, 6)
+              subjects: (masterpieces.length >= 3 ? masterpieces : anime).slice(0, 14)
+            },
+            {
+              type: "TV_OPS_SUBJECTS",
+              title: "Epic Adventure & Fantasy Anime",
+              subjects: (adventureFantasy.length >= 2 ? adventureFantasy : anime).slice(0, 12)
             }
           ]
         }
@@ -1339,7 +2390,7 @@ const EmbeddedEngine = {
             {
               type: "TV_OPS_SUBJECTS",
               title: "Top Family & Animated Blockbusters",
-              subjects: kids.slice(0, 6)
+              subjects: kids.slice(0, 10)
             },
             {
               type: "TV_OPS_SUBJECTS",
@@ -1357,6 +2408,9 @@ const EmbeddedEngine = {
     const homeAnime = this.subjects.filter(s => s.category === 'anime');
     const homeIndian = this.subjects.filter(s => s.countryName === 'India' || (s.audioLangs && s.audioLangs.includes('hin')));
     const homeKids = this.subjects.filter(s => s.category === 'kids');
+    const homeRomantic = homeMovies.filter(s => s.genre && s.genre.includes('Romance'));
+    const homeHorror = homeMovies.filter(s => s.genre && s.genre.includes('Horror'));
+    const homeKDrama = homeSeries.filter(s => s.countryName === 'South Korea');
 
     return {
       code: 0,
@@ -1370,32 +2424,47 @@ const EmbeddedEngine = {
           {
             type: "TV_OPS_SUBJECTS",
             title: "Trending Today (Top 10 Global)",
-            subjects: this.subjects.slice(0, 6)
+            subjects: this.subjects.slice(0, 14)
+          },
+          {
+            type: "TV_OPS_SUBJECTS",
+            title: "Bollywood & Indian Cinema Hits",
+            subjects: homeIndian.slice(0, 14)
           },
           {
             type: "TV_OPS_SUBJECTS",
             title: "Hollywood & Global Blockbuster Movies",
-            subjects: homeMovies.slice(0, 6)
+            subjects: homeMovies.slice(0, 14)
           },
           {
             type: "TV_OPS_SUBJECTS",
             title: "Binge-Worthy TV Series & Originals",
-            subjects: homeSeries.slice(0, 6)
+            subjects: homeSeries.slice(0, 14)
           },
           {
             type: "TV_OPS_SUBJECTS",
             title: "Top Anime Hits & Dark Fantasy",
-            subjects: homeAnime.slice(0, 6)
+            subjects: homeAnime.slice(0, 14)
           },
           {
             type: "TV_OPS_SUBJECTS",
-            title: "Indian Blockbusters & Regional Hits",
-            subjects: homeIndian.slice(0, 6)
+            title: "Korean & Asian Drama Sensations",
+            subjects: (homeKDrama.length >= 2 ? homeKDrama : homeSeries).slice(0, 10)
+          },
+          {
+            type: "TV_OPS_SUBJECTS",
+            title: "Romantic Films & Emotional Stories",
+            subjects: (homeRomantic.length >= 2 ? homeRomantic : homeMovies).slice(0, 10)
+          },
+          {
+            type: "TV_OPS_SUBJECTS",
+            title: "Horror & Psychological Thrillers",
+            subjects: (homeHorror.length >= 2 ? homeHorror : homeMovies).slice(0, 10)
           },
           {
             type: "TV_OPS_SUBJECTS",
             title: "Family & Kids Animated Blockbusters",
-            subjects: homeKids.slice(0, 6)
+            subjects: homeKids.slice(0, 10)
           }
         ]
       }
@@ -1460,7 +2529,32 @@ const EmbeddedEngine = {
 
       // Indian Series
       "mirzapur_series": [{ se: 1, maxEp: 9 }, { se: 2, maxEp: 10 }, { se: 3, maxEp: 10 }],
-      "panchayat_series": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 8 }, { se: 3, maxEp: 8 }]
+      "panchayat_series": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 8 }, { se: 3, maxEp: 8 }],
+      "squid_game_2021": [{ se: 1, maxEp: 9 }, { se: 2, maxEp: 6 }],
+      "money_heist_2017": [{ se: 1, maxEp: 13 }, { se: 2, maxEp: 9 }, { se: 3, maxEp: 8 }, { se: 4, maxEp: 8 }, { se: 5, maxEp: 10 }],
+      "shogun_2024": [{ se: 1, maxEp: 10 }],
+      "fallout_2024": [{ se: 1, maxEp: 8 }],
+      "peaky_blinders_2013": [{ se: 1, maxEp: 6 }, { se: 2, maxEp: 6 }, { se: 3, maxEp: 6 }, { se: 4, maxEp: 6 }, { se: 5, maxEp: 6 }, { se: 6, maxEp: 6 }],
+      "chernobyl_2019": [{ se: 1, maxEp: 5 }],
+      "sacred_games_2018": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 8 }],
+      "the_family_man_2019": [{ se: 1, maxEp: 10 }, { se: 2, maxEp: 9 }],
+      "farzi_2023": [{ se: 1, maxEp: 8 }],
+      "scam_1992": [{ se: 1, maxEp: 10 }],
+      "paatal_lok_2020": [{ se: 1, maxEp: 9 }],
+      "asur_2020": [{ se: 1, maxEp: 8 }, { se: 2, maxEp: 8 }],
+      "kota_factory_2019": [{ se: 1, maxEp: 5 }, { se: 2, maxEp: 5 }, { se: 3, maxEp: 5 }],
+      "crash_landing_on_you_2019": [{ se: 1, maxEp: 16 }],
+      "all_of_us_are_dead_2022": [{ se: 1, maxEp: 12 }],
+      "the_glory_2022": [{ se: 1, maxEp: 16 }],
+      "queen_of_tears_2024": [{ se: 1, maxEp: 16 }],
+      "naruto_shippuden_2007": [{ se: 1, maxEp: 32 }, { se: 2, maxEp: 21 }, { se: 3, maxEp: 18 }, { se: 4, maxEp: 17 }, { se: 5, maxEp: 24 }, { se: 6, maxEp: 31 }, { se: 7, maxEp: 8 }, { se: 8, maxEp: 24 }, { se: 9, maxEp: 21 }, { se: 10, maxEp: 25 }],
+      "naruto_2002": [{ se: 1, maxEp: 52 }, { se: 2, maxEp: 48 }, { se: 3, maxEp: 41 }, { se: 4, maxEp: 42 }, { se: 5, maxEp: 37 }],
+      "chainsaw_man_2022": [{ se: 1, maxEp: 12 }],
+      "spy_x_family_2022": [{ se: 1, maxEp: 25 }, { se: 2, maxEp: 12 }],
+      "dragon_ball_super_2015": [{ se: 1, maxEp: 14 }, { se: 2, maxEp: 13 }, { se: 3, maxEp: 19 }, { se: 4, maxEp: 30 }, { se: 5, maxEp: 55 }],
+      "hunter_x_hunter_2011": [{ se: 1, maxEp: 26 }, { se: 2, maxEp: 12 }, { se: 3, maxEp: 20 }, { se: 4, maxEp: 17 }, { se: 5, maxEp: 61 }, { se: 6, maxEp: 12 }],
+      "vinland_saga_2019": [{ se: 1, maxEp: 24 }, { se: 2, maxEp: 24 }],
+      "fullmetal_alchemist_brotherhood": [{ se: 1, maxEp: 64 }]
     };
 
     let conf = seriesConfig[id];
@@ -1995,10 +3089,35 @@ const EmbeddedEngine = {
     if (!kw) {
       return { code: 0, data: { items: [] } };
     }
-    const results = this.subjects.filter(s => 
-      s.title.toLowerCase().includes(kw) || 
-      (s.genre && s.genre.toLowerCase().includes(kw))
-    );
+    const results = this.subjects.filter(s => {
+      const titleMatch = s.title && s.title.toLowerCase().includes(kw);
+      const genreMatch = s.genre && s.genre.toLowerCase().includes(kw);
+      const countryMatch = s.countryName && s.countryName.toLowerCase().includes(kw);
+      const imdbMatch = s.imdbId && s.imdbId.toLowerCase().includes(kw);
+      const tmdbMatch = s.tmdbId && s.tmdbId.toLowerCase().includes(kw);
+      const descMatch = s.description && s.description.toLowerCase().includes(kw);
+      const staffMatch = s.staffList && s.staffList.some(st => st.name && st.name.toLowerCase().includes(kw));
+
+      let aliasMatch = false;
+      if (kw === 'bollywood' || kw === 'india') {
+        aliasMatch = s.countryName === 'India';
+      } else if (kw === 'hindi') {
+        aliasMatch = s.countryName === 'India' || (s.audioLangs && s.audioLangs.includes('hin'));
+      } else if (kw === 'hollywood') {
+        aliasMatch = s.countryName === 'United States';
+      } else if (kw === 'anime' || kw === 'animation') {
+        aliasMatch = s.category === 'anime';
+      } else if (kw === 'kdrama' || kw === 'k-drama' || kw === 'korean' || kw === 'korea') {
+        aliasMatch = s.countryName === 'South Korea';
+      } else if (kw === 'horror' || kw === 'scary' || kw === 'spooky') {
+        aliasMatch = s.genre && s.genre.toLowerCase().includes('horror');
+      } else if (kw === 'romance' || kw === 'romantic' || kw === 'love') {
+        aliasMatch = s.genre && s.genre.toLowerCase().includes('romance');
+      }
+
+      return titleMatch || genreMatch || countryMatch || imdbMatch || tmdbMatch || descMatch || staffMatch || aliasMatch;
+    });
+
     return {
       code: 0,
       data: {

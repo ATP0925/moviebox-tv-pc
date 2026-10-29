@@ -75,7 +75,64 @@ const IMDB_TO_TMDB_MAP = {
   "tt0877057": "13916",      // Death Note
   "tt0388629": "37854",      // One Piece
   "tt0434665": "30984",      // Bleach
-  "tt14986406": "212624"     // Bleach: Thousand-Year Blood War
+  "tt14986406": "212624"     // Bleach: Thousand-Year Blood War,
+  "tt12735488": "799883",     // Kalki 2898 AD
+  "tt28424564": "1150495",     // Stree 2: Sarkate Ka Aatank
+  "tt8178634": "579974",     // RRR
+  "tt10698680": "675353",     // K.G.F: Chapter 2
+  "tt12844910": "840326",     // Pathaan
+  "tt13623126": "822119",     // Salaar: Part 1 - Ceasefire
+  "tt15428134": "965620",     // Dunki
+  "tt13818368": "805320",     // Fighter
+  "tt27708573": "1127166",     // Shaitaan
+  "tt23849204": "1181548",     // 12th Fail
+  "tt26548265": "1115396",     // Maharaja
+  "tt8239946": "538858",     // Tumbbad
+  "tt21136696": "1024535",     // Kantara
+  "tt1187043": "20453",     // 3 Idiots
+  "tt5074352": "360814",     // Dangal
+  "tt9218128": "558449",     // Gladiator II
+  "tt1630029": "76600",     // Avatar: The Way of Water
+  "tt1745960": "361743",     // Top Gun: Maverick
+  "tt1877830": "414906",     // The Batman
+  "tt10872600": "634649",     // Spider-Man: No Way Home
+  "tt10366206": "603692",     // John Wick: Chapter 4
+  "tt18412256": "945961",     // Alien: Romulus
+  "tt0332280": "11036",     // The Notebook
+  "tt3783958": "313369",     // La La Land
+  "tt0120338": "597",     // Titanic
+  "tt13238346": "666277",     // Past Lives
+  "tt1457767": "138843",     // The Conjuring
+  "tt13433802": "762441",     // A Quiet Place: Day One
+  "tt15474916": "882598",     // Smile
+  "tt10919420": "93405",     // Squid Game
+  "tt6468322": "71446",     // Money Heist (La Casa de Papel)
+  "tt2788316": "126308",     // Shōgun
+  "tt12637874": "106379",     // Fallout
+  "tt2442560": "60574",     // Peaky Blinders
+  "tt8462636": "87108",     // Chernobyl
+  "tt6077448": "79352",     // Sacred Games
+  "tt9544034": "92749",     // The Family Man
+  "tt15482390": "218230",     // Farzi
+  "tt12392504": "111803",     // Scam 1992: The Harshad Mehta Story
+  "tt12080246": "102146",     // Paatal Lok
+  "tt11911128": "100146",     // Asur: Welcome to Your Dark Side
+  "tt9432978": "87739",     // Kota Factory
+  "tt10850932": "94796",     // Crash Landing on You
+  "tt12451016": "99966",     // All of Us Are Dead
+  "tt21344706": "152604",     // The Glory
+  "tt29294241": "216390",     // Queen of Tears
+  "tt0988824": "31911",     // Naruto: Shippuden
+  "tt0409591": "46260",     // Naruto
+  "tt13616990": "114410",     // Chainsaw Man
+  "tt13706018": "120089",     // Spy x Family
+  "tt4644488": "62715",     // Dragon Ball Super
+  "tt2098220": "46298",     // Hunter x Hunter
+  "tt10233444": "86423",     // Vinland Saga
+  "tt1387602": "31910",     // Fullmetal Alchemist: Brotherhood
+  "tt31187970": "1241982",     // Moana 2
+  "tt2380307": "354912",     // Coco
+  "tt6105098": "420818",     // The Lion King
 };
 
 const SUBJECT_ID_MAP = {
@@ -185,7 +242,64 @@ const TITLE_TO_IMDB_MAP = {
   "bleach": { imdbId: "tt0434665", tmdbId: "30984", isSeries: true },
   "bleach: thousand-year blood war": { imdbId: "tt14986406", tmdbId: "212624", isSeries: true },
   "bleach thousand year blood war": { imdbId: "tt14986406", tmdbId: "212624", isSeries: true },
-  "bleach tybw": { imdbId: "tt14986406", tmdbId: "212624", isSeries: true }
+  "bleach tybw": { imdbId: "tt14986406", tmdbId: "212624", isSeries: true },
+  "kalki 2898 ad": { imdbId: "tt12735488", tmdbId: "799883", isSeries: false },
+  "stree 2: sarkate ka aatank": { imdbId: "tt28424564", tmdbId: "1150495", isSeries: false },
+  "rrr": { imdbId: "tt8178634", tmdbId: "579974", isSeries: false },
+  "k.g.f: chapter 2": { imdbId: "tt10698680", tmdbId: "675353", isSeries: false },
+  "pathaan": { imdbId: "tt12844910", tmdbId: "840326", isSeries: false },
+  "salaar: part 1 - ceasefire": { imdbId: "tt13623126", tmdbId: "822119", isSeries: false },
+  "dunki": { imdbId: "tt15428134", tmdbId: "965620", isSeries: false },
+  "fighter": { imdbId: "tt13818368", tmdbId: "805320", isSeries: false },
+  "shaitaan": { imdbId: "tt27708573", tmdbId: "1127166", isSeries: false },
+  "12th fail": { imdbId: "tt23849204", tmdbId: "1181548", isSeries: false },
+  "maharaja": { imdbId: "tt26548265", tmdbId: "1115396", isSeries: false },
+  "tumbbad": { imdbId: "tt8239946", tmdbId: "538858", isSeries: false },
+  "kantara": { imdbId: "tt21136696", tmdbId: "1024535", isSeries: false },
+  "3 idiots": { imdbId: "tt1187043", tmdbId: "20453", isSeries: false },
+  "dangal": { imdbId: "tt5074352", tmdbId: "360814", isSeries: false },
+  "gladiator ii": { imdbId: "tt9218128", tmdbId: "558449", isSeries: false },
+  "avatar: the way of water": { imdbId: "tt1630029", tmdbId: "76600", isSeries: false },
+  "top gun: maverick": { imdbId: "tt1745960", tmdbId: "361743", isSeries: false },
+  "the batman": { imdbId: "tt1877830", tmdbId: "414906", isSeries: false },
+  "spider-man: no way home": { imdbId: "tt10872600", tmdbId: "634649", isSeries: false },
+  "john wick: chapter 4": { imdbId: "tt10366206", tmdbId: "603692", isSeries: false },
+  "alien: romulus": { imdbId: "tt18412256", tmdbId: "945961", isSeries: false },
+  "the notebook": { imdbId: "tt0332280", tmdbId: "11036", isSeries: false },
+  "la la land": { imdbId: "tt3783958", tmdbId: "313369", isSeries: false },
+  "titanic": { imdbId: "tt0120338", tmdbId: "597", isSeries: false },
+  "past lives": { imdbId: "tt13238346", tmdbId: "666277", isSeries: false },
+  "the conjuring": { imdbId: "tt1457767", tmdbId: "138843", isSeries: false },
+  "a quiet place: day one": { imdbId: "tt13433802", tmdbId: "762441", isSeries: false },
+  "smile": { imdbId: "tt15474916", tmdbId: "882598", isSeries: false },
+  "squid game": { imdbId: "tt10919420", tmdbId: "93405", isSeries: true },
+  "money heist (la casa de papel)": { imdbId: "tt6468322", tmdbId: "71446", isSeries: true },
+  "shōgun": { imdbId: "tt2788316", tmdbId: "126308", isSeries: true },
+  "fallout": { imdbId: "tt12637874", tmdbId: "106379", isSeries: true },
+  "peaky blinders": { imdbId: "tt2442560", tmdbId: "60574", isSeries: true },
+  "chernobyl": { imdbId: "tt8462636", tmdbId: "87108", isSeries: true },
+  "sacred games": { imdbId: "tt6077448", tmdbId: "79352", isSeries: true },
+  "the family man": { imdbId: "tt9544034", tmdbId: "92749", isSeries: true },
+  "farzi": { imdbId: "tt15482390", tmdbId: "218230", isSeries: true },
+  "scam 1992: the harshad mehta story": { imdbId: "tt12392504", tmdbId: "111803", isSeries: true },
+  "paatal lok": { imdbId: "tt12080246", tmdbId: "102146", isSeries: true },
+  "asur: welcome to your dark side": { imdbId: "tt11911128", tmdbId: "100146", isSeries: true },
+  "kota factory": { imdbId: "tt9432978", tmdbId: "87739", isSeries: true },
+  "crash landing on you": { imdbId: "tt10850932", tmdbId: "94796", isSeries: true },
+  "all of us are dead": { imdbId: "tt12451016", tmdbId: "99966", isSeries: true },
+  "the glory": { imdbId: "tt21344706", tmdbId: "152604", isSeries: true },
+  "queen of tears": { imdbId: "tt29294241", tmdbId: "216390", isSeries: true },
+  "naruto: shippuden": { imdbId: "tt0988824", tmdbId: "31911", isSeries: true },
+  "naruto": { imdbId: "tt0409591", tmdbId: "46260", isSeries: true },
+  "chainsaw man": { imdbId: "tt13616990", tmdbId: "114410", isSeries: true },
+  "spy x family": { imdbId: "tt13706018", tmdbId: "120089", isSeries: true },
+  "dragon ball super": { imdbId: "tt4644488", tmdbId: "62715", isSeries: true },
+  "hunter x hunter": { imdbId: "tt2098220", tmdbId: "46298", isSeries: true },
+  "vinland saga": { imdbId: "tt10233444", tmdbId: "86423", isSeries: true },
+  "fullmetal alchemist: brotherhood": { imdbId: "tt1387602", tmdbId: "31910", isSeries: true },
+  "moana 2": { imdbId: "tt31187970", tmdbId: "1241982", isSeries: false },
+  "coco": { imdbId: "tt2380307", tmdbId: "354912", isSeries: false },
+  "the lion king": { imdbId: "tt6105098", tmdbId: "420818", isSeries: false }
 };
 
 // MovieBoxTV Gateway Signing Config
